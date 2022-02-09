@@ -1,6 +1,6 @@
 --- 
-title: "Spatial Analysis with R"
-author: "Chia Jung, Yeh\\\n National Yang Ming Chiao Tung University (NYCU), Taiwan"
+title: "R TDX 運輸資料介接"
+author: "葉家榮\\\n 國立陽明交通大學 運輸與物流管理學系"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 # output: bookdown::gitbook
@@ -13,7 +13,7 @@ description: "A bookdown book on how to conduct spatial analysis with R."
 ---
 
 
-# **Introduction**
+# **簡介**
 
 This book would introduce the basic skills of spatial analysis with R. Spatial analysis is vital in terms of transportation study. For instance, when conducting the transport planning analysis, we need to collect the data of the study area, and dig into the issue about geographic characteristic, socioeconomic factors, to further do research on the traffic zone, trip distribution and so forth. Here we need the skills of spatial analysis before executing the transport planning process. In fact, there are more powerful and more user-experience based tools such as ArcGIS, CUBE and many other transport planning software to do spatial analysis. However, these software are not easily accessible due to high-cost. Hence, we can use R to do some simple spatial analysis instead. In the notebook, we would acquire the skills listed below.  
 
