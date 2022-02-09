@@ -1,0 +1,8 @@
+introduction
+basic-knowledge-on-gis
+geographic-information-systems
+well-known-text-wkt
+shapefile
+coordinate-reference-system-crs
+why-use-r
+required-packages

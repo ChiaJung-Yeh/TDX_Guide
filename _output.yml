@@ -1,0 +1,22 @@
+bookdown::gitbook:
+  css:
+    - lib/css/bootstrap.min.css
+    - lib/css/style.css
+    - lib/css/lesson.css
+  includes:
+  config:
+    toc:
+      before: |
+        <li><a href="./">Spatial Analysis with R</a></li>
+      after: |
+        <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
+    fontsettings:
+      theme: white
+      family: serif
+    edit: https://github.com/ChiaJung-Yeh/Spatial-Analysis/blob/master/%s
+    download: ["pdf"]
+#bookdown::pdf_book:
+#  includes:
+#    in_header: _preamble.tex
+#  latex_engine: xelatex
+#  keep_tex: no

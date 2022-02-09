@@ -1,0 +1,76 @@
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(ggsflabel)
+library(ggspatial)
+library(knitr)
+library(kableExtra)
+library(spData)
+library(tmap)
+library(leaflet)
+library(classInt)
+library(cowplot)
+```
+
+# **Basic Knowledge on GIS**
+
+## Geographic Information Systems
+Geographic Information Systems (GIS) store, analyze, and visualize data for geographic positions on Earth’s surface. The four major features of GIS are listed below.  
+
+* Create geographic data.
+* Manage spatial data in a database.
+* Analyze and find patterns.
+* Map Visualization.
+
+In this notebook, we would focus on the issue about spaitial analysis and making visualized maps.  
+
+The detailed concept of GIS can be derived on the textbook [*_“Introduction to Geographic Information Systems (Kang Tsung Chang)”_*](https://www.academia.edu/28691712/Introduction_to_GIS_Kang_Tsung_Chang_pdf?email_work_card=title).
+
+## Shapefile
+The shapefile format is a universal geospatial vector data format. It is developed and regulated by [Esri](https://www.wikiwand.com/en/Esri), which is an international supplier of GIS software. The shapefile format can illustrate the vector features: points, lines, and polygons. In fact, shapefile is not a single file, but a collection containing four mandatory files. Each file is briefly introduced as the following.  
+
+```{r shape_file, echo=F, eval=T}
+shape_file=data.frame(File=c(".shp",".dbf",".prj",".shx"), Features=c("shape format; the feature geometry","	attribute format; attributes for each shape, stored as two-dimensional table","projection description, using a well-known text representation of coordinate reference systems","shape index format; a positional index of the feature geometry to allow seeking forwards and backwards quickly"))
+kbl(shape_file, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)
+```
+
+## Coordinate Reference System (CRS)
+Geometric data is not geospatial unless it is accompanied by coordinate reference system (CRS) information, which allows GIS to display and operate the data accurately. It includes two major components, datum and projection. Datum is a model of the shape of the earth. It has angular units (degrees) and defines the starting point (0,0), and hence the coordinate can represent a specific spot on the earth. Projection is a mathematical transformation of the angular measurements on a round earth to a flat surface. The units associated with a given projection are usually linear (feet, meters, etc.).  
+
+
+## Why Use R?
+R is a programming language mainly for statistical computing and graphics. With a wide range of packages, R supports advanced geospatial statistics, modeling and visualization. In addition, integrated development environments such as RStudio have made it more user-friendly, allowing us to easily analyze spatial data and make maps.  
+
+Using R to do analysis, we need first to download the [software](https://cran.csie.ntu.edu.tw/) and its development environments ([RStudio](https://rstudio.com/products/rstudio/download/)).
+
+
+## Required Packages
+To conduct the geocomputation in R, it is required to download `sf` package.  
+
+To analyze the data more efficiently, it is suggested to take advantage of `dplyr` package.  
+
+To display the map, `ggplot2` package is strongly recommended. (There are other packages to make the map as well; nonetheless, `ggplot2` is more powerful and easier to learn.)  
+
+```{r required_packages, echo=T, eval=F}
+install.packages("sf")
+install.packages("dplyr")
+install.packages("ggplot2")
+library(sf)
+library(dplyr)
+library(ggplot2)
+```
+
+<font size=4> **_Data_** </font><br> 
+Data required in this book are provided [**here**](https://drive.google.com/uc?export=download&id=1TSavur6YcaJO5DCCb5Hsb0HICdwZpeXi), please download the data and place it in the same directory of the R script.  
+
+Besides download data directly from the link above, we can connect to Github to install the package `TWspdata` to obtain the same data set. The code is shown below.  
+
+```{r install_TWspdata, echo=T, eval=F}
+install.packages(devtools)
+devtools::install_github("ChiaJung-Yeh/TWspdata")
+library(TWspdata)
+```

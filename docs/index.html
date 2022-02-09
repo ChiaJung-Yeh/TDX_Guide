@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Spatial Analysis with R</title>
+  <meta name="description" content="A bookdown book on how to conduct spatial analysis with R." />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Spatial Analysis with R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="A bookdown book on how to conduct spatial analysis with R." />
+  <meta name="github-repo" content="ChiaJung-Yeh/Spatial-Analysis" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Spatial Analysis with R" />
+  
+  <meta name="twitter:description" content="A bookdown book on how to conduct spatial analysis with R." />
+  
+
+<meta name="author" content="Chia Jung, Yeh National Yang Ming Chiao Tung University (NYCU), Taiwan" />
+
+
+<meta name="date" content="2022-02-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="basic-knowledge-on-gis.html"/>
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+
+
+<link rel="stylesheet" href="lib/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/style.css" type="text/css" />
+<link rel="stylesheet" href="lib/css/lesson.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Spatial Analysis with R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <strong>Introduction</strong></a></li>
+<li class="chapter" data-level="2" data-path="basic-knowledge-on-gis.html"><a href="basic-knowledge-on-gis.html"><i class="fa fa-check"></i><b>2</b> <strong>Basic Knowledge on GIS</strong></a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="basic-knowledge-on-gis.html"><a href="basic-knowledge-on-gis.html#geographic-information-systems"><i class="fa fa-check"></i><b>2.1</b> Geographic Information Systems</a></li>
+<li class="chapter" data-level="2.2" data-path="basic-knowledge-on-gis.html"><a href="basic-knowledge-on-gis.html#well-known-text-wkt"><i class="fa fa-check"></i><b>2.2</b> Well-Known Text (WKT)</a></li>
+<li class="chapter" data-level="2.3" data-path="basic-knowledge-on-gis.html"><a href="basic-knowledge-on-gis.html#shapefile"><i class="fa fa-check"></i><b>2.3</b> Shapefile</a></li>
+<li class="chapter" data-level="2.4" data-path="basic-knowledge-on-gis.html"><a href="basic-knowledge-on-gis.html#coordinate-reference-system-crs"><i class="fa fa-check"></i><b>2.4</b> Coordinate Reference System (CRS)</a></li>
+<li class="chapter" data-level="2.5" data-path="basic-knowledge-on-gis.html"><a href="basic-knowledge-on-gis.html#why-use-r"><i class="fa fa-check"></i><b>2.5</b> Why Use R?</a></li>
+<li class="chapter" data-level="2.6" data-path="basic-knowledge-on-gis.html"><a href="basic-knowledge-on-gis.html#required-packages"><i class="fa fa-check"></i><b>2.6</b> Required Packages</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Spatial Analysis with R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">Spatial Analysis with R</h1>
+<p class="author"><em>Chia Jung, Yeh<br />
+National Yang Ming Chiao Tung University (NYCU), Taiwan</em></p>
+<p class="date" style="margin-top: 1.5em;"><em>2022-02-09</em></p>
+</div>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">Chapter 1</span> <strong>Introduction</strong></h1>
+<p>This book would introduce the basic skills of spatial analysis with R. Spatial analysis is vital in terms of transportation study. For instance, when conducting the transport planning analysis, we need to collect the data of the study area, and dig into the issue about geographic characteristic, socioeconomic factors, to further do research on the traffic zone, trip distribution and so forth. Here we need the skills of spatial analysis before executing the transport planning process. In fact, there are more powerful and more user-experience based tools such as ArcGIS, CUBE and many other transport planning software to do spatial analysis. However, these software are not easily accessible due to high-cost. Hence, we can use R to do some simple spatial analysis instead. In the notebook, we would acquire the skills listed below.</p>
+<ol style="list-style-type: decimal">
+<li>Making customized maps.<br />
+</li>
+<li>Join the spatial and attribute data.<br />
+</li>
+<li>Conduct spatial operations.<br />
+</li>
+<li>Data analysis on spatial data.<br />
+</li>
+<li>Export our own spatial data.</li>
+</ol>
+<p>In addition, the notebook would focus on the transportation spatial issue. If you are major in <a href="https://www.tlm.nctu.edu.tw/en/">Transportation Engineering or Transportation Management</a>, you may relate to the content. The notebook provides lots of example regarding transportation data in Taiwan. Any suggestions and questions please contact <a href="mailto:1328robert@gmail.com"><u>here</u></a>.
+<br/></p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="basic-knowledge-on-gis.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "serif",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/ChiaJung-Yeh/Spatial-Analysis/blob/master/index.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["series.pdf"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
