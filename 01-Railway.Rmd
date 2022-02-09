@@ -1,0 +1,43 @@
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(ggsflabel)
+library(ggspatial)
+library(knitr)
+library(kableExtra)
+library(TDX)
+
+app_id = '8f35504e01eb4a43abfd41c920955690'
+app_key = 'H9MfljykHDeGiifyr2zKJ0XsKFQ'
+Rail_Station(app_id, app_key, "TRTC")
+```
+
+# **軌道運輸資料**
+軌道運輸係指臺鐵、高鐵、捷運與輕軌，其中捷運系統包含臺北捷運、桃園機場捷運、臺中捷運、高雄捷運，輕軌系統含括新北捷運（淡海輕軌）與高雄輕軌。後續的函式中皆須設定營運機構之參數（`operator=`），請參照以下表格輸入正確代碼。  
+
+```{r TDX_Railway, echo=F, eval=T}
+TDX_Railway_temp=TDX_Railway
+colnames(TDX_Railway_temp)=c("軌道運輸營運機構","代碼")
+kable(TDX_Railway_temp, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)
+```
+
+此外本資料之下載必須利用 API 金鑰，故函式中須輸入`app_id=`與`app_key=`兩參數，亦即在 [1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID 與 APP Key
+
+
+## 軌道站點資料
+站點資料係指軌道運輸場站的站點資料，回傳欄位包括
+
+
+## 軌道路線站點資料
+
+
+
+## 軌道路線線型資料
+
+
+
+## 軌道班表資料

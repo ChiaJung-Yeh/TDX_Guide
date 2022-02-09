@@ -3,7 +3,7 @@ title: "R TDX 運輸資料介接"
 author: "葉家榮\\\n 國立陽明交通大學 運輸與物流管理學系"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
-# output: bookdown::gitbook
+output: bookdown::gitbook
 documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
@@ -50,6 +50,7 @@ include_graphics("./figure/TDX_outline.png")
 
 
 ## R 語言資料介接套件
+### 套件下載
 為方便 TDX 資料之使用，透過 R 語言開發介接資料之套件，以期使用者能快速取得需要的運輸資料，並進行後續的加值應用與分析。本套件提供公共運輸基礎資料、地理編碼服務、路網地理資料服務等，並支援轉換地理資料的格式，且可直接透過函式之設定將檔案逕輸出至指定的資料夾，降低介接資料的繁瑣程序。  
 
 若欲使用介接運輸資料的套件，請在 R 軟體中先行安裝與載入套件，程式碼撰寫如下：
@@ -77,11 +78,21 @@ kable(TDX_table, booktabs=T)%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   collapse_rows(columns=c(1,3))
-
 ```
 
+### API 金鑰申請
 
+在使用 TDX 套件前，必須先自[公共運輸整合資訊流通服務平臺](https://ptx.transportdata.tw/PTX/Management/AccountApply)申請「一般會員」，一般會員的 API 服務呼叫次數上限為每日 20,000 次（單純資料分析已足夠使用）。進入「加入會員」的頁面後，請點選最左側的「申請一般會員」，如下圖所示，並依序輸入基本資料、服務單位、用途說明（如：學術論文/專題研究、程式教學/練習）、應用成果（申請服務概述、加值應用概述）。  
 
+```{r TDX_member, echo=FALSE, out.width="100%", fig.align="center"}
+include_graphics("./figure/TDX_member.png")
+```
+
+會員帳號啟用後，請在[會員專區](https://ptx.transportdata.tw/PTX/APIMember/ApplyGeneral)（點選網頁右上角會員專區 >> API 服務 >> API 金鑰申請）頁面申請 API 金鑰，PTX 平臺管理小組將於三個工作日核定審核結果，並寄出授權信（如下圖所示）通知申請者。授權信件中包含一 Application ID (APP ID) 及 Application Key (APP Key)，請務必保留此金鑰，後續即可在套件中使用 API 服務。  
+
+```{r TDX_key, echo=FALSE, out.width="100%", fig.align="center"}
+include_graphics("./figure/TDX_key.png")
+```
 
 
 
