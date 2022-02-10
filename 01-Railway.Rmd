@@ -8,6 +8,7 @@ library(ggspatial)
 library(knitr)
 library(kableExtra)
 library(TDX)
+library(DT)
 
 app_id = '8f35504e01eb4a43abfd41c920955690'
 app_key = 'H9MfljykHDeGiifyr2zKJ0XsKFQ'
@@ -60,11 +61,65 @@ kable(TDX_table, booktabs=T)%>%
 ```
 
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
-```{r Rail_Station, echo=T, eval=F}
-Rail_Station(app_id, app_key, "THSR")
-Rail_StationOfLine()
+
+**1. 回傳高鐵站點資料（純文字）**
+```{r Rail_Station_code1, echo=T, eval=T, message=F, warning=F}
+# 介接高鐵站點資料
+THSR_station=Rail_Station(app_id, app_key, "THSR")
 ```
 
+```{r Rail_Station_code2, echo=T, eval=F, message=F, warning=F}
+# 查看THSR_station資料
+THSR_station
+```
+
+```{r Rail_Station_code3, echo=F, eval=T, message=F, warning=F}
+# 介接高鐵站點資料
+datatable(THSR_station, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:8), fontSize='80%')%>%
+  formatRound(c("PositionLon", "PositionLat"), digits=4)
+```
+
+<br></br>
+**2. 回傳臺北捷運站點資料（地理資料）**
+```{r Rail_Station_code4, echo=T, eval=T, message=F, warning=F}
+# 介接臺北捷運鐵站點資料
+TRTC_station=Rail_Station(app_id, app_key, "TRTC", dtype="sf")
+```
+
+```{r Rail_Station_code5, echo=T, eval=F, message=F, warning=F}
+# 查看TRTC_station資料
+TRTC_station
+```
+
+```{r Rail_Station_code6, echo=F, eval=T, message=F, warning=F}
+# 介接高鐵站點資料
+datatable(TRTC_station, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:8), fontSize='80%')%>%
+  formatRound(c("PositionLon", "PositionLat"), digits=4)
+```
+
+```{r Rail_Station_code7, echo=T, eval=T, message=F, warning=F}
+# TRTC_station繪圖
+ggplot()+
+  geom_sf(data=TRTC_station)+
+  theme_void()
+```
+
+:::notice
+<font size="4">**NOTE**</font>  
+關於 R 語言地圖繪製方式，請參考 [Spatial Analysis with R (Chia Jung, Yeh) 第三章](https://chiajung-yeh.github.io/Spatial-Analysis/data-visualization-with-maps.html)
+:::
 
 
 ## 軌道路線站點資料

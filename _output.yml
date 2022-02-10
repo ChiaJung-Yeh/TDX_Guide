@@ -3,6 +3,7 @@ bookdown::gitbook:
     - lib/css/bootstrap.min.css
     - lib/css/style.css
     - lib/css/lesson.css
+    - stylebox.css
   includes:
   config:
     toc:
