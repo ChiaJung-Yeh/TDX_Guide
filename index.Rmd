@@ -77,7 +77,8 @@ colnames(TDX_table)=c("資料","資料細目","資料型態","函式")
 kable(TDX_table, booktabs=T)%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
-  collapse_rows(columns=c(1,3))
+  collapse_rows(columns=c(1,3))%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")
 ```
 
 ### API 金鑰申請
