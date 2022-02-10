@@ -50,9 +50,9 @@ kable(TDX_table, booktabs=T)%>%
 ```
 
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
-**回傳國內航空資料**
+**回傳國內航空班表資料**
 ```{r Air_Schedule_code1, echo=T, eval=T, message=F, warning=F}
-# 介接臺北市公共自行車站點
+# 介接國內航空班表
 air_schedule_domestic=Air_Schedule(app_id, app_key, domestic=TRUE)
 ```
 
@@ -101,7 +101,7 @@ kable(TDX_table, booktabs=T)%>%
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
 **回傳花蓮縣觀光景點資料（地理資料）**
 ```{r ScenicSpot_code1, echo=T, eval=T, message=F, warning=F}
-# 介接臺北市公共自行車站點
+# 介接花蓮縣觀光景點
 Hualien_scenicspot=ScenicSpot(app_id, app_key, county="HualienCounty", dtype="sf")
 ```
 
