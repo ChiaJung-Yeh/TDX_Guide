@@ -10,6 +10,8 @@ library(kableExtra)
 library(TDX)
 library(DT)
 
+windowsFonts(A=windowsFont("微軟正黑體"))
+
 app_id = '8f35504e01eb4a43abfd41c920955690'
 app_key = 'H9MfljykHDeGiifyr2zKJ0XsKFQ'
 ```
@@ -35,9 +37,10 @@ kable(TDX_Railway_temp, booktabs=T)%>%
 軌道運輸資料中提供站點、路線站點、路線線型、班表等資料。  
 
 
+
 ## 軌道站點資料
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
-回傳資料為軌道運輸場站的站點屬性資料，欄位包括站點名稱、站點代碼、站點所在城市（縣市、鄉鎮）、經緯度等。  
+回傳結果為軌道運輸場站的站點屬性資料，欄位包括站點名稱、站點代碼、站點所在城市（縣市、鄉鎮）、經緯度等。  
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Rail_Station_code, echo=T, eval=F}
@@ -98,7 +101,6 @@ TRTC_station
 ```
 
 ```{r Rail_Station_code6, echo=F, eval=T, message=F, warning=F}
-# 介接高鐵站點資料
 datatable(TRTC_station, options=list(pageLength=5, scrollX=T,
                                     headerCallback = DT::JS(
     "function(thead) {",
@@ -122,16 +124,213 @@ ggplot()+
 :::
 
 
+
 ## 軌道路線站點資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+回傳結果為軌道運輸場站「依路線」的站點屬性資料，與[「軌道站點資料」](#軌道站點資料)不同的是，路線站點資料將依照各路線上的站序回傳站點屬性資料，惟此資料中並不包含經緯度欄位，故若需要地理相關資訊，請使用「軌道站點資料」。軌道路線站點資料回傳結果中的欄位包括路線代碼、路線名稱、站序、站點代碼與站點名稱。另請注意高鐵（THSR）並未提供此一類型之資料，而臺鐵資料中另包含路線站點累積里程數。  
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Rail_StationOfLine_code, echo=T, eval=F}
+Rail_StationOfLine(app_id, app_key, operator, out=FALSE)
+```
+
+```{r Rail_StationOfLine_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`operator=`", rep("`out=`", 2)),
+                     must=c(rep("必填參數", 3), rep("選填參數", 2)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","營運機構代碼", rep("匯出資料之路徑", 2)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID", "[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key", "請參照`TDX_Railway`表格", "`FALSE`：不匯出資料至本機 [**預設值**]", "若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**回傳臺鐵路線站點資料**
+```{r Rail_StationOfLine_code1, echo=T, eval=T, message=F, warning=F}
+# 回傳臺鐵路線站點資料，並匯出資料
+TRA_stationofline=Rail_StationOfLine(app_id, app_key, "TRA", out="./TRA_stationofline.csv")
+```
+
+```{r Rail_StationOfLine_code2, echo=T, eval=F, message=F, warning=F}
+# 查看THSR_station資料
+TRA_stationofline
+```
+
+```{r Rail_StationOfLine_code3, echo=F, eval=T, message=F, warning=F}
+datatable(TRA_stationofline, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:8), fontSize='80%')
+```
 
 
 
 ## 軌道路線線型資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+回傳結果為軌道路線的線型資料，其中欄位包括路線代碼、路線名稱，以及線型幾何資料（Geometry）。  
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Rail_Shape_code, echo=T, eval=F}
+Rail_Shape(app_id, app_key, operator, dtype="text", out=FALSE)
+```
+
+```{r Rail_Shape_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`operator=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 3), rep("選填參數", 5)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","營運機構代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_Railway`表格","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**1. 回傳臺鐵路線資料（純文字）**
+```{r Rail_Shape_code1, echo=T, eval=T, message=F, warning=F}
+# 介接高鐵站點資料
+TRA_railshape=Rail_Shape(app_id, app_key, "TRA")
+```
+
+```{r Rail_Shape_code2, echo=T, eval=T, message=F, warning=F}
+# 查看THSR_station第2筆資料(東部幹線)
+TRA_railshape[2,]
+```
+
+
+<br></br>
+**2. 回傳臺北捷運路線資料（地理資料）**
+```{r Rail_Shape_code3, echo=T, eval=T, message=F, warning=F}
+# 介接臺北捷運鐵路線資料，並匯出資料
+TRTC_railshape=Rail_Shape(app_id, app_key, "TRTC", dtype="sf", out="./TRTC_railshape.shp")
+```
+
+```{r Rail_Shape_code4, echo=T, eval=F, message=F, warning=F}
+# 查看TRTC_railshape資料
+TRTC_railshape
+```
+
+```{r Rail_Shape_code5, echo=F, eval=T, message=F, warning=F}
+datatable(TRTC_railshape, options=list(pageLength=6, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:8), fontSize='80%')
+```
+
+```{r Rail_Shape_code6, echo=T, eval=F, message=F, warning=F}
+# TRTC_railshape繪圖
+ggplot()+
+  geom_sf(data=TRTC_railshape, aes(color=LineName), show.legend="line", size=1)+
+  scale_color_manual(values=c("淡水信義線Tamsui-Xinyi Line"="#d90023", "板南線Bannan Line"="#0a59ae", "松山新店線Songshan-Xindian Line"="#107547",
+                              "中和新蘆線Zhonghe-Xinlu Line"="#f5a818", "文湖線Wenhu Line"="#b57a25", "環狀線Circular Line"="#fedb00"),
+                     name="路線")
+```
+
+```{r Rail_Shape_code7, echo=F, eval=T, message=F, warning=F}
+# TRTC_railshape繪圖
+ggplot()+
+  geom_sf(data=TRTC_railshape, aes(color=LineName), show.legend="line", size=1)+
+  scale_color_manual(values=c("淡水信義線Tamsui-Xinyi Line"="#d90023", "板南線Bannan Line"="#0a59ae", "松山新店線Songshan-Xindian Line"="#107547",
+                              "中和新蘆線Zhonghe-Xinlu Line"="#f5a818", "文湖線Wenhu Line"="#b57a25", "環狀線Circular Line"="#fedb00"),
+                     name="路線")+
+  theme_void()+
+  theme(legend.title=element_text(family="A", size=12),
+        legend.text=element_text(family="A", size=9))
+```
+
+:::notice
+<font size="4">**NOTE**</font>  
+R 語言「依規則繪製地圖」之方法，請參考 [Spatial Analysis with R (Chia Jung, Yeh) 3.5 章節 Categorized Symbol Map](https://chiajung-yeh.github.io/Spatial-Analysis/data-visualization-with-maps.html#categorized-symbol-map)
+:::
 
 
 
 ## 軌道班表資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+班表資料包含兩種形式，一為「依班次記錄」，另一為「依站點記錄」。「依班次記錄」係指依照列車班次記錄各停靠站的抵達（Arrival）與離站（Departure）時間，而「依站點記錄」則是指依據站點記錄各個停靠該站之列車的抵達與離站時間。目前 TDX 平臺中，臺鐵（TRA）提供兩種記錄方式之資料；高鐵（THSR）僅提供 「依班次記錄」之資料 ;所有捷運與輕軌系統則僅提供「依站點記錄」之資料。另須注意的是，臺中捷運的班表尚未匯入 TDX 平臺中，故無法介接。  
 
+班表資料回傳結果中，欄位包括車次代碼、方向（順逆行）、車種、起訖站、各星期營運與否、停靠站點代碼與名稱、到離站時間等，各軌道系統所擁有的欄位將會有些許差異。  
 
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Rail_TimeTable_code, echo=T, eval=F}
+Rail_TimeTable(app_id, app_key, operator, record, out=FALSE)
+```
+
+```{r Rail_TimeTable_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`operator=`", rep("`record=`", 2), rep("`out=`", 2)),
+                     must=c(rep("必填參數", 5), rep("選填參數", 2)),
+                     func=c("[金鑰 APP ID]", "[金鑰 APP Key]", "營運機構代碼", rep("班表記錄方式", 2), rep("匯出資料之路徑", 2)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_Railway`表格", "`general`：依班次記錄", "`station`：依站點記錄","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**1. 回傳臺鐵班次資料（依班次記錄）**
+```{r Rail_TimeTable_code1, echo=T, eval=T, message=F, warning=F}
+# 介接臺鐵班次資料
+TRA_timetable=Rail_TimeTable(app_id, app_key, "TRA", record="general")
+```
+
+```{r Rail_TimeTable_code2, echo=T, eval=F, message=F, warning=F}
+# 查看TRA_timetable前300筆資料
+TRA_timetable[1:300,]
+```
+
+```{r Rail_TimeTable_code3, echo=F, eval=T, message=F, warning=F}
+datatable(TRA_timetable[1:300,], options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:8), fontSize='80%')
+```
+
+<br></br>
+**2. 回傳高雄捷運班次資料（依站點記錄）**
+```{r Rail_TimeTable_code4, echo=T, eval=T, message=F, warning=F}
+# 介接高雄捷運班次資料
+KRTC_timetable=Rail_TimeTable(app_id, app_key, "KRTC", record="station")
+```
+
+```{r Rail_TimeTable_code5, echo=T, eval=F, message=F, warning=F}
+# 查看TRTC_railshape資料
+TRTC_railshape
+```
+
+```{r Rail_TimeTable_code6, echo=F, eval=T, message=F, warning=F}
+datatable(KRTC_timetable, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:8), fontSize='80%')
+```
 
 
