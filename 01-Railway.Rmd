@@ -11,13 +11,10 @@ library(TDX)
 library(DT)
 
 windowsFonts(A=windowsFont("微軟正黑體"))
-
-app_id = '8f35504e01eb4a43abfd41c920955690'
-app_key = 'H9MfljykHDeGiifyr2zKJ0XsKFQ'
 ```
 
 # **軌道運輸資料**
-軌道運輸係指臺鐵、高鐵、捷運與輕軌，其中捷運系統包含臺北捷運、桃園機場捷運、臺中捷運、高雄捷運，輕軌系統含括新北捷運（淡海輕軌）與高雄輕軌。後續的函式中皆須設定營運機構之參數（`operator=`），請參照`TDX_Railway`表格，營運機構名稱與其相對應之代碼臚列如下。  
+軌道運輸係指臺鐵、高鐵、捷運與輕軌，其中捷運系統包含臺北捷運、桃園機場捷運、臺中捷運、高雄捷運，輕軌系統含括新北捷運（淡海輕軌）與高雄輕軌。後續的函式中皆須設定營運單位之參數（`operator=`），請參照`TDX_Railway`表格，營運單位名稱與其相對應之代碼臚列如下。  
 
 ```{r TDX_Railway, echo=T, eval=F}
 TDX_Railway
@@ -25,7 +22,7 @@ TDX_Railway
 
 ```{r TDX_Railway_table, echo=F, eval=T}
 TDX_Railway_temp=TDX_Railway
-colnames(TDX_Railway_temp)=c("軌道運輸營運機構","代碼")
+colnames(TDX_Railway_temp)=c("軌道運輸營運單位","代碼")
 kable(TDX_Railway_temp, booktabs=T)%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
@@ -50,7 +47,7 @@ Rail_Station(app_id, app_key, operator, dtype="text", out=FALSE)
 ```{r Rail_Station_table, echo=F, eval=T}
 TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`operator=`", rep("`dtype=`", 2), rep("`out=`", 3)),
                      must=c(rep("必填參數", 3), rep("選填參數", 5)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","營運機構代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","營運單位代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
                      details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_Railway`表格","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
@@ -77,7 +74,6 @@ THSR_station
 ```
 
 ```{r Rail_Station_code3, echo=F, eval=T, message=F, warning=F}
-# 介接高鐵站點資料
 datatable(THSR_station, options=list(pageLength=5, scrollX=T,
                                     headerCallback = DT::JS(
     "function(thead) {",
@@ -137,7 +133,7 @@ Rail_StationOfLine(app_id, app_key, operator, out=FALSE)
 ```{r Rail_StationOfLine_table, echo=F, eval=T}
 TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`operator=`", rep("`out=`", 2)),
                      must=c(rep("必填參數", 3), rep("選填參數", 2)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","營運機構代碼", rep("匯出資料之路徑", 2)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","營運單位代碼", rep("匯出資料之路徑", 2)),
                      details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID", "[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key", "請參照`TDX_Railway`表格", "`FALSE`：不匯出資料至本機 [**預設值**]", "若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
@@ -186,7 +182,7 @@ Rail_Shape(app_id, app_key, operator, dtype="text", out=FALSE)
 ```{r Rail_Shape_table, echo=F, eval=T}
 TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`operator=`", rep("`dtype=`", 2), rep("`out=`", 3)),
                      must=c(rep("必填參數", 3), rep("選填參數", 5)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","營運機構代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","營運單位代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
                      details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_Railway`表格","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
@@ -275,7 +271,7 @@ Rail_TimeTable(app_id, app_key, operator, record, out=FALSE)
 ```{r Rail_TimeTable_table, echo=F, eval=T}
 TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`operator=`", rep("`record=`", 2), rep("`out=`", 2)),
                      must=c(rep("必填參數", 5), rep("選填參數", 2)),
-                     func=c("[金鑰 APP ID]", "[金鑰 APP Key]", "營運機構代碼", rep("班表記錄方式", 2), rep("匯出資料之路徑", 2)),
+                     func=c("[金鑰 APP ID]", "[金鑰 APP Key]", "營運單位代碼", rep("班表記錄方式", 2), rep("匯出資料之路徑", 2)),
                      details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_Railway`表格", "`general`：依班次記錄", "`station`：依站點記錄","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")

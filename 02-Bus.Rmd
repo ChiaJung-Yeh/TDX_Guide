@@ -12,9 +12,6 @@ library(TDX)
 library(DT)
 
 windowsFonts(A=windowsFont("微軟正黑體"))
-
-app_id = '8f35504e01eb4a43abfd41c920955690'
-app_key = 'H9MfljykHDeGiifyr2zKJ0XsKFQ'
 ```
 
 # **公車運輸資料**
@@ -33,7 +30,7 @@ kable(TDX_County_temp, booktabs=T)%>%
   row_spec(0, bold=T, color="white", background="#7B7B7B")
 ```
 
-此外本資料之下載皆須利用 API 金鑰，故函式中須輸入`app_id=`與`app_key=`兩參數，亦即在 [1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID 與 APP Key。  
+本資料之下載皆須利用 API 金鑰，故函式中須輸入`app_id=`與`app_key=`兩參數，亦即在 [1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID 與 APP Key。  
 
 公車運輸資料中提供路線站點、路線線型、班表等資料。  
 
@@ -41,7 +38,7 @@ kable(TDX_County_temp, booktabs=T)%>%
 
 ## 公車路線站點資料
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
-回傳結果為公車路線站點的屬性資料，欄位包括（子）路線名稱、（子）路線代碼、方向、站點名稱、站點代碼、站序、經緯度等資料。  
+回傳結果為公車路線站點的屬性資料，欄位包括（子）路線名稱、（子）路線代碼、方向、站點名稱、站點代碼、站序、經緯度等資料。關於路線（RouteUID、SubRouteUID）、站點（StopUID、StationID）之定義請詳見[公共運輸車站站點編碼作業規範](https://www.motc.gov.tw/uploaddowndoc?file=technology/202002111000451.pdf&filedisplay=202002111000451.pdf&flag=doc)與[公車API靜態資料使用注意事項](https://ptxmotc.gitbooks.io/ptx-api-documentation/content/api-zi-liao-shi-yong-zhu-yi-shi-xiang/bus.html)。  
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Bus_StopOfRoute_code, echo=T, eval=F}
@@ -250,12 +247,12 @@ kable(TDX_table, booktabs=T)%>%
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
 **回傳新竹市市區公車班表資料**
 ```{r Bus_Schedule_code1, echo=T, eval=T, message=F, warning=F}
-# 介接新竹市市區公車路線資料
+# 介接新竹市市區公車班表資料
 Hsinchu_bus_schedule=Bus_Schedule(app_id, app_key, "Hsinchu")
 ```
 
 ```{r Bus_Schedule_code2, echo=T, eval=F, message=F, warning=F}
-# 查看THSR_station資料
+# 查看Hsinchu_bus_schedule資料
 Hsinchu_bus_schedule
 ```
 

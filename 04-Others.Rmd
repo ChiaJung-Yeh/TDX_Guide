@@ -1,0 +1,164 @@
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(ggsflabel)
+library(ggspatial)
+library(RColorBrewer)
+library(knitr)
+library(kableExtra)
+library(TDX)
+library(DT)
+library(tmap)
+
+windowsFonts(A=windowsFont("微軟正黑體"))
+tmap_mode("view")
+
+app_id = '8f35504e01eb4a43abfd41c920955690'
+app_key = 'H9MfljykHDeGiifyr2zKJ0XsKFQ'
+```
+
+# **其他 TDX 資料**
+除軌道運輸、公車、自行車之運具資料外，TDX 平臺亦提供諸多實用的資料介接 API，依此本套件中目前另外包含航空班表、觀光景點點位、道路路網線型、地理編碼服務等，未來將依實務需求，持續開發具實用性的函式。  
+
+
+## 航空班表資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+回傳結果包含航空公司代碼、班次號碼、起降機場代碼、出發與到著時間、各星期營運與否等資料。本函式中可提供國內與國際航線之班表資料，僅須設定`domestic=`之參數即可。  
+
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Air_Schedule_code, echo=T, eval=F}
+Air_Schedule(app_id, app_key, domestic=TRUE, out=FALSE)
+```
+
+```{r Air_Schedule_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", rep("`domestic=`", 2), rep("`out=`", 2)),
+                     must=c(rep("必填參數", 4), rep("選填參數", 2)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]", rep("國內或國際航線", 2), rep("匯出資料之路徑", 2)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key", "`TRUE`：回傳國內航空班表", "`FALSE`：回傳國際航空班表", "`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**回傳國內航空資料**
+```{r Air_Schedule_code1, echo=T, eval=T, message=F, warning=F}
+# 介接臺北市公共自行車站點
+air_schedule_domestic=Air_Schedule(app_id, app_key, domestic=TRUE)
+```
+
+```{r Air_Schedule_code2, echo=T, eval=F, message=F, warning=F}
+# 查看air_schedule_domestic資料
+air_schedule_domestic
+```
+
+```{r Air_Schedule_code3, echo=F, eval=T, message=F, warning=F}
+datatable(air_schedule_domestic, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:nrow(air_schedule_domestic)), fontSize='80%')
+```
+
+
+## 觀光景點點位
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+回傳結果包含觀光景點代碼與名稱、地址、經緯度。須注意的是因臺北市政府尚未同意將所有景點資料授權公開於政府資料開放平台，故 TDX 平臺上所蒐集的臺北市觀光景點資料闕漏嚴重。另外，TDX 上所蒐集的觀光景點資料更新頻率較低，可能有些景點已停業或撤銷，卻仍出現在平臺中。綜上所述，請務必斟酌使用 TDX 平臺所提供的觀光景點資料。  
+
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r ScenicSpot_code, echo=T, eval=F}
+ScenicSpot(app_id, app_key, "NewTaipei", dtype="text", out=FALSE)
+```
+
+```{r ScenicSpot_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 3), rep("選填參數", 5)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_County`表格，若欲回傳全臺資料，請填入`ALL`","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**回傳花蓮縣觀光景點資料（地理資料）**
+```{r ScenicSpot_code1, echo=T, eval=T, message=F, warning=F}
+# 介接臺北市公共自行車站點
+Hualien_scenicspot=ScenicSpot(app_id, app_key, county="HualienCounty", dtype="sf")
+```
+
+```{r ScenicSpot_code2, echo=T, eval=F, message=F, warning=F}
+# 查看Hualien_scenicspot資料
+Hualien_scenicspot
+```
+
+```{r ScenicSpot_code3, echo=F, eval=T, message=F, warning=F}
+datatable(Hualien_scenicspot, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:nrow(Hualien_scenicspot)), fontSize='80%')%>%
+  formatRound(c("PositionLon", "PositionLat"), digits=4)
+```
+
+```{r ScenicSpot_code4, echo=T, eval=F, message=F, warning=F}
+# 使用TWspdata套件中的臺灣鄉鎮資料，並擷取花蓮縣資料
+hualien=filter(TWspdata::taiwan_town, COUNTYNAME=="花蓮縣")
+
+# 繪製地圖
+ggplot()+
+  geom_sf(data=hualien)+
+  geom_sf_text_repel(data=hualien, aes(label=TOWNNAME))+
+  geom_sf(data=Hualien_scenicspot)+
+  annotation_scale(location="br")+
+  annotation_north_arrow(location="tl")
+```
+
+```{r ScenicSpot_code5, echo=F, eval=T, message=F, warning=F}
+hualien=filter(TWspdata::taiwan_town, COUNTYNAME=="花蓮縣")
+ggplot()+
+  geom_sf(data=hualien, color="#F0F0F0", fill="#D0D0D0")+
+  geom_sf(data=Hualien_scenicspot, color="#75AADB")+
+  annotation_scale(location="br", text_family="A")+
+  annotation_north_arrow(location="tl", style=north_arrow_orienteering(text_family="A"))+
+  geom_sf_text_repel(data=hualien, aes(label=TOWNNAME), family="A", color="#8E8E8E")+
+  theme_void()
+```
+
+
+:::notice
+<font size="4">**NOTE**</font>  
+以上程式碼中係利用 `annotation_scale()` 與 `annotation_north_arrow()` 函式分別加上比例尺與指北針，此二元素為繪製地圖的基本元件。R 語言中「比例尺與指北針」之加註方法，請參考 [Spatial Analysis with R (Chia Jung, Yeh) 3.7.2 小節 North Arrow and Scale](https://chiajung-yeh.github.io/Spatial-Analysis/data-visualization-with-maps.html#north-arrow-and-scale)  
+
+以上程式碼中另外使用 `TWspdata` 套件中 `taiwan_town`（臺灣鄉鎮市區）的資料，若欲使用之，請先行自 GitHub 下載此套件：  
+```{r TWspData_install, echo=T, eval=F, message=F, warning=F}
+devtools::install_github("ChiaJung-Yeh/TWspData")
+library(TWspData)
+```
+:::
+
+
+## 道路路網線型
+
+
+## 地理編碼服務
