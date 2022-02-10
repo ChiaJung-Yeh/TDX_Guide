@@ -5,6 +5,7 @@ library(sf)
 library(ggplot2)
 library(ggsflabel)
 library(ggspatial)
+library(RColorBrewer)
 library(knitr)
 library(kableExtra)
 library(TDX)
@@ -125,8 +126,13 @@ ggplot()+
 ```{r Bus_StopOfRoute_code8, echo=F, eval=T, message=F, warning=F}
 Hsinchu_bus_station_agg=group_by(Hsinchu_bus_station, RouteName)%>%
   summarise()
+
+coul=brewer.pal(12, "Paired")
+coul=colorRampPalette(coul)(length(unique(Hsinchu_bus_station$RouteName)))
+
 ggplot()+
   geom_sf(data=Hsinchu_bus_station_agg, aes(color=RouteName), show.legend=F)+
+  scale_color_manual(values=coul)+
   geom_sf_text_repel(data=Hsinchu_bus_station_agg, aes(label=RouteName, color=RouteName), show.legend=F, family="A")+
   theme_void()
 ```
@@ -140,11 +146,126 @@ R 語言中「地圖上文字標記」之方法，請參考 [Spatial Analysis wi
 
 
 ## 公車路線線型資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+回傳結果為公車路線的屬性與空間資料，欄位包括（子）路線名稱、（子）路線代碼、方向、空間資料。  
 
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Bus_Shape_code, echo=T, eval=F}
+Bus_Shape(app_id, app_key, county, dtype="text", out=FALSE)
+```
+
+```{r Bus_Shape_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 3), rep("選填參數", 5)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+
+**回傳新竹市市區公車路線資料（地理資料）**
+```{r Bus_Shape_code1, echo=T, eval=T, message=F, warning=F}
+# 介接新竹市市區公車路線資料
+Hsinchu_bus_shape=Bus_Shape(app_id, app_key, "Hsinchu", dtype="sf")
+```
+
+```{r Bus_Shape_code2, echo=T, eval=F, message=F, warning=F}
+# 查看THSR_station資料
+Hsinchu_bus_shape
+```
+
+```{r Bus_Shape_code3, echo=F, eval=T, message=F, warning=F}
+datatable(st_drop_geometry(Hsinchu_bus_shape), options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(Hsinchu_bus_shape)), fontSize='80%')
+```
+
+```{r Bus_Shape_code4, echo=T, eval=F, message=F, warning=F}
+# 地圖繪製
+ggplot()+
+  geom_sf(data=Hsinchu_bus_station, aes(color=RouteName))+
+  geom_sf(data=Hsinchu_bus_shape, aes(color=RouteName))
+```
+
+```{r Bus_Shape_code5, echo=F, eval=T, message=F, warning=F}
+coul=brewer.pal(12, "Paired")
+coul=colorRampPalette(coul)(length(unique(Hsinchu_bus_station$RouteName)))
+
+# 地圖繪製
+ggplot()+
+  geom_sf(data=Hsinchu_bus_station, aes(color=RouteName))+
+  scale_color_manual(values=coul, name="新竹市市區公車路線")+
+  geom_sf(data=Hsinchu_bus_shape, aes(color=RouteName))+
+  theme_void()+
+  theme(legend.title=element_text(family="A", size=12),
+        legend.text=element_text(family="A", size=10),
+        legend.key=element_blank())
+```
+
+:::notice
+<font size="4">**NOTE**</font>  
+R 語言中「地圖疊圖」之方法，請參考 [Spatial Analysis with R (Chia Jung, Yeh) 3.7.1 小節 Map Overlay](https://chiajung-yeh.github.io/Spatial-Analysis/data-visualization-with-maps.html#map-overlay)
+:::
 
 
 
 ## 公車班表資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+在 TDX 平臺中，公車班表的記錄方式有兩種，一為「時刻表格式」，另一為發車「班距格式」。時刻表格式係指依據各路線的發車時間記錄班次，故有確切的時間點資料，而回傳結果之欄位含括（子）路線名稱、（子）路線代碼、方向、站點名稱、各星期是否營運、始發站代碼與站名、始發站發車時間。班距格式的回傳結果雷同，然未有確切的發車時間點，僅包含各時段發車的班距資料，如「07:00 至 09:00 每 5 分鐘一班公車」。時刻表格式為大部分公車資料的記錄方式，惟部分縣市因某些時段為彈性發車，故採班距與時刻表格式混合使用，尤以臺北市的公車班表資料紀錄方式較為複雜。在本函式中逕將時刻表與班距格式合併處理，使用者無需再撰寫額外程式碼進行分類。  
 
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Bus_Schedule_code, echo=T, eval=F}
+Bus_Schedule(app_id, app_key, county, out=FALSE)
+```
 
+```{r Bus_Schedule_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`out=`", 2)),
+                     must=c(rep("必填參數", 3), rep("選填參數", 2)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼",  rep("匯出資料之路徑", 2)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID", "[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`", "`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**回傳新竹市市區公車班表資料**
+```{r Bus_Schedule_code1, echo=T, eval=T, message=F, warning=F}
+# 介接新竹市市區公車路線資料
+Hsinchu_bus_schedule=Bus_Schedule(app_id, app_key, "Hsinchu")
+```
+
+```{r Bus_Schedule_code2, echo=T, eval=F, message=F, warning=F}
+# 查看THSR_station資料
+Hsinchu_bus_schedule
+```
+
+```{r Bus_Schedule_code3, echo=F, eval=T, message=F, warning=F}
+datatable(Hsinchu_bus_schedule, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(Hsinchu_bus_schedule)), fontSize='80%')
+```
 
