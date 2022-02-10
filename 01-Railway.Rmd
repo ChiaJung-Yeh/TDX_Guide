@@ -84,7 +84,7 @@ datatable(THSR_station, options=list(pageLength=5, scrollX=T,
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:8), fontSize='80%')%>%
+  formatStyle(columns=c(1:ncol(THSR_station)), fontSize='80%')%>%
   formatRound(c("PositionLon", "PositionLat"), digits=4)
 ```
 
@@ -107,7 +107,7 @@ datatable(TRTC_station, options=list(pageLength=5, scrollX=T,
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:8), fontSize='80%')%>%
+  formatStyle(columns=c(1:ncol(TRTC_station)), fontSize='80%')%>%
   formatRound(c("PositionLon", "PositionLat"), digits=4)
 ```
 
@@ -169,7 +169,7 @@ datatable(TRA_stationofline, options=list(pageLength=5, scrollX=T,
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:8), fontSize='80%')
+  formatStyle(columns=c(1:ncol(TRA_stationofline)), fontSize='80%')
 ```
 
 
@@ -231,7 +231,7 @@ datatable(TRTC_railshape, options=list(pageLength=6, scrollX=T,
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:8), fontSize='80%')
+  formatStyle(columns=c(1:ncol(TRTC_railshape)), fontSize='80%')
 ```
 
 ```{r Rail_Shape_code6, echo=T, eval=F, message=F, warning=F}
@@ -244,7 +244,6 @@ ggplot()+
 ```
 
 ```{r Rail_Shape_code7, echo=F, eval=T, message=F, warning=F}
-# TRTC_railshape繪圖
 ggplot()+
   geom_sf(data=TRTC_railshape, aes(color=LineName), show.legend="line", size=1)+
   scale_color_manual(values=c("淡水信義線Tamsui-Xinyi Line"="#d90023", "板南線Bannan Line"="#0a59ae", "松山新店線Songshan-Xindian Line"="#107547",
@@ -257,7 +256,7 @@ ggplot()+
 
 :::notice
 <font size="4">**NOTE**</font>  
-R 語言「依規則繪製地圖」之方法，請參考 [Spatial Analysis with R (Chia Jung, Yeh) 3.5 章節 Categorized Symbol Map](https://chiajung-yeh.github.io/Spatial-Analysis/data-visualization-with-maps.html#categorized-symbol-map)
+R 語言「依類別變數繪製地圖」之方法，請參考 [Spatial Analysis with R (Chia Jung, Yeh) 3.5 章節 Categorized Symbol Map](https://chiajung-yeh.github.io/Spatial-Analysis/data-visualization-with-maps.html#categorized-symbol-map)
 :::
 
 
@@ -308,7 +307,7 @@ datatable(TRA_timetable[1:300,], options=list(pageLength=5, scrollX=T,
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:8), fontSize='80%')
+  formatStyle(columns=c(1:ncol(TRA_timetable)), fontSize='80%')
 ```
 
 <br></br>

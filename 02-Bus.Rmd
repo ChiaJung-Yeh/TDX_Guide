@@ -64,6 +64,79 @@ kable(TDX_table, booktabs=T)%>%
 ```
 
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**1. 回傳宜蘭縣市區公車路線站點資料（純文字）**
+```{r Bus_StopOfRoute_code1, echo=T, eval=T, message=F, warning=F}
+# 介接宜蘭公車路線站點
+Yilan_bus_station=Bus_StopOfRoute(app_id, app_key, "YilanCounty")
+```
+
+```{r Bus_StopOfRoute_code2, echo=T, eval=F, message=F, warning=F}
+# 查看Yilan_bus_station資料
+Yilan_bus_station
+```
+
+```{r Bus_StopOfRoute_code3, echo=F, eval=T, message=F, warning=F}
+# 介接高鐵站點資料
+datatable(Yilan_bus_station, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:8), fontSize='80%')%>%
+  formatRound(c("PositionLon", "PositionLat"), digits=4)
+```
+
+<br></br>
+**2. 回傳新竹市市區公車路線站點資料（地理資料）**
+```{r Rail_Station_code4, echo=T, eval=T, message=F, warning=F}
+# 介接新竹市公車路線站點資料，並匯出地理資料
+Hsinchu_bus_station=Bus_StopOfRoute(app_id, app_key, "Hsinchu", dtype="sf", out="./Hsinchu_bus_station.shp")
+```
+
+```{r Bus_StopOfRoute_code5, echo=T, eval=F, message=F, warning=F}
+# 查看Hsinchu_bus_station資料
+Hsinchu_bus_station
+```
+
+```{r Bus_StopOfRoute_code6, echo=F, eval=T, message=F, warning=F}
+datatable(Hsinchu_bus_station, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(Hsinchu_bus_station)), fontSize='80%')%>%
+  formatRound(c("PositionLon", "PositionLat"), digits=4)
+```
+
+
+```{r Bus_StopOfRoute_code7, echo=T, eval=F, message=F, warning=F}
+# Hsinchu_bus_station依路線合併所有點資料
+Hsinchu_bus_station_agg=group_by(Hsinchu_bus_station, RouteName)%>%
+  summarise()
+
+# 地圖繪製
+ggplot()+
+  geom_sf(data=Hsinchu_bus_station_agg, aes(color=RouteName))+
+  geom_sf_text_repel(data=Hsinchu_bus_station_agg, aes(label=RouteName, color=RouteName))
+```
+
+```{r Bus_StopOfRoute_code8, echo=F, eval=T, message=F, warning=F}
+Hsinchu_bus_station_agg=group_by(Hsinchu_bus_station, RouteName)%>%
+  summarise()
+ggplot()+
+  geom_sf(data=Hsinchu_bus_station_agg, aes(color=RouteName), show.legend=F)+
+  geom_sf_text_repel(data=Hsinchu_bus_station_agg, aes(label=RouteName, color=RouteName), show.legend=F, family="A")+
+  theme_void()
+```
+
+:::notice
+<font size="4">**NOTE**</font>  
+以上程式碼中先行利用 `group_by() %>% summarise()` 合併地理資料，可參考 [Spatial Analysis with R (Chia Jung, Yeh) 5.2 章節 Attribute Aggregation](https://chiajung-yeh.github.io/Spatial-Analysis/spatial-operations.html#attribute-aggregation)  
+R 語言中「地圖上文字標記」之方法，請參考 [Spatial Analysis with R (Chia Jung, Yeh) 3.3 章節 Labels on Map](https://chiajung-yeh.github.io/Spatial-Analysis/data-visualization-with-maps.html#labels-on-map)
+:::
+
 
 
 ## 公車路線線型資料
