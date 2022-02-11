@@ -15,8 +15,8 @@ library(tmap)
 windowsFonts(A=windowsFont("微軟正黑體"))
 tmap_mode("view")
 
-app_id = '8f35504e01eb4a43abfd41c920955690'
-app_key = 'H9MfljykHDeGiifyr2zKJ0XsKFQ'
+app_id=read.table("./key.txt", sep=",")[1,2]
+app_key=read.table("./key.txt", sep=",")[2,2]
 ```
 
 # **其他 TDX 資料**

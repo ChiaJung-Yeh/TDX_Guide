@@ -14,6 +14,9 @@ library(tmap)
 
 windowsFonts(A=windowsFont("微軟正黑體"))
 tmap_mode("view")
+
+app_id=read.table("./key.txt", sep=",")[1,2]
+app_key=read.table("./key.txt", sep=",")[2,2]
 ```
 
 # **自行車運輸資料**

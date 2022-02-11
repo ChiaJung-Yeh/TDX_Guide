@@ -11,6 +11,9 @@ library(TDX)
 library(DT)
 
 windowsFonts(A=windowsFont("微軟正黑體"))
+
+app_id=read.table("./key.txt", sep=",")[1,2]
+app_key=read.table("./key.txt", sep=",")[2,2]
 ```
 
 # **軌道運輸資料**

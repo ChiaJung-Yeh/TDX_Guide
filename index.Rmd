@@ -69,7 +69,7 @@ library(TDX)
 TDX 套件中提供介接公車（公路客運、市區客運）、軌道（臺鐵、高鐵、捷運、輕軌）、公共自行車、航空等運具的資料，資料類型含括站點、班表、路線線型。除了運具相關資料外，本套件亦提供介接觀光景點、道路路網等資料，與地理編碼服務。目前套件擁有的功能，及其所對應的函式綜整如下表。  
 
 ```{r TDX_table, echo=F, eval=T}
-TDX_table=data.frame(data=c(rep("軌道", 4), rep("公車", 3), rep("自行車", 2), "航空", "觀光景點", "道路路網", "地理編碼"), type=c("軌道站點","軌道路線站點","軌道路線線型","軌道班表","公車站點","公車路線線型","公車班表","公共自行車站點","自行車路網","航空班表","觀光景點點位","道路路網線型","地理編碼服務"), class=c(rep("點", 2),"線","文字","點","線","文字","點","線","文字","點","線","點"), functiona=c("[`Rail_Shape()`](#軌道站點資料)","`Rail_Station()`","`Rail_StationOfLine()`","`Rail_TimeTable()`","`Bus_StopOfRoute()`","`Bus_Shape()`","`Bus_Schedule()`","`Bike_Station()`","`Bike_Shape()`","`
+TDX_table=data.frame(data=c(rep("軌道", 4), rep("公車", 3), rep("自行車", 2), "航空", "觀光景點", "道路路網", "地理編碼"), type=c("軌道站點","軌道路線站點","軌道路線線型","軌道班表","公車站點","公車路線線型","公車班表","公共自行車站點","自行車路網","航空班表","觀光景點點位","道路路網線型","地理編碼服務"), class=c(rep("點", 2),"線","文字","點","線","文字","點","線","文字","點","線","點"), functiona=c("[`Rail_Shape()`](#軌道站點資料)", "[`Rail_Station()`","`Rail_StationOfLine()`","`Rail_TimeTable()`","`Bus_StopOfRoute()`","`Bus_Shape()`","`Bus_Schedule()`","`Bike_Station()`","`Bike_Shape()`","`
 Air_Schedule()`","`ScenicSpot()`","`Road_Network()`","`Geocoding()`"))
 
 colnames(TDX_table)=c("資料","資料細目","資料型態","函式")
