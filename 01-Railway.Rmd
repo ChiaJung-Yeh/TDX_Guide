@@ -328,7 +328,7 @@ datatable(KRTC_timetable, options=list(pageLength=5, scrollX=T,
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:8), fontSize='80%')
+  formatStyle(columns=c(1:ncol(KRTC_timetable)), fontSize='80%')
 ```
 
 
