@@ -20,7 +20,7 @@ app_key=read.table("./key.txt", sep=",")[2,2]
 ```
 
 # **自行車運輸資料**
-自行車運輸資料包含公共自行車站點與自行車路網，擷取兩資料皆須設定縣市之參數（county=），請參照`TDX_County`表格。公共自行車站點資料的業管機關多為各級縣市政府的交通局（處），少部分地方政府係分別由觀光處（金門縣）、城鄉發展處（屏東縣）、工務處（苗栗縣）管轄。自行車路網乃線型資料，所蒐集的路網為經過數化的資料，並不代表該縣市僅有資料中的自行車路網，故使用或分析時必須特別注意。而自行車路網之蒐集目前以臺北市的資料最為完整。  
+自行車運輸資料包含公共自行車站點與自行車路網，擷取兩資料皆須設定縣市之參數（`county=`），請參照`TDX_County`表格。公共自行車站點資料的業管機關多為各級縣市政府的交通局（處），少部分地方政府係分別由觀光處（金門縣）、城鄉發展處（屏東縣）、工務處（苗栗縣）管轄。自行車路網乃線型資料，所蒐集的路網為經過數化的資料，並不代表該縣市僅有資料中的自行車路網，故使用或分析時必須特別注意。而自行車路網之蒐集目前以臺北市的資料最為完整。  
 
 自行車資料之下載皆須利用 API 金鑰，故函式中須輸入`app_id=`與`app_key=`兩參數，亦即在 [1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID 與 APP Key。  
 
@@ -31,7 +31,7 @@ app_key=read.table("./key.txt", sep=",")[2,2]
 此函式的回傳結果包含站點代碼、站點名稱、經緯度、站點車樁數等。大部分縣市的公共自行車皆為 YouBike 系統，並可細分為 YouBike 1.0 與 YouBike 2.0，故若為 YouBike 系統之縣市，另外記錄一欄位為「服務類型」（ServiceType），其中標記為 YouBike1 者，即表示 YouBike 1.0；反之標記為 YouBike2 者，即表示 YouBike 2.0。目前全臺灣各縣市的公共自行車系統名稱整理如下表。  
 
 ```{r TDX_Bike_table, echo=F, eval=T}
-TDX_bike=cbind(TDX_County[-23,], bike=c("YouBike 1.0、YouBike 2.0", "YouBike 1.0、YouBike 2.0", "YouBike 1.0", "YouBike 1.0、YouBike 2.0 （ibike）", "T-Bike", "YouBike 2.0", "-", "YouBike 1.0", "-", "YouBike 1.0", "- （參見備註）", "-", "-", "-", "YouBike 2.0", "Pbike", "-", "-", "-", "K Bike", "-", "-"))
+TDX_bike=cbind(TDX_County[-23,], bike=c("YouBike 1.0、YouBike 2.0", "YouBike 1.0、YouBike 2.0", "YouBike 1.0", "YouBike 1.0、YouBike 2.0 （ibike）", "T-Bike", "YouBike 2.0", "--", "YouBike 1.0", "--", "YouBike 1.0", "-- （參見備註）", "--", "--", "--", "YouBike 2.0", "Pbike", "--", "--", "--", "K Bike", "--", "--"))
 
 colnames(TDX_bike)=c("縣市名稱","縣市代碼","公共自行車系統")
 

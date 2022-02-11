@@ -159,6 +159,110 @@ library(TWspData)
 
 
 ## 道路路網線型
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+TDX 平臺中提供道路路網線型資料，包含國道、省道快速公路、省道一般公路等三種類型之公路，請注意目前平臺中並未提供縣道以下等級（縣道、市道、鄉道、市區道路）之道路線型。本函式中需輸入縣市名稱與道路等級，回傳結果包含道路等級、道路代碼、道路名稱與空間資料等。另外本函式亦可直接擷取全臺灣、所有道路等級之資料，僅需在相對應的參數中填入「`ALL`」即可，詳見以下函式參數。  
+
+道路路網線型為 GIS-T 上的資料，目前資料介接毋須使用金鑰，故函式中不須設定 APP ID 與 APP Key。  
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Road_Network_code, echo=T, eval=F}
+Road_Network(county, roadclass, dtype="text", out=FALSE)
+```
+
+```{r Road_Network_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`county=`", rep("`roadclass=`", 4), rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 5), rep("選填參數", 5)),
+                     func=c("縣市代碼", rep("道路等級代碼", 4), rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("請參照`TDX_County`表格，若欲回傳全臺資料，請填入`ALL`", "`0`：國道", "`1`：省道快速公路", "`3`：省道一般公路", "`ALL`：所有道路等級", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**1. 回傳宜蘭縣省道一般公路資料（地理資料）**
+```{r Road_Network_code1, echo=T, eval=T, message=F, warning=F}
+# 介接宜蘭縣省道
+Yilan_road=Road_Network(county="YilanCounty", roadclass=3, dtype="sf")
+```
+
+```{r Road_Network_code2, echo=T, eval=F, message=F, warning=F}
+# 繪製地圖
+ggplot()+
+  geom_sf(data=Yilan_road, aes(color=RoadName))
+```
+
+```{r Road_Network_code3, echo=F, eval=T, message=F, warning=F}
+ggplot()+
+  geom_sf(data=Yilan_road, aes(color=RoadName))+
+  scale_color_brewer(palette="Paired", name="")+
+  theme_void()+
+  theme(legend.title=element_text(family="A", size=12),
+        legend.text=element_text(family="A", size=10),
+        legend.key=element_blank())
+```
+
+<br></br>
+**2. 回傳臺中市所有公路資料（地理資料）**
+```{r Road_Network_code4, echo=T, eval=F, message=F, warning=F}
+# 介接臺中市所有公路
+Taichung_road=Road_Network(county="Taichung", roadclass="ALL", dtype="sf")
+
+# 擷取臺中市行政區資料（且刪除和平區）
+taichung_city=filter(TWspdata::taiwan_town, COUNTYNAME=="臺中市", TOWNNAME!="和平區")
+
+# 轉換座標系統
+taichung_city=st_transform(taichung_city, crs=4326)
+
+# 取臺中道路與臺中市行政區（不包括和平區）之交集
+Taichung_road=st_intersection(Taichung_road, taichung_city$geometry)
+
+# 繪製地圖
+ggplot()+
+  geom_sf(data=taichung_city, color="#F0F0F0", fill="#D0D0D0")+
+  geom_sf(data=Taichung_road, aes(color=RoadClassName))
+```
+
+```{r Road_Network_code5, echo=F, eval=T, message=F, warning=F}
+Taichung_road=Road_Network(county="Taichung", roadclass="ALL", dtype="sf")
+Taichung_road$RoadClassName[Taichung_road$RoadClassName=="省道一般道路"]="省道一般公路"
+Taichung_road$RoadClassName=factor(Taichung_road$RoadClassName, c("國道","省道快速公路","省道一般公路"))
+
+taichung_city=filter(TWspdata::taiwan_town, COUNTYNAME=="臺中市", TOWNNAME!="和平區")
+taichung_city=st_transform(taichung_city, crs=4326)
+
+Taichung_road=st_intersection(Taichung_road, taichung_city$geometry)
+
+ggplot()+
+  geom_sf(data=taichung_city, color="#F0F0F0", fill="#D0D0D0")+
+  geom_sf(data=Taichung_road, aes(color=RoadClassName), show.legend="line")+
+  scale_color_manual(values=c("國道"="#00923F", "省道快速公路"="#9B0D15", "省道一般公路"="#003876"), name="道路等級")+
+  theme_void()+
+  theme(legend.title=element_text(family="A", size=12),
+        legend.text=element_text(family="A", size=10),
+        legend.key=element_blank())
+```
+
+:::notice
+<font size="4">**NOTE**</font>  
+以上程式碼中係利用 `filter()` 函式擷取臺中市鄉鎮市區資料，並刪除「和平區」此一行政區。`filter()` 為 `dplyr` 套件中相當常用的函式。R 語言中「篩選地理資料」之方法，請參考 [資料科學與R語言 (曾意儒 Yi-Ju Tseng) 7.3.2 小節 filter()](https://yijutseng.github.io/DataScienceRBook/eda.html)  
+
+在地理資料處理中，很常需要將兩地理資料取交集，可利用 `sf` 套件中的 `st_intersection()` 函式完成之。R語言中「地理資料交集」之方法，請參見[Spatial Analysis with R (Chia Jung, Yeh) 5.9 章節 Clipping](https://chiajung-yeh.github.io/Spatial-Analysis/spatial-operations.html#clipping)  
+
+另外，若欲執行交集，請確保交集的兩份地理資料必須擁有相同的座標參考系統（CRS），若座標參考系統不同，則請先行轉換至統一的格式。座標參考系統之概念詳見[Spatial Analysis with R (Chia Jung, Yeh) 2.4 章節 Coordinate Reference System (CRS)](https://chiajung-yeh.github.io/Spatial-Analysis/basic-knowledge-on-gis.html#coordinate-reference-system-crs)，轉換座標參考系統可利用 `sf` 套件中的 `st_transform()` 函式完成之，請參考[Spatial Analysis with R (Chia Jung, Yeh) 4.5 章節 Reproject Geographic Data](https://chiajung-yeh.github.io/Spatial-Analysis/geographic-data.html#reproject-geographic-data)。  
+:::
 
 
 ## 地理編碼服務
+
+
+
+
+
+

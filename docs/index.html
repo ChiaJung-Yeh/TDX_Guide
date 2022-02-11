@@ -209,7 +209,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="tdx-簡介" class="section level1" number="1">
 <h1><span class="header-section-number">Chapter 1</span> <strong>TDX 簡介</strong></h1>
-<p>「運輸資料流通服務平臺」（Transport Data eXchange, TDX）係透過 Open API 建立運輸領域開放資料服務，並將所有運輸資料平臺整合為一，以利使用者自單一介面尋找各類型運輸資料。平臺上主要可分為動態資料與靜態資料，靜態資料係指更新週期較長的資料，如時刻表、線型等，而動態資料則是指短時間內定時更新的即時資料，諸如運具即時位置、即時運具剩餘數量等。「運輸資料流通服務平臺」可細分為五個平臺，包括：公共運輸整合資訊流通服務平臺（PTX）、即時路況與停車資訊流通平臺、交通部數據匯流平臺、交通資訊基礎路段編碼系統、交通網路地理資訊倉儲系統（GIS-T），架構如下圖所示，以下分別簡介各平臺的主要用途。</p>
+<p><a href="https://tdx.transportdata.tw/">運輸資料流通服務平臺（Transport Data eXchange, TDX）</a>係透過 Open API 建立運輸領域開放資料服務，並將所有運輸資料平臺整合為一，以利使用者自單一介面尋找各類型運輸資料。平臺上主要可分為動態資料與靜態資料，靜態資料係指更新週期較長的資料，如時刻表、線型等，而動態資料則是指短時間內定時更新的即時資料，諸如運具即時位置、即時運具剩餘數量等。「運輸資料流通服務平臺」可細分為五個平臺，包括：公共運輸整合資訊流通服務平臺（PTX）、即時路況與停車資訊流通平臺、交通部數據匯流平臺、交通資訊基礎路段編碼系統、交通網路地理資訊倉儲系統（GIS-T），架構如下圖所示，以下分別簡介各平臺的主要用途。</p>
 <p><img src="figure/TDX_outline.png" width="80%" style="display: block; margin: auto;" /></p>
 <div id="公共運輸整合資訊流通服務平臺" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> 公共運輸整合資訊流通服務平臺</h2>
@@ -235,7 +235,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">1.6</span> R 語言資料介接套件</h2>
 <div id="套件下載" class="section level3" number="1.6.1">
 <h3><span class="header-section-number">1.6.1</span> 套件下載</h3>
-<p>為方便 TDX 資料之使用，透過 R 語言開發介接資料之套件，以期使用者能快速取得需要的運輸資料，並進行後續的加值應用與分析。本套件提供公共運輸基礎資料、地理編碼服務、路網地理資料服務等，並支援轉換地理資料的格式，且可直接透過函式之設定將檔案逕輸出至指定的資料夾，降低介接資料的繁瑣程序。</p>
+<p>為方便 TDX 資料之使用，透過 R 語言開發介接資料之套件，以期使用者能快速取得需要的運輸資料，並進行後續的加值應用與分析。本套件提供公共運輸基礎資料、地理編碼服務、路網地理資料服務等，並支援轉換地理資料的格式，且可直接透過函式之設定將檔案逕輸出至指定的資料夾，降低介接資料的繁瑣程序。本套件主要以 TDX 平臺中公共運輸整合資訊流通服務平臺（PTX）與交通網路地理資訊倉儲系統（GIS-T）的 API 服務為主。</p>
 <p>若欲使用介接運輸資料的套件，請在 R 軟體中先行安裝與載入套件，程式碼撰寫如下：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安裝devtools套件</span></span>
 <span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(devtools)</span>
@@ -256,6 +256,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 資料細目
 </th>
 <th style="text-align:left;font-weight: bold;color: white !important;background-color: #8E8E8E !important;">
+資料來源
+</th>
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: #8E8E8E !important;">
 資料型態
 </th>
 <th style="text-align:left;font-weight: bold;color: white !important;background-color: #8E8E8E !important;">
@@ -270,6 +273,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </td>
 <td style="text-align:left;">
 軌道站點
+</td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="11">
+PTX
 </td>
 <td style="text-align:left;vertical-align: middle !important;" rowspan="2">
 點
@@ -319,7 +325,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 點
 </td>
 <td style="text-align:left;">
-<a href="#公車站點資料"><code>Bus_StopOfRoute()</code></a>
+<a href="公車運輸資料.html#公車路線站點資料"><code>Bus_StopOfRoute()</code></a>
 </td>
 </tr>
 <tr>
@@ -403,6 +409,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </td>
 <td style="text-align:left;">
 道路路網線型
+</td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+GIS-T
 </td>
 <td style="text-align:left;">
 線
