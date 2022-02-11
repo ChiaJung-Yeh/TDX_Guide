@@ -260,6 +260,47 @@ ggplot()+
 
 
 ## 地理編碼服務
+地理編碼（Geocode）是指將地址或地標名稱轉換為經緯度的過程，最常見的軟體即是[Google地圖](https://www.google.com.tw/maps/)，輸入地址後，在打點座標處點選右鍵，即可複製該位置的經緯度。地理編碼看似簡單的查詢操作，然而若是要進行大量的地理編碼就不是容易的事情，大部分的軟體都需要收費或是有回傳結果的限制，故使用上須格外注意批次處理的數據量。關於地理編碼的詳細概念與各種服務平臺之簡要操作，[詳見此](https://chiajung-yeh.github.io/R-Code-Sharing/TDX/TDX.html)。  
+
+本函式乃利用 GIS-T 所提供的 API 進行地理編碼，目前該服務為免費，且無批次數據量之限制，對比其他需要收費或有批次限制的平臺，**_GIS-T 非常佛心！！_**務必珍惜使用此資源。  
+
+本函式僅需輸入地址即可自動回傳經緯度資料，必須特別注意的是，回傳欄位包括：AddressOriginal（原始輸入的地址資料）、AddressNew（GIS-T 平臺比對後的地理資料，通常地址會更加完整）、Geometry（經緯度資料）。  
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Geocoding_code, echo=T, eval=F}
+Geocoding(address, dtype="text", out=FALSE)
+```
+
+```{r Geocoding_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`address=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c("必填參數", rep("選填參數", 5)),
+                     func=c("'地址資料", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("'須為向量格式\\\n若「地址」位於「資料」中的其一欄位，請輸入`資料$地址`", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**地理編碼範例**
+```{r Geocoding_code1, echo=T, eval=T, message=F}
+# 將地址資料儲存於向量中
+campus=c("臺北市中正區忠孝西路一段118號", "新竹市東區大學路1001號", "新竹縣竹北市六家五路一段1號")
+
+# 將地址向量address置入Geocoding()函式中
+campus_geocode=Geocoding(campus)
+
+# 查看campus_geocode資料
+campus_geocode
+```
+
+
 
 
 
