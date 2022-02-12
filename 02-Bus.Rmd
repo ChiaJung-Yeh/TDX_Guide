@@ -1,4 +1,4 @@
-```{r setup1, include=FALSE}
+```{r setup2, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(sf)
@@ -24,7 +24,7 @@ app_key=read.table("./key.txt", sep=",")[2,2]
 TDX_County
 ```
 
-```{r TDX_Railway_table, echo=F, eval=T}
+```{r TDX_County_table, echo=F, eval=T}
 TDX_County_temp=TDX_County
 colnames(TDX_County_temp)=c("縣市名稱","縣市代碼")
 kable(TDX_County_temp, booktabs=T)%>%
@@ -90,7 +90,7 @@ datatable(Yilan_bus_station, options=list(pageLength=5, scrollX=T,
 
 <br></br>
 **2. 回傳新竹市市區公車路線站點資料（地理資料）**
-```{r Rail_Station_code4, echo=T, eval=T, message=F, warning=F}
+```{r Bus_StopOfRoute_code4, echo=T, eval=T, message=F, warning=F}
 # 介接新竹市公車路線站點資料，並匯出地理資料
 Hsinchu_bus_station=Bus_StopOfRoute(app_id, app_key, "Hsinchu", dtype="sf", out="./Hsinchu_bus_station.shp")
 ```
