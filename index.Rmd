@@ -51,8 +51,8 @@ include_graphics("./figure/TDX_outline.png")
 
 ## R 語言資料介接套件
 
-:::check
-<font size="4">**注意**</font>  
+:::notice
+<font size="4">**NOTE**</font>  
 本套件更新於2022-02-10，請確保 TDX 套件為最新版本！
 :::
 
