@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>R TDX 運輸資料介接指南</title>
   <meta name="description" content="運輸資料介接" />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
   <meta property="og:title" content="R TDX 運輸資料介接指南" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="葉家榮 國立陽明交通大學 運輸與物流管理學系 (NYCU TLM)" />
 
 
-<meta name="date" content="2022-02-17" />
+<meta name="date" content="2022-02-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,7 +34,8 @@
 
 <link rel="next" href="軌道運輸資料.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -42,7 +43,6 @@
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
 
 
 
@@ -154,6 +154,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="1.6.1" data-path="index.html"><a href="index.html#套件下載"><i class="fa fa-check"></i><b>1.6.1</b> 套件下載</a></li>
 <li class="chapter" data-level="1.6.2" data-path="index.html"><a href="index.html#api-金鑰申請"><i class="fa fa-check"></i><b>1.6.2</b> API 金鑰申請</a></li>
+<li class="chapter" data-level="1.6.3" data-path="index.html"><a href="index.html#套件版本目錄"><i class="fa fa-check"></i><b>1.6.3</b> 套件版本目錄</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html"><i class="fa fa-check"></i><b>2</b> <strong>軌道運輸資料</strong></a>
@@ -205,7 +206,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1 class="title">R TDX 運輸資料介接指南</h1>
 <p class="author"><em>葉家榮<br />
 國立陽明交通大學 運輸與物流管理學系 (NYCU TLM)</em></p>
-<p class="date" style="margin-top: 1.5em;"><em>2022-02-17</em></p>
+<p class="date"><em>2022-02-28</em></p>
 </div>
 <div id="tdx-簡介" class="section level1" number="1">
 <h1><span class="header-section-number">Chapter 1</span> <strong>TDX 簡介</strong></h1>
@@ -235,7 +236,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">1.6</span> R 語言資料介接套件</h2>
 <div class="notice">
 <p><font size="4"><strong>NOTE</strong></font><br />
-本套件更新於2022-02-10，請確保 TDX 套件為最新版本！</p>
+本套件更新於2022-02-28，請確保 TDX 套件為最新版本！</p>
 </div>
 <div id="套件下載" class="section level3" number="1.6.1">
 <h3><span class="header-section-number">1.6.1</span> 套件下載</h3>
@@ -447,6 +448,70 @@ GIS-T
 <p><img src="figure/TDX_member.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>會員帳號啟用後，請在<a href="https://ptx.transportdata.tw/PTX/APIMember/ApplyGeneral">會員專區</a>（點選網頁右上角會員專區 &gt;&gt; API 服務 &gt;&gt; API 金鑰申請）頁面申請 API 金鑰，PTX 平臺管理小組將於三個工作日核定審核結果，並寄出授權信（如下圖所示）通知申請者。授權信件中包含一 Application ID (APP ID) 及 Application Key (APP Key)，請務必保留此金鑰，後續即可在套件中使用 API 服務。</p>
 <p><img src="figure/TDX_key.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="套件版本目錄" class="section level3" number="1.6.3">
+<h3><span class="header-section-number">1.6.3</span> 套件版本目錄</h3>
+<table class="table table-striped table-hover" style="font-size: 14px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: #8E8E8E !important;">
+套件版本
+</th>
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: #8E8E8E !important;">
+日期
+</th>
+<th style="text-align:left;font-weight: bold;color: white !important;background-color: #8E8E8E !important;">
+新增/修正功能
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+1.0
+</td>
+<td style="text-align:left;">
+2022-02-08
+</td>
+<td style="text-align:left;">
+公車、軌道、自行車之公共運輸介接函式
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+1.1
+</td>
+<td style="text-align:left;">
+2022-02-10
+</td>
+<td style="text-align:left;">
+加入地理編碼服務
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+1.2
+</td>
+<td style="text-align:left;">
+2022-02-14
+</td>
+<td style="text-align:left;">
+加入航空班表、觀光景點、道路路網介接函式
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+1.2.1
+</td>
+<td style="text-align:left;">
+2022-02-28
+</td>
+<td style="text-align:left;">
+修正地理編碼函式錯誤
+</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
@@ -461,7 +526,6 @@ GIS-T
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -501,6 +565,10 @@ gitbook.start({
 "text": null
 },
 "download": ["series.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }

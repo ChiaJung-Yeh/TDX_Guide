@@ -53,7 +53,7 @@ include_graphics("./figure/TDX_outline.png")
 
 :::notice
 <font size="4">**NOTE**</font>  
-本套件更新於2022-02-10，請確保 TDX 套件為最新版本！
+本套件更新於2022-02-28，請確保 TDX 套件為最新版本！
 :::
 
 ### 套件下載
@@ -98,6 +98,21 @@ include_graphics("./figure/TDX_member.png")
 
 ```{r TDX_key, echo=FALSE, out.width="100%", fig.align="center"}
 include_graphics("./figure/TDX_key.png")
+```
+
+
+### 套件版本目錄
+```{r TDX_version, echo=F, eval=T}
+version_table=data.frame(version=c("1.0","1.1","1.2","1.2.1"),
+                         date=c("2022-02-08","2022-02-10","2022-02-14","2022-02-28"),
+                     update=c("公車、軌道、自行車之公共運輸介接函式", "加入地理編碼服務", "加入航空班表、觀光景點、道路路網介接函式", "修正地理編碼函式錯誤"))
+
+colnames(version_table)=c("套件版本","日期","新增/修正功能")
+
+kable(version_table, booktabs=T)%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")
 ```
 
 
