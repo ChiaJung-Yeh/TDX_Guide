@@ -53,7 +53,7 @@ include_graphics("./figure/TDX_outline.png")
 
 :::notice
 <font size="4">**NOTE**</font>  
-本套件更新於2022-02-28，請確保 TDX 套件為最新版本！
+本套件更新於2022-03-05，請確保 TDX 套件為最新版本！
 :::
 
 ### 套件下載
