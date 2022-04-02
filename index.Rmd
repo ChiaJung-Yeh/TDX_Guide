@@ -51,6 +51,10 @@ include_graphics("./figure/TDX_outline.png")
 
 ## R 語言資料介接套件
 
+```{r TDX_icon, echo=F, eval=T, out.width="30%", fig.align="center"}
+include_graphics("./figure/TDX_icon.png")
+```
+
 :::notice
 <font size="4">**NOTE**</font>  
 本套件更新於2022-03-24，套件版本為1.3.1，請確保 TDX 套件為最新版本！
