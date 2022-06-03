@@ -38,3 +38,5 @@ rsconnect/
 .Rdata
 .DS_Store
 key.txt
+key_old.txt
+access_token.txt

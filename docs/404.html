@@ -23,7 +23,7 @@
 <meta name="author" content="葉家榮 國立陽明交通大學 運輸與物流管理學系 (NYCU TLM)" />
 
 
-<meta name="date" content="2022-04-02" />
+<meta name="date" content="2022-06-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -54,8 +54,6 @@
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
-<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
-<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -153,7 +151,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="1.6.1" data-path="index.html"><a href="index.html#套件下載"><i class="fa fa-check"></i><b>1.6.1</b> 套件下載<span></span></a></li>
 <li class="chapter" data-level="1.6.2" data-path="index.html"><a href="index.html#api-金鑰申請"><i class="fa fa-check"></i><b>1.6.2</b> API 金鑰申請<span></span></a></li>
-<li class="chapter" data-level="1.6.3" data-path="index.html"><a href="index.html#套件版本目錄"><i class="fa fa-check"></i><b>1.6.3</b> 套件版本目錄<span></span></a></li>
+<li class="chapter" data-level="1.6.3" data-path="index.html"><a href="index.html#access-token-取得方式"><i class="fa fa-check"></i><b>1.6.3</b> Access Token 取得方式<span></span></a></li>
+<li class="chapter" data-level="1.6.4" data-path="index.html"><a href="index.html#套件版本目錄"><i class="fa fa-check"></i><b>1.6.4</b> 套件版本目錄<span></span></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html"><i class="fa fa-check"></i><b>2</b> <strong>軌道運輸資料</strong><span></span></a>
@@ -162,6 +161,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.2" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html#軌道路線站點資料"><i class="fa fa-check"></i><b>2.2</b> 軌道路線站點資料<span></span></a></li>
 <li class="chapter" data-level="2.3" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html#軌道路線線型資料"><i class="fa fa-check"></i><b>2.3</b> 軌道路線線型資料<span></span></a></li>
 <li class="chapter" data-level="2.4" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html#軌道班表資料"><i class="fa fa-check"></i><b>2.4</b> 軌道班表資料<span></span></a></li>
+<li class="chapter" data-level="2.5" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html#軌道票價資料"><i class="fa fa-check"></i><b>2.5</b> 軌道票價資料<span></span></a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="公車運輸資料.html"><a href="公車運輸資料.html"><i class="fa fa-check"></i><b>3</b> <strong>公車運輸資料</strong><span></span></a>
 <ul>
@@ -169,18 +169,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2" data-path="公車運輸資料.html"><a href="公車運輸資料.html#公車路線資料"><i class="fa fa-check"></i><b>3.2</b> 公車路線資料<span></span></a></li>
 <li class="chapter" data-level="3.3" data-path="公車運輸資料.html"><a href="公車運輸資料.html#公車路線線型資料"><i class="fa fa-check"></i><b>3.3</b> 公車路線線型資料<span></span></a></li>
 <li class="chapter" data-level="3.4" data-path="公車運輸資料.html"><a href="公車運輸資料.html#公車班表資料"><i class="fa fa-check"></i><b>3.4</b> 公車班表資料<span></span></a></li>
+<li class="chapter" data-level="3.5" data-path="公車運輸資料.html"><a href="公車運輸資料.html#公車站間旅行時間資料"><i class="fa fa-check"></i><b>3.5</b> 公車站間旅行時間資料<span></span></a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="自行車運輸資料.html"><a href="自行車運輸資料.html"><i class="fa fa-check"></i><b>4</b> <strong>自行車運輸資料</strong><span></span></a>
 <ul>
 <li class="chapter" data-level="4.1" data-path="自行車運輸資料.html"><a href="自行車運輸資料.html#公共自行車站點資料"><i class="fa fa-check"></i><b>4.1</b> 公共自行車站點資料<span></span></a></li>
 <li class="chapter" data-level="4.2" data-path="自行車運輸資料.html"><a href="自行車運輸資料.html#自行車線型資料"><i class="fa fa-check"></i><b>4.2</b> 自行車線型資料<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html"><i class="fa fa-check"></i><b>5</b> <strong>其他 TDX 資料</strong><span></span></a>
+<li class="chapter" data-level="5" data-path="航空與航運資料.html"><a href="航空與航運資料.html"><i class="fa fa-check"></i><b>5</b> <strong>航空與航運資料</strong><span></span></a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html#航空班表資料"><i class="fa fa-check"></i><b>5.1</b> 航空班表資料<span></span></a></li>
-<li class="chapter" data-level="5.2" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html#觀光景點點位"><i class="fa fa-check"></i><b>5.2</b> 觀光景點點位<span></span></a></li>
-<li class="chapter" data-level="5.3" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html#道路路網線型"><i class="fa fa-check"></i><b>5.3</b> 道路路網線型<span></span></a></li>
-<li class="chapter" data-level="5.4" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html#地理編碼服務"><i class="fa fa-check"></i><b>5.4</b> 地理編碼服務<span></span></a></li>
+<li class="chapter" data-level="5.1" data-path="航空與航運資料.html"><a href="航空與航運資料.html#航空班表資料"><i class="fa fa-check"></i><b>5.1</b> 航空班表資料<span></span></a></li>
+<li class="chapter" data-level="5.2" data-path="航空與航運資料.html"><a href="航空與航運資料.html#港口資料"><i class="fa fa-check"></i><b>5.2</b> 港口資料<span></span></a></li>
+<li class="chapter" data-level="5.3" data-path="航空與航運資料.html"><a href="航空與航運資料.html#國內航線班表"><i class="fa fa-check"></i><b>5.3</b> 國內航線班表<span></span></a></li>
+<li class="chapter" data-level="5.4" data-path="航空與航運資料.html"><a href="航空與航運資料.html#國內航線停靠港口順序資料"><i class="fa fa-check"></i><b>5.4</b> 國內航線停靠港口順序資料<span></span></a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>

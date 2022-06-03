@@ -15,26 +15,27 @@ library(tmap)
 windowsFonts(A=windowsFont("微軟正黑體"))
 tmap_mode("view")
 
-client_id=read.csv("./key.txt", header=F)[1,2]
-client_secret=read.csv("./key.txt", header=F)[2,2]
-# write.table(access_token, "./access_token.txt", row.names=F, col.names=F)
-access_token=as.character(read.table("./access_token.txt"))
+app_id=read.table("./key.txt", sep=",")[1,2]
+app_key=read.table("./key.txt", sep=",")[2,2]
 ```
 
 # **自行車運輸資料**
 自行車運輸資料包含公共自行車站點與自行車路網，擷取兩資料皆須設定縣市之參數（`county=`），請參照`TDX_County`表格。公共自行車站點資料的業管機關多為各級縣市政府的交通局（處），少部分地方政府係分別由觀光處（金門縣）、城鄉發展處（屏東縣）、工務處（苗栗縣）管轄。自行車路網乃線型資料，所蒐集的路網為經過數化的資料，並不代表該縣市僅有資料中的自行車路網，故使用或分析時必須特別注意。而自行車路網之蒐集目前以臺北市的資料最為完整。  
 
+自行車資料之下載皆須利用 API 金鑰，故函式中須輸入`app_id=`與`app_key=`兩參數，亦即在 [1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID 與 APP Key。  
+
+
 
 ## 公共自行車站點資料
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
-此函式的回傳結果包含站點代碼、站點名稱、經緯度、站點車樁數等。大部分縣市的公共自行車皆為 YouBike 系統，並可細分為 YouBike 1.0 與 YouBike 2.0，故若為 YouBike 系統之縣市，另外記錄一欄位為「服務類型」（ServiceType），其中標記為 YouBike1 者，即表示 YouBike 1.0；反之標記為 YouBike2 者，即表示 YouBike 2.0。目前全臺灣各縣市的公共自行車系統名稱整理如表\@ref(tab:TDX-Bike-table)。  
+此函式的回傳結果包含站點代碼、站點名稱、經緯度、站點車樁數等。大部分縣市的公共自行車皆為 YouBike 系統，並可細分為 YouBike 1.0 與 YouBike 2.0，故若為 YouBike 系統之縣市，另外記錄一欄位為「服務類型」（ServiceType），其中標記為 YouBike1 者，即表示 YouBike 1.0；反之標記為 YouBike2 者，即表示 YouBike 2.0。目前全臺灣各縣市的公共自行車系統名稱整理如下表。  
 
-```{r TDX-Bike-table, echo=F, eval=T}
+```{r TDX_Bike_table, echo=F, eval=T}
 TDX_bike=cbind(TDX_County[-23,], bike=c("YouBike 1.0、YouBike 2.0", "YouBike 1.0、YouBike 2.0", "YouBike 1.0", "YouBike 1.0、YouBike 2.0 （ibike）", "T-Bike", "YouBike 2.0", "--", "YouBike 1.0", "--", "YouBike 1.0", "-- （參見備註）", "--", "--", "--", "YouBike 2.0", "Pbike", "--", "--", "--", "K Bike", "--", "--"))
 
 colnames(TDX_bike)=c("縣市名稱","縣市代碼","公共自行車系統")
 
-kable(TDX_bike, booktabs=T, caption="全臺各縣市公共自行車系統彙整")%>%
+kable(TDX_bike, booktabs=T)%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   row_spec(0, bold=T, color="white", background="#7B7B7B")%>%
@@ -44,18 +45,18 @@ kable(TDX_bike, booktabs=T, caption="全臺各縣市公共自行車系統彙整"
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Bike_Station_code, echo=T, eval=F}
-Bike_Station(access_token, county, dtype="text", out=FALSE)
+Bike_Station(app_id, app_key, county, dtype="text", out=FALSE)
 ```
 
-```{r Bike-Station-table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
-                     must=c(rep("必填參數", 2), rep("選填參數", 5)),
-                     func=c("[Access Token]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
-                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)", "請參照`TDX_County`表格，並確保所輸入的縣市具公共自行車系統", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]", "`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+```{r Bike_Station_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 3), rep("選填參數", 5)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key", "請參照`TDX_County`表格，並確保所輸入的縣市具有公共自行車系統", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]", "`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T, caption="`Bike_Station()`函式參數設定表")%>%
+kable(TDX_table, booktabs=T)%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -67,7 +68,7 @@ kable(TDX_table, booktabs=T, caption="`Bike_Station()`函式參數設定表")%>%
 **回傳臺北市公共自行車站點資料（地理資料）**
 ```{r Bike_Station_code1, echo=T, eval=T, message=F, warning=F}
 # 介接臺北市公共自行車站點
-Taipei_bike_station=Bike_Station(access_token, "Taipei", dtype="sf")
+Taipei_bike_station=Bike_Station(app_id, app_key, "Taipei", dtype="sf")
 ```
 
 ```{r Bike_Station_code2, echo=T, eval=F, message=F, warning=F}
@@ -76,7 +77,8 @@ Taipei_bike_station
 ```
 
 ```{r Bike_Station_code3, echo=F, eval=T, message=F, warning=F}
-datatable(Taipei_bike_station, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+datatable(Taipei_bike_station, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
@@ -117,15 +119,15 @@ tm_shape(Taipei_bike_station)+
 Bike_Shape(app_id, app_key, county, dtype="text", out=FALSE)
 ```
 
-```{r Bike-Shape-table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
-                     must=c(rep("必填參數", 2), rep("選填參數", 5)),
-                     func=c("[Access Token]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
-                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)", "請參照`TDX_County`表格", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]", "`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+```{r Bike_Shape_table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 3), rep("選填參數", 5)),
+                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key", "請參照`TDX_County`表格", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]", "`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T, caption="`Bike_Shape()`函式參數設定表")%>%
+kable(TDX_table, booktabs=T)%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -137,7 +139,7 @@ kable(TDX_table, booktabs=T, caption="`Bike_Shape()`函式參數設定表")%>%
 **回傳臺北市自行車線型資料（地理資料）**
 ```{r Bike_Shape_code1, echo=T, eval=T, message=F, warning=F}
 # 介接臺北市公共自行車站點
-Taipei_bike_shape=Bike_Shape(access_token, "Taipei", dtype="sf")
+Taipei_bike_shape=Bike_Shape(app_id, app_key, "Taipei", dtype="sf")
 ```
 
 ```{r Bike_Shape_code2, echo=T, eval=F, message=F, warning=F}
@@ -146,7 +148,8 @@ Taipei_bike_shape
 ```
 
 ```{r Bike_Shape_code3, echo=F, eval=T, message=F, warning=F}
-datatable(Taipei_bike_shape, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+datatable(Taipei_bike_shape, options=list(pageLength=5, scrollX=T,
+                                    headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"

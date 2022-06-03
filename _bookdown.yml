@@ -1,5 +1,8 @@
 book_filename: "series"
 language:
+  label:
+    fig: '圖 '
+    tab: '表 '
   ui:
     chapter_name: "Chapter "
 rmd_files: [
@@ -7,6 +10,7 @@ rmd_files: [
   "01-Railway.Rmd",
   "02-Bus.Rmd",
   "03-Bike.Rmd",
-  "04-Others.Rmd"]
+  "04-AirShip.Rmd"]
 delete_merged_file: true 
 output_dir: "docs"
+  

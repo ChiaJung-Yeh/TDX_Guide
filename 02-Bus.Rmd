@@ -13,33 +13,30 @@ library(DT)
 
 windowsFonts(A=windowsFont("微軟正黑體"))
 
-app_id=read.table("./key.txt", sep=",")[1,2]
-app_key=read.table("./key.txt", sep=",")[2,2]
+client_id=read.csv("./key.txt", header=F)[1,2]
+client_secret=read.csv("./key.txt", header=F)[2,2]
+# write.table(access_token, "./access_token.txt", row.names=F, col.names=F)
+access_token=as.character(read.table("./access_token.txt"))
 ```
 
 # **公車運輸資料**
-公車係包含公路客運（一般公路客運、國道公路客運）與市區客運。後續的函式中皆須設定縣市之參數（`county=`），請參照`TDX_County`表格，縣市名稱與其相對應之代碼臚列如下。另請注意，若欲回傳公路客運之資料，`county=`之參數請設定為「`Intercity`」。  
+公車係包含公路客運（一般公路客運、國道公路客運）與市區客運。後續的函式中皆須設定縣市之參數（`county=`），請參照`TDX_County`表格，縣市名稱與其相對應之代碼臚列如表\@ref(tab:TDX-County-table)。另請注意，若欲回傳公路客運之資料，`county=`之參數請設定為「`Intercity`」。公車運輸資料中提供路線站點、路線線型、班表、站間旅行時間等資料。  
 
 ```{r TDX_County, echo=T, eval=F}
 TDX_County
 ```
 
-```{r TDX_County_table, echo=F, eval=T, message=F}
+```{r TDX-County-table, echo=F, eval=T, message=F}
 TDX_County_temp=TDX_County
 TDX_County_temp=bind_cols(TDX_County_temp[1:12,], rbind(TDX_County_temp[13:23,], c("","")))
 colnames(TDX_County_temp)=c("縣市名稱","縣市代碼","縣市名稱","縣市代碼")
 
-kable(TDX_County_temp, booktabs=T, align="c", escape=F)%>%
+kable(TDX_County_temp, booktabs=T, align="c", escape=F, caption="縣市名稱代碼表")%>%
   column_spec(c(1,3), bold=T)%>%
-  column_spec(2, border_right="2px solid #BEBEBE")%>%
+  column_spec(2, border_right="2px solid #E0E0E0")%>%
   row_spec(0, bold=T, color="white", background="#7B7B7B")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)
 ```
-
-本資料之下載皆須利用 API 金鑰，故函式中須輸入`app_id=`與`app_key=`兩參數，亦即在 [1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID 與 APP Key。  
-
-公車運輸資料中提供路線站點、路線線型、班表等資料。  
-
 
 
 ## 公車路線站點資料
@@ -48,18 +45,18 @@ kable(TDX_County_temp, booktabs=T, align="c", escape=F)%>%
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Bus_StopOfRoute_code, echo=T, eval=F}
-Bus_StopOfRoute(app_id, app_key, county, dtype="text", out=FALSE)
+Bus_StopOfRoute(access_token, county, dtype="text", out=FALSE)
 ```
 
-```{r Bus_StopOfRoute_table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
-                     must=c(rep("必填參數", 3), rep("選填參數", 5)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
-                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+```{r Bus-StopOfRoute-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 2), rep("選填參數", 5)),
+                     func=c("[Access Token]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T)%>%
+kable(TDX_table, booktabs=T, caption="`Bus_StopOfRoute()`函式參數設定表")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -71,7 +68,7 @@ kable(TDX_table, booktabs=T)%>%
 **1. 回傳宜蘭縣市區公車路線站點資料（純文字）**
 ```{r Bus_StopOfRoute_code1, echo=T, eval=T, message=F, warning=F}
 # 介接宜蘭公車路線站點
-Yilan_bus_station=Bus_StopOfRoute(app_id, app_key, "YilanCounty")
+Yilan_bus_station=Bus_StopOfRoute(access_token, "YilanCounty")
 ```
 
 ```{r Bus_StopOfRoute_code2, echo=T, eval=F, message=F, warning=F}
@@ -80,9 +77,7 @@ Yilan_bus_station
 ```
 
 ```{r Bus_StopOfRoute_code3, echo=F, eval=T, message=F, warning=F}
-# 介接高鐵站點資料
-datatable(Yilan_bus_station, options=list(pageLength=5, scrollX=T,
-                                    headerCallback = DT::JS(
+datatable(Yilan_bus_station, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
@@ -95,7 +90,7 @@ datatable(Yilan_bus_station, options=list(pageLength=5, scrollX=T,
 **2. 回傳新竹市市區公車路線站點資料（地理資料）**
 ```{r Bus_StopOfRoute_code4, echo=T, eval=T, message=F, warning=F}
 # 介接新竹市公車路線站點資料，並匯出地理資料
-Hsinchu_bus_station=Bus_StopOfRoute(app_id, app_key, "Hsinchu", dtype="sf", out="./Hsinchu_bus_station.shp")
+Hsinchu_bus_station=Bus_StopOfRoute(access_token, "Hsinchu", dtype="sf", out="./Hsinchu_bus_station.shp")
 ```
 
 ```{r Bus_StopOfRoute_code5, echo=T, eval=F, message=F, warning=F}
@@ -104,8 +99,7 @@ Hsinchu_bus_station
 ```
 
 ```{r Bus_StopOfRoute_code6, echo=F, eval=T, message=F, warning=F}
-datatable(Hsinchu_bus_station, options=list(pageLength=5, scrollX=T,
-                                    headerCallback = DT::JS(
+datatable(Hsinchu_bus_station, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
@@ -151,48 +145,38 @@ R 語言中「地圖上文字標記」之方法，請參考 [Spatial Analysis wi
 ## 公車路線資料
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
 回傳結果為公車路線的屬性文字資料，欄位包括（子）路線名稱、（子）路線代碼、方向、公車路線類別、起訖站牌等。
-公車方向的代碼與屬性如下表所示：
+公車方向的代碼路線屬性的代碼如表\@ref(tab:Bus-Route-Direction-table)所示：
 
-```{r Bus_Route_Direction_table, echo=F, eval=T}
+```{r Bus-Route-Direction-table, echo=F, eval=T}
 Route_Direction_table=data.frame(parameter=c("0","1","2","255"),
                      meaning=c("outbound","inbound","loop","unknown"))
-
-colnames(Route_Direction_table)=c("代碼","方向意義")
-
-kable(Route_Direction_table, booktabs=T)%>%
-  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
-  column_spec(1, bold=T)%>%
-  row_spec(0, bold=T, color="white", background="#8E8E8E")
-```
-
-公車路線類別的代碼與屬性如下表所示：
-
-```{r Bus_Route_type_table, echo=F, eval=T}
 Route_type_table=data.frame(parameter=c("11","12","13","14"),
                      meaning=c("市區公車","一般公路客運","國道客運","接駁車"))
+temp=cbind(Route_Direction_table, Route_type_table)
+colnames(temp)=c("方向代碼","方向意義","路線屬性代碼","路線屬性意義")
 
-colnames(Route_type_table)=c("代碼","公車路線類別")
-
-kable(Route_type_table, booktabs=T)%>%
+kable(temp, booktabs=T, align="c", caption="公車方向與路線屬性的代碼")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
-  column_spec(1, bold=T)%>%
+  column_spec(2, border_right="2px solid #E0E0E0")%>%
+  column_spec(c(1,3), bold=T)%>%
   row_spec(0, bold=T, color="white", background="#8E8E8E")
 ```
+
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Bus_Route_code, echo=T, eval=F}
-Bus_Schedule(app_id, app_key, county, out=FALSE)
+Bus_Route(access_token, county, out=FALSE)
 ```
 
-```{r Bus_Route_table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`out=`", 3)),
-                     must=c(rep("必填參數", 3), rep("選填參數", 3)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼", rep("匯出資料之路徑", 3)),
-                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+```{r Bus-Route-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", rep("`out=`", 3)),
+                     must=c(rep("必填參數", 2), rep("選填參數", 3)),
+                     func=c("[Access Token]","縣市代碼", rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T)%>%
+kable(TDX_table, booktabs=T, caption="`Bus_Route()`函式參數設定表")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -205,8 +189,8 @@ kable(TDX_table, booktabs=T)%>%
 
 **回傳一般公路客運路線資料**
 ```{r Bus_Route_code1, echo=T, eval=T, message=F, warning=F}
-# 介接新竹市市區公車路線資料
-Intercity_Bus_Route=Bus_Route(app_id, app_key, "Intercity")
+# 介接一般公路客運公車路線資料
+Intercity_Bus_Route=Bus_Route(access_token, "Intercity")
 ```
 
 ```{r Bus_Route_code2, echo=T, eval=F, message=F, warning=F}
@@ -215,8 +199,7 @@ Intercity_Bus_Route
 ```
 
 ```{r Bus_Route_code3, echo=F, eval=T, message=F, warning=F}
-datatable(Intercity_Bus_Route, options=list(pageLength=5, scrollX=T,
-                                    headerCallback = DT::JS(
+datatable(Intercity_Bus_Route, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
@@ -233,18 +216,18 @@ datatable(Intercity_Bus_Route, options=list(pageLength=5, scrollX=T,
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Bus_Shape_code, echo=T, eval=F}
-Bus_Shape(app_id, app_key, county, dtype="text", out=FALSE)
+Bus_Shape(access_token, county, dtype="text", out=FALSE)
 ```
 
-```{r Bus_Shape_table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
-                     must=c(rep("必填參數", 3), rep("選填參數", 5)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
-                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+```{r Bus-Shape-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 2), rep("選填參數", 5)),
+                     func=c("[Access Token]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T)%>%
+kable(TDX_table, booktabs=T, caption="`Bus_Shape()`函式參數設定表")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -257,7 +240,7 @@ kable(TDX_table, booktabs=T)%>%
 **回傳新竹市市區公車路線資料（地理資料）**
 ```{r Bus_Shape_code1, echo=T, eval=T, message=F, warning=F}
 # 介接新竹市市區公車路線資料
-Hsinchu_bus_shape=Bus_Shape(app_id, app_key, "Hsinchu", dtype="sf")
+Hsinchu_bus_shape=Bus_Shape(access_token, "Hsinchu", dtype="sf")
 ```
 
 ```{r Bus_Shape_code2, echo=T, eval=F, message=F, warning=F}
@@ -266,8 +249,7 @@ Hsinchu_bus_shape
 ```
 
 ```{r Bus_Shape_code3, echo=F, eval=T, message=F, warning=F}
-datatable(st_drop_geometry(Hsinchu_bus_shape), options=list(pageLength=5, scrollX=T,
-                                    headerCallback = DT::JS(
+datatable(st_drop_geometry(Hsinchu_bus_shape), options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
@@ -308,20 +290,37 @@ R 語言中「地圖疊圖」之方法，請參考 [Spatial Analysis with R (Chi
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
 在 TDX 平臺中，公車班表的記錄方式有兩種，一為「時刻表格式」，另一為發車「班距格式」。時刻表格式係指依據各路線的發車時間記錄班次，故有確切的時間點資料，而回傳結果之欄位含括（子）路線名稱、（子）路線代碼、方向、站點名稱、各星期是否營運、始發站代碼與站名、始發站發車時間。班距格式的回傳結果雷同，然未有確切的發車時間點，僅包含各時段發車的班距資料，如「07:00 至 09:00 每 5 分鐘一班公車」。時刻表格式為大部分公車資料的記錄方式，惟部分縣市因某些時段為彈性發車，故採班距與時刻表格式混合使用，尤以臺北市的公車班表資料紀錄方式較為複雜。在本函式中逕將時刻表與班距格式合併處理，使用者無需再撰寫額外程式碼進行分類。  
 
-<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
-```{r Bus_Schedule_code, echo=T, eval=F}
-Bus_Schedule(app_id, app_key, county, out=FALSE)
+回傳資料的部分欄位資訊整理如表\@ref(tab:Bus-Schedule-column)所示。
+
+```{r Bus-Schedule-column, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("TripID","Sunday","Date","ServiceStatus","ArrivalTime","DepartureTime","StartTime","EndTime","MinHeadwayMins","MaxHeadwayMins"),
+                     name=c("班表順序","星期日是否營運","特殊營運日期","特殊營運日期營運狀態","公車抵達時間","公車出發時間","班距紀錄起始時間","班距紀錄結束時間","最短班距","最長班距"),
+                     func=c("班表順序是依據發車時間順序排列 [應用於**時刻表格式**]","星期日若有營運，記錄為1，否則為0（其他亦同）","如：特殊節日日期 [應用於**時刻表格式**]","營運狀態包含：停駛或照常營運 [應用於**時刻表格式**]","[應用於**時刻表格式**]","[應用於**時刻表格式**]","[應用於**班距格式**]","[應用於**班距格式**]","[應用於**班距格式**]","[應用於**班距格式**]"))
+
+colnames(TDX_table)=c("欄位名稱","意義","說明")
+
+kable(TDX_table, booktabs=T, caption="`Bus_Schedule()`函式回傳欄位說明")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:3, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")
 ```
 
-```{r Bus_Schedule_table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`out=`", 2)),
-                     must=c(rep("必填參數", 3), rep("選填參數", 2)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼",  rep("匯出資料之路徑", 2)),
-                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID", "[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`", "`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Bus_Schedule_code, echo=T, eval=F}
+Bus_Schedule(access_token, county, out=FALSE)
+```
+
+```{r Bus-Schedule-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", rep("`out=`", 2)),
+                     must=c(rep("必填參數", 2), rep("選填參數", 2)),
+                     func=c("[Access Token]","縣市代碼",  rep("匯出資料之路徑", 2)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`", "`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T)%>%
+kable(TDX_table, booktabs=T, caption="`Bus_Schedule()`函式參數設定表")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -333,7 +332,7 @@ kable(TDX_table, booktabs=T)%>%
 **回傳新竹市市區公車班表資料**
 ```{r Bus_Schedule_code1, echo=T, eval=T, message=F, warning=F}
 # 介接新竹市市區公車班表資料
-Hsinchu_bus_schedule=Bus_Schedule(app_id, app_key, "Hsinchu")
+Hsinchu_bus_schedule=Bus_Schedule(access_token, "Hsinchu")
 ```
 
 ```{r Bus_Schedule_code2, echo=T, eval=F, message=F, warning=F}
@@ -342,12 +341,95 @@ Hsinchu_bus_schedule
 ```
 
 ```{r Bus_Schedule_code3, echo=F, eval=T, message=F, warning=F}
-datatable(Hsinchu_bus_schedule, options=list(pageLength=5, scrollX=T,
-                                    headerCallback = DT::JS(
+datatable(Hsinchu_bus_schedule, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
   formatStyle(columns=c(1:ncol(Hsinchu_bus_schedule)), fontSize='80%')
 ```
+
+
+
+## 公車站間旅行時間資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+公車站間旅行時間函式回傳指定公車子路線中，任兩相鄰站牌間的旅行時間。此一資料是透過歷史資料取得平均值，而由於不同星期、不同時間段（尖離峰）的旅行時間應有所不同，故部分縣市的資料會細緻記錄各星期逐小時的站間旅行時間，如臺北市。在回傳資料表中包含以下欄位：路線代碼（RouteID）、子路線代碼（SubRouteID）、星期（Weekday: 0~6，0表示星期日）、起始時間（StartHour）、結束時間（EndHour）、站間旅行時間（RunTime）。其中起始時間與結束時間分別表示該旅行時間值所對應的時間區間，在部分縣市的資料中可能長達數小時，而紀錄較為細緻者通常是一小時之間隔，惟若該時間區間中未有任何公車行駛，則記錄為「-1」。  
+
+在本函式中必須設定欲回傳的公車路線代碼之參數（`routeid`），可透過[`Bus_Route()`](#公車路線資料)函式取得之。此外，路線代碼參數可為一文字或一組向量，亦即可回傳一個或多個公車路線的站間旅行時間資料。  
+
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Bus_TravelTime_code, echo=T, eval=F}
+Bus_TravelTime(access_token, county, routeid, out=FALSE)
+```
+
+```{r Bus-TravelTime-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", "`routeid`", rep("`out=`", 2)),
+                     must=c(rep("必填參數", 3), rep("選填參數", 2)),
+                     func=c("[Access Token]","縣市代碼", "路線代碼", rep("匯出資料之路徑", 2)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)","請參照`TDX_County`表格，若為公路客運，請填入`Intercity`", "須確保該路線位於所設定縣市中，可利用`Bus_Route()`查詢", "`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T, caption="`Bus_TravelTime()`函式參數設定表")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**1. 回傳新竹市路線代碼 0020 公車（2路）的站間旅行時間**
+```{r Bus_TravelTime_code1, echo=T, eval=T, message=F, warning=F}
+# 介接新竹市0020公車站間旅行時間
+Hsinchu_bus_traveltime=Bus_TravelTime(access_token, "Hsinchu", "0020")
+```
+
+```{r Bus_TravelTime_code2, echo=T, eval=F, message=F, warning=F}
+# 查看Hsinchu_bus_schedule前300筆資料
+Hsinchu_bus_traveltime[1:300,]
+```
+
+```{r Bus_TravelTime_code3, echo=F, eval=T, message=F, warning=F}
+datatable(Hsinchu_bus_traveltime[1:300,], options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(Hsinchu_bus_traveltime)), fontSize='80%')
+```
+
+**2. 回傳桃園市站間旅行時間**
+
+可搭配`Bus_Route()`函式取得指定縣市的公車路線代碼。  
+
+```{r Bus_TravelTime_code4, echo=T, eval=T, message=F, warning=F}
+# 介接桃園市公車路線
+Taoyuan_bus_route=Bus_Route(access_token, "Taoyuan")
+
+# 擷取RouteID之為一值(將重複代碼去除)
+Taoyuan_bus_route=unique(Taoyuan_bus_route$RouteID)
+
+# 介接桃園市前五條公車路線旅行時間
+Taoyuan_bus_traveltime=Bus_TravelTime(access_token, "Taoyuan", Taoyuan_bus_route[1:5])
+```
+
+```{r Bus_TravelTime_code5, echo=T, eval=F, message=F, warning=F}
+# 查看Taoyuan_bus_traveltime資料
+Taoyuan_bus_traveltime
+```
+
+```{r Bus_TravelTime_code6, echo=F, eval=T, message=F, warning=F}
+datatable(Taoyuan_bus_traveltime, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(Taoyuan_bus_traveltime)), fontSize='80%')
+```
+
+
+
+
 
