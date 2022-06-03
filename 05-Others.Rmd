@@ -70,7 +70,7 @@ datatable(select(Hualien_scenicspot, -DescriptionDetail), options=list(pageLengt
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:nrow(Hualien_scenicspot)), fontSize='80%')%>%
+  formatStyle(columns=c(1:ncol(Hualien_scenicspot)-1), fontSize='80%')%>%
   formatRound(c("PositionLon", "PositionLat"), digits=4)
 ```
 
@@ -109,6 +109,71 @@ devtools::install_github("ChiaJung-Yeh/TWspData")
 library(TWspData)
 ```
 :::
+
+
+
+## 停車場資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+停車場資料中詳細記載各停車場的經緯度位置、營運資訊，諸如費率、是否為公有、是否可預約等，各欄位詳細資訊彙整如表\@ref(tab:carpark-column-table)。  
+
+```{r carpark-column-table, echo=F, eval=T}
+carparkdata=data.frame(parameter=c("Description","FareDescription","IsPublic","OperationType","LiveOccuppancyAvailable","EVRechargingAvailable","MonthlyTicketAvailable","SeasonTicketAvailable","ReservationAvailable","WheelchairAccessible","OvernightPermitted"), meaning=c("停車場各運具停車位總數 [文字說明]","計費方式 [文字說明]","是否為公有停車場，是填1","營運型態（公辦民營：1；公營：2；民營：3）","是否提供停車位即時資訊，是填1","是否有電動車充電樁，是填1","是否提供月票，是填1","是否提供季票，是填1","可否預約停車，是填1","是否具無障礙設施，是填1","是否可過夜停車，是填1"))
+
+colnames(carparkdata)=c("欄位名稱","意義")
+kable(carparkdata, booktabs=T, caption="停車場回傳欄位說明")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  row_spec(0, bold=T, color="white", background="#7B7B7B")
+```
+
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Car_Park_code, echo=T, eval=F}
+Car_Park(access_token, county, poi, dtype="sf", out=FALSE)
+```
+
+```{r Car-Park-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 2), rep("選填參數", 5)),
+                     func=c("[Access Token]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)","請參照`TDX_County`表格，若欲回傳全臺資料，請填入`ALL`",   "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T, caption="`Tourism()`函式參數設定表")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**回傳臺北市停車場資料（地理資料）**
+```{r Car_Park_code1, echo=T, eval=T, message=F, warning=F}
+# 介接臺北市停車場資料
+Taipei_carpark=Car_Park(access_token, county="Taipei", dtype="sf")
+```
+
+```{r Car_Park_code2, echo=T, eval=F, message=F, warning=F}
+# 查看Taipei_carpark資料
+Taipei_carpark
+```
+
+```{r Car_Park_code3, echo=F, eval=T, message=F, warning=F}
+datatable(Taipei_carpark, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(Taipei_carpark)), fontSize='80%')%>%
+  formatRound(c("PositionLon", "PositionLat"), digits=4)
+```
+
+
+
+
+
 
 
 ## 道路路網線型

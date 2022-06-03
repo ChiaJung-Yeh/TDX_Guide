@@ -22,7 +22,7 @@ access_token=as.character(read.table("./access_token.txt"))
 ```
 
 # **航空與航運資料**
-本套件所介接的航空資料目前僅包含國內外的航線班表資料。航運資料則含括港口資料、國內航線班表、國內航線停靠港口順序資料。  
+本套件所介接的航空資料目前僅包含國內外的航線班表資料。航運資料則含括港口點位資料、航運航線資料、航線靠港順序資料資料。  
 
 
 ## 航空班表資料
@@ -69,12 +69,12 @@ datatable(air_schedule_domestic, options=list(pageLength=5, scrollX=T, headerCal
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:nrow(air_schedule_domestic)), fontSize='80%')
+  formatStyle(columns=c(1:ncol(air_schedule_domestic)), fontSize='80%')
 ```
 
 
 
-## 港口資料
+## 港口點位資料
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
 回傳結果為港口名稱與經緯度。  
 
@@ -123,7 +123,7 @@ datatable(taiwan_port, options=list(pageLength=5, scrollX=T, headerCallback = DT
 
 
 
-## 國內航線班表
+## 航運航線資料
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
 回傳國內航運之航線班表資料。  
 
@@ -171,7 +171,7 @@ datatable(NWT_shiproute, options=list(pageLength=5, scrollX=T, headerCallback = 
 
 
 
-## 國內航線停靠港口順序資料
+## 航線靠港順序資料
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
 回傳國內航線停靠港口順序資料。  
 

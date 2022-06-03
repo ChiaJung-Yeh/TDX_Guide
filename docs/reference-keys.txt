@@ -66,3 +66,9 @@ tab:Tourism-table
 tab:Road-Network-table
 tab:Geocoding-table
 觀光點位
+港口點位資料
+航運航線資料
+航線靠港順序資料
+停車場資料
+tab:Car-Park-table
+tab:carpark-column-table

@@ -325,7 +325,7 @@ datatable(KRTC_timetable[1:300,], options=list(pageLength=5, scrollX=T, headerCa
 
 ## 軌道票價資料
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
-票價資料係指軌道系統中任兩起訖對間的票價，其中又可細分為不同車種（TrainType）、票證（TicketType）、票種（FareClass）及艙等（CabinClass）的票價，在回傳結果中以代碼表之。各細分類目的代碼與對照名稱詳如\@ref(tab:railprice-code-table)所示。
+票價資料係指軌道系統中任兩起訖對間的票價，其中又可細分為不同車種（TrainType）、票證（TicketType）、票種（FareClass）及艙等（CabinClass）的票價，在回傳結果中以代碼表之。各細分類目的代碼與對照名稱詳如表\@ref(tab:railprice-code-table)所示。
 
 ```{r railprice-code-table, echo=F, eval=T}
 railprice=data.frame(parameter=c(rep("車種（TrainType）", 3), rep("票證（TicketType）", 8), rep("票種（FareClass）", 8), rep("艙等（CabinClass）", 3)),
