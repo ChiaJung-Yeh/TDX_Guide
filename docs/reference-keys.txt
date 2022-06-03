@@ -62,3 +62,7 @@ tab:Ship-StopOfRoute-table
 國內航線停靠港口順序資料
 tab:TDX-table
 tab:TDX-version
+tab:Tourism-table
+tab:Road-Network-table
+tab:Geocoding-table
+觀光點位

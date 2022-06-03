@@ -15,82 +15,36 @@ library(tmap)
 windowsFonts(A=windowsFont("微軟正黑體"))
 tmap_mode("view")
 
-app_id=read.table("./key.txt", sep=",")[1,2]
-app_key=read.table("./key.txt", sep=",")[2,2]
+client_id=read.csv("./key.txt", header=F)[1,2]
+client_secret=read.csv("./key.txt", header=F)[2,2]
+# write.table(access_token, "./access_token.txt", row.names=F, col.names=F)
+access_token=as.character(read.table("./access_token.txt"))
 ```
 
 # **其他 TDX 資料**
-除軌道運輸、公車、自行車之運具資料外，TDX 平臺亦提供諸多實用的資料介接 API，依此本套件中目前另外包含航空班表、觀光景點點位、道路路網線型、地理編碼服務等，未來將依實務需求，持續開發具實用性的函式。  
+除軌道運輸、公車、自行車、航空與航運各運具資料外，TDX 平臺亦提供諸多實用的資料介接 API，而本套件中目前另外包含觀光點位、停車場資料、道路路網線型、地理編碼服務等，未來將依實務需求，持續開發具實用性的函式。  
 
 
-## 航空班表資料
+
+## 觀光點位
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
-回傳結果包含航空公司代碼、班次號碼、起降機場代碼、出發與到著時間、各星期營運與否等資料。本函式中可提供國內與國際航線之班表資料，僅須設定`domestic=`之參數即可。  
+觀光點位包含景點、餐廳、旅館，回傳結果包含各興趣點代碼與名稱、地址、經緯度、營業時間等詳細資訊。須注意的是 TDX 平臺上的觀光點位資料更新周期較長，可能有些點位已停業或撤銷，卻仍出現在資料中，且部分縣市政府並未完整調查與整理，故請斟酌使用之。  
 
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
-```{r Air_Schedule_code, echo=T, eval=F}
-Air_Schedule(app_id, app_key, domestic=TRUE, out=FALSE)
+```{r Tourism_code, echo=T, eval=F}
+Tourism(access_token, county, poi, dtype="sf", out=FALSE)
 ```
 
-```{r Air_Schedule_table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", rep("`domestic=`", 2), rep("`out=`", 2)),
-                     must=c(rep("必填參數", 4), rep("選填參數", 2)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]", rep("國內或國際航線", 2), rep("匯出資料之路徑", 2)),
-                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key", "`TRUE`：回傳國內航空班表", "`FALSE`：回傳國際航空班表", "`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
-
-colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
-
-kable(TDX_table, booktabs=T)%>%
-  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
-  column_spec(1, bold=T)%>%
-  column_spec(1:4, background="white")%>%
-  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
-  collapse_rows(columns=c(1:3))
-```
-
-<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
-**回傳國內航空班表資料**
-```{r Air_Schedule_code1, echo=T, eval=T, message=F, warning=F}
-# 介接國內航空班表
-air_schedule_domestic=Air_Schedule(app_id, app_key, domestic=TRUE)
-```
-
-```{r Air_Schedule_code2, echo=T, eval=F, message=F, warning=F}
-# 查看air_schedule_domestic資料
-air_schedule_domestic
-```
-
-```{r Air_Schedule_code3, echo=F, eval=T, message=F, warning=F}
-datatable(air_schedule_domestic, options=list(pageLength=5, scrollX=T,
-                                    headerCallback = DT::JS(
-    "function(thead) {",
-    "  $(thead).css('font-size', '0.7em');",
-    "}"
-  )))%>%
-  formatStyle(columns=c(1:nrow(air_schedule_domestic)), fontSize='80%')
-```
-
-
-## 觀光景點點位
-<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
-回傳結果包含觀光景點代碼與名稱、地址、經緯度。須注意的是因臺北市政府尚未同意將所有景點資料授權公開於政府資料開放平台，故 TDX 平臺上所蒐集的臺北市觀光景點資料闕漏嚴重。另外，TDX 上所蒐集的觀光景點資料更新頻率較低，可能有些景點已停業或撤銷，卻仍出現在平臺中。綜上所述，請務必斟酌使用 TDX 平臺所提供的觀光景點資料。  
-
-
-<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
-```{r ScenicSpot_code, echo=T, eval=F}
-ScenicSpot(app_id, app_key, "NewTaipei", dtype="text", out=FALSE)
-```
-
-```{r ScenicSpot_table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`app_id=`", "`app_key=`", "`county=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+```{r Tourism-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", "`poi=`", rep("`dtype=`", 2), rep("`out=`", 3)),
                      must=c(rep("必填參數", 3), rep("選填參數", 5)),
-                     func=c("[金鑰 APP ID]","[金鑰 APP Key]","縣市代碼", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
-                     details=c("[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP ID","[1.6.2 API 金鑰申請](#api-金鑰申請)的 APP Key","請參照`TDX_County`表格，若欲回傳全臺資料，請填入`ALL`","`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+                     func=c("[Access Token]","縣市代碼", "興趣點類型", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)","請參照`TDX_County`表格，若欲回傳全臺資料，請填入`ALL`", "興趣點類型，含括`Scenicspot`、`Restaurant`、`Hotel`",  "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T)%>%
+kable(TDX_table, booktabs=T, caption="`Tourism()`函式參數設定表")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -100,19 +54,18 @@ kable(TDX_table, booktabs=T)%>%
 
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
 **回傳花蓮縣觀光景點資料（地理資料）**
-```{r ScenicSpot_code1, echo=T, eval=T, message=F, warning=F}
+```{r Tourism_code1, echo=T, eval=T, message=F, warning=F}
 # 介接花蓮縣觀光景點
-Hualien_scenicspot=ScenicSpot(app_id, app_key, county="HualienCounty", dtype="sf")
+Hualien_scenicspot=Tourism(access_token, county="HualienCounty", poi="ScenicSpot", dtype="sf")
 ```
 
-```{r ScenicSpot_code2, echo=T, eval=F, message=F, warning=F}
-# 查看Hualien_scenicspot資料
-Hualien_scenicspot
+```{r Tourism_code2, echo=T, eval=F, message=F, warning=F}
+# 查看Hualien_scenicspot資料(去除)
+select(Hualien_scenicspot, -DescriptionDetail)
 ```
 
-```{r ScenicSpot_code3, echo=F, eval=T, message=F, warning=F}
-datatable(Hualien_scenicspot, options=list(pageLength=5, scrollX=T,
-                                    headerCallback = DT::JS(
+```{r Tourism_code3, echo=F, eval=T, message=F, warning=F}
+datatable(select(Hualien_scenicspot, -DescriptionDetail), options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
@@ -121,7 +74,7 @@ datatable(Hualien_scenicspot, options=list(pageLength=5, scrollX=T,
   formatRound(c("PositionLon", "PositionLat"), digits=4)
 ```
 
-```{r ScenicSpot_code4, echo=T, eval=F, message=F, warning=F}
+```{r Tourism_code4, echo=T, eval=F, message=F, warning=F}
 # 使用TWspdata套件中的臺灣鄉鎮資料，並擷取花蓮縣資料
 hualien=filter(TWspdata::taiwan_town, COUNTYNAME=="花蓮縣")
 
@@ -134,7 +87,7 @@ ggplot()+
   annotation_north_arrow(location="tl")
 ```
 
-```{r ScenicSpot_code5, echo=F, eval=T, message=F, warning=F}
+```{r Tourism_code5, echo=F, eval=T, message=F, warning=F}
 hualien=filter(TWspdata::taiwan_town, COUNTYNAME=="花蓮縣")
 ggplot()+
   geom_sf(data=hualien, color="#F0F0F0", fill="#D0D0D0")+
@@ -162,22 +115,20 @@ library(TWspData)
 <font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
 TDX 平臺中提供道路路網線型資料，包含國道、省道快速公路、省道一般公路等三種類型之公路，請注意目前平臺中並未提供縣道以下等級（縣道、市道、鄉道、市區道路）之道路線型。本函式中需輸入縣市名稱與道路等級，回傳結果包含道路等級、道路代碼、道路名稱與空間資料等。另外本函式亦可直接擷取全臺灣、所有道路等級之資料，僅需在相對應的參數中填入「`ALL`」即可，詳見以下函式參數。  
 
-道路路網線型為 GIS-T 上的資料，目前資料介接毋須使用金鑰，故函式中不須設定 APP ID 與 APP Key。  
-
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Road_Network_code, echo=T, eval=F}
-Road_Network(county, roadclass, dtype="text", out=FALSE)
+Road_Network(accesss_token, county, roadclass, dtype="text", out=FALSE)
 ```
 
-```{r Road_Network_table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`county=`", rep("`roadclass=`", 4), rep("`dtype=`", 2), rep("`out=`", 3)),
-                     must=c(rep("必填參數", 5), rep("選填參數", 5)),
-                     func=c("縣市代碼", rep("道路等級代碼", 4), rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
-                     details=c("請參照`TDX_County`表格，若欲回傳全臺資料，請填入`ALL`", "`0`：國道", "`1`：省道快速公路", "`3`：省道一般公路", "`ALL`：所有道路等級", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+```{r Road-Network-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`accesss_token=`", "`county=`", rep("`roadclass=`", 4), rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 6), rep("選填參數", 5)),
+                     func=c("[Access Token]","縣市代碼", rep("道路等級代碼", 4), rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)","請參照`TDX_County`表格，若欲回傳全臺資料，請填入`ALL`", "`0`：國道", "`1`：省道快速公路", "`3`：省道一般公路", "`ALL`：所有道路等級", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T)%>%
+kable(TDX_table, booktabs=T, caption="`Road_Network()`函式參數設定表")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -189,7 +140,7 @@ kable(TDX_table, booktabs=T)%>%
 **1. 回傳宜蘭縣省道一般公路資料（地理資料）**
 ```{r Road_Network_code1, echo=T, eval=T, message=F, warning=F}
 # 介接宜蘭縣省道
-Yilan_road=Road_Network(county="YilanCounty", roadclass=3, dtype="sf")
+Yilan_road=Road_Network(access_token, county="YilanCounty", roadclass=3, dtype="sf")
 ```
 
 ```{r Road_Network_code2, echo=T, eval=F, message=F, warning=F}
@@ -212,7 +163,7 @@ ggplot()+
 **2. 回傳臺中市所有公路資料（地理資料）**
 ```{r Road_Network_code4, echo=T, eval=F, message=F, warning=F}
 # 介接臺中市所有公路
-Taichung_road=Road_Network(county="Taichung", roadclass="ALL", dtype="sf")
+Taichung_road=Road_Network(access_token, county="Taichung", roadclass="ALL", dtype="sf")
 
 # 擷取臺中市行政區資料（且刪除和平區）
 taichung_city=filter(TWspdata::taiwan_town, COUNTYNAME=="臺中市", TOWNNAME!="和平區")
@@ -230,7 +181,7 @@ ggplot()+
 ```
 
 ```{r Road_Network_code5, echo=F, eval=T, message=F, warning=F}
-Taichung_road=Road_Network(county="Taichung", roadclass="ALL", dtype="sf")
+Taichung_road=Road_Network(access_token, county="Taichung", roadclass="ALL", dtype="sf")
 Taichung_road$RoadClassName[Taichung_road$RoadClassName=="省道一般道路"]="省道一般公路"
 Taichung_road$RoadClassName=factor(Taichung_road$RoadClassName, c("國道","省道快速公路","省道一般公路"))
 
@@ -259,27 +210,28 @@ ggplot()+
 :::
 
 
+
 ## 地理編碼服務
-地理編碼（Geocode）是指將地址或地標名稱轉換為經緯度的過程，最常見的軟體即是[Google地圖](https://www.google.com.tw/maps/)，輸入地址後，在打點座標處點選右鍵，即可複製該位置的經緯度。地理編碼看似簡單的查詢操作，然而若是要進行大量的地理編碼就不是容易的事情，大部分的軟體都需要收費或是有回傳結果的限制，故使用上須格外注意批次處理的數據量。關於地理編碼的詳細概念與各種服務平臺之簡要操作，[詳見此](https://chiajung-yeh.github.io/R-Code-Sharing/TDX/TDX.html)。  
+地理編碼（Geocode）是指將地址或地標名稱轉換為經緯度的過程，最常見的軟體即是 [Google地圖](https://www.google.com.tw/maps/)，輸入地址後，在打點座標處點選右鍵，即可複製該位置的經緯度。地理編碼看似簡單的查詢操作，然而若是要進行大量的地理編碼就不是容易的事情，大部分的軟體都需要收費或是有回傳結果的限制，故使用上須格外注意批次處理的數據量。關於地理編碼的詳細概念與各種服務平臺之簡要操作，[詳見此](https://chiajung-yeh.github.io/R-Code-Sharing/TDX/TDX.html)。  
 
-本函式乃利用 GIS-T 所提供的 API 進行地理編碼，目前該服務為免費，且無批次數據量之限制，對比其他需要收費或有批次限制的平臺，**_GIS-T 非常佛心！！_**務必珍惜使用此資源。  
+目前 TDX 平臺提供免費的地理編碼服務，且無批次數據量之限制，對比其他需要收費或有批次限制的平臺，**_TDX 非常佛心！！_**務必珍惜使用此資源。  
 
-本函式僅需輸入地址即可自動回傳經緯度資料，必須特別注意的是，回傳欄位包括：AddressOriginal（原始輸入的地址資料）、AddressNew（GIS-T 平臺比對後的地理資料，通常地址會更加完整）、Geometry（經緯度資料）。  
+本函式僅需輸入地址即可自動回傳經緯度資料，必須特別注意的是，回傳欄位包括：AddressOriginal（原始輸入的地址資料）、AddressNew（TDX 平臺比對後的地理資料，通常地址會更加完整）、Geometry（經緯度資料）。  
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Geocoding_code, echo=T, eval=F}
 Geocoding(address, dtype="text", out=FALSE)
 ```
 
-```{r Geocoding_table, echo=F, eval=T}
-TDX_table=data.frame(parameter=c("`address=`", rep("`dtype=`", 2), rep("`out=`", 3)),
-                     must=c("必填參數", rep("選填參數", 5)),
-                     func=c("'地址資料", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
-                     details=c("'須為向量格式\\\n若「地址」位於「資料」中的其一欄位，請輸入`資料$地址`", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
+```{r Geocoding-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`address=`", rep("`dtype=`", 2), rep("`out=`", 3)),
+                     must=c(rep("必填參數", 2), rep("選填參數", 5)),
+                     func=c("[Access Token]", "'地址資料", rep("回傳的資料型態", 2), rep("匯出資料之路徑", 3)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)", "'須為向量格式\\\n若「地址」位於「資料」中的其一欄位，請輸入`資料$地址`", "`text`：純文字形式，其資料型態屬`data.frame` [**預設值**]","`sf`：地理資料形式，其資料型態屬`sf`","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若回傳的資料型態為「`text`」：路徑必須含有`.csv`或`.txt`", "若回傳的資料型態為「`sf`」：路徑必須含有`.shp`"))
 
 colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
 
-kable(TDX_table, booktabs=T)%>%
+kable(TDX_table, booktabs=T, caption="`Geocoding()`函式參數設定表")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
   column_spec(1, bold=T)%>%
   column_spec(1:4, background="white")%>%
@@ -294,7 +246,7 @@ kable(TDX_table, booktabs=T)%>%
 campus=c("臺北市中正區忠孝西路一段118號", "新竹市東區大學路1001號", "新竹縣竹北市六家五路一段1號")
 
 # 將地址向量address置入Geocoding()函式中
-campus_geocode=Geocoding(campus)
+campus_geocode=Geocoding(access_token, campus)
 
 # 查看campus_geocode資料
 campus_geocode
