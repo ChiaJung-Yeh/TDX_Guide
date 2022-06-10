@@ -17,6 +17,7 @@ tmap_mode("view")
 
 client_id=read.csv("./key.txt", header=F)[1,2]
 client_secret=read.csv("./key.txt", header=F)[2,2]
+# access_token=get_token(client_id, client_secret)
 # write.table(access_token, "./access_token.txt", row.names=F, col.names=F)
 access_token=as.character(read.table("./access_token.txt"))
 ```
@@ -149,30 +150,26 @@ kable(TDX_table, booktabs=T, caption="`Tourism()`函式參數設定表")%>%
 ```
 
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
-**回傳臺北市停車場資料（地理資料）**
+**回傳高雄市停車場資料（地理資料）**
 ```{r Car_Park_code1, echo=T, eval=T, message=F, warning=F}
-# 介接臺北市停車場資料
-Taipei_carpark=Car_Park(access_token, county="Taipei", dtype="sf")
+# 介接高雄市停車場資料
+Kaohsiung_carpark=Car_Park(access_token, county="Kaohsiung", dtype="sf")
 ```
 
 ```{r Car_Park_code2, echo=T, eval=F, message=F, warning=F}
-# 查看Taipei_carpark資料
-Taipei_carpark
+# 查看Kaohsiung_carpark資料
+Kaohsiung_carpark
 ```
 
 ```{r Car_Park_code3, echo=F, eval=T, message=F, warning=F}
-datatable(Taipei_carpark, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+datatable(Kaohsiung_carpark, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:ncol(Taipei_carpark)), fontSize='80%')%>%
+  formatStyle(columns=c(1:ncol(Kaohsiung_carpark)), fontSize='80%')%>%
   formatRound(c("PositionLon", "PositionLat"), digits=4)
 ```
-
-
-
-
 
 
 
@@ -285,7 +282,7 @@ ggplot()+
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Geocoding_code, echo=T, eval=F}
-Geocoding(address, dtype="text", out=FALSE)
+Geocoding(access_token, address, dtype="text", out=FALSE)
 ```
 
 ```{r Geocoding-table, echo=F, eval=T}
