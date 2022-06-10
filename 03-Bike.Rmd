@@ -17,6 +17,7 @@ tmap_mode("view")
 
 client_id=read.csv("./key.txt", header=F)[1,2]
 client_secret=read.csv("./key.txt", header=F)[2,2]
+# access_token=get_token(client_id, client_secret)
 # write.table(access_token, "./access_token.txt", row.names=F, col.names=F)
 access_token=as.character(read.table("./access_token.txt"))
 ```
@@ -114,7 +115,7 @@ tm_shape(Taipei_bike_station)+
 
 <font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Bike_Shape_code, echo=T, eval=F}
-Bike_Shape(app_id, app_key, county, dtype="text", out=FALSE)
+Bike_Shape(access_token, county, dtype="text", out=FALSE)
 ```
 
 ```{r Bike-Shape-table, echo=F, eval=T}
