@@ -303,7 +303,7 @@ kable(TDX_table, booktabs=T, caption="`Geocoding()`函式參數設定表")%>%
 
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
 **地理編碼範例**
-```{r Geocoding_code1, echo=T, eval=T, message=F}
+```{r Geocoding_code1, echo=T, eval=T, message=F, warning=F}
 # 將地址資料儲存於向量中
 campus=c("臺北市中正區忠孝西路一段118號", "新竹市東區大學路1001號", "新竹縣竹北市六家五路一段1號")
 
@@ -313,11 +313,5 @@ campus_geocode=Geocoding(access_token, campus)
 # 查看campus_geocode資料
 campus_geocode
 ```
-
-
-
-
-
-
 
 
