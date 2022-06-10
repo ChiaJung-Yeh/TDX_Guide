@@ -150,24 +150,24 @@ kable(TDX_table, booktabs=T, caption="`Tourism()`函式參數設定表")%>%
 ```
 
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
-**回傳高雄市停車場資料（地理資料）**
+**回傳臺中市停車場資料（地理資料）**
 ```{r Car_Park_code1, echo=T, eval=T, message=F, warning=F}
-# 介接高雄市停車場資料
-Kaohsiung_carpark=Car_Park(access_token, county="Kaohsiung", dtype="sf")
+# 介接臺中市停車場資料
+Taichung_carpark=Car_Park(access_token, county="Taichung", dtype="sf")
 ```
 
 ```{r Car_Park_code2, echo=T, eval=F, message=F, warning=F}
-# 查看Kaohsiung_carpark資料
-Kaohsiung_carpark
+# 查看Taichung_carpark資料
+Taichung_carpark
 ```
 
 ```{r Car_Park_code3, echo=F, eval=T, message=F, warning=F}
-datatable(Kaohsiung_carpark, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+datatable(Taichung_carpark, options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
     "function(thead) {",
     "  $(thead).css('font-size', '0.7em');",
     "}"
   )))%>%
-  formatStyle(columns=c(1:ncol(Kaohsiung_carpark)), fontSize='80%')%>%
+  formatStyle(columns=c(1:ncol(Taichung_carpark)), fontSize='80%')%>%
   formatRound(c("PositionLon", "PositionLat"), digits=4)
 ```
 
@@ -311,7 +311,7 @@ campus=c("臺北市中正區忠孝西路一段118號", "新竹市東區大學路
 campus_geocode=Geocoding(access_token, campus)
 
 # 查看campus_geocode資料
-campus_geocode
+campus_geocode$SUCCESS
 ```
 
 
