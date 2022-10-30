@@ -163,3 +163,52 @@ tm_shape(Taipei_bike_shape)+
   tm_lines()
 ```
 
+
+## 公共自行車剩餘車輛歷史資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+回傳結果包含各站點各時間點的剩餘車輛與停車位數。  
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Bike_his_code, echo=T, eval=F}
+Bike_Remain_His(access_token, county, dates, out=FALSE)
+```
+
+```{r Bike-His-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`access_token=`", "`county=`", rep("`dates=`", 3), rep("`out=`", 2)),
+                     must=c(rep("必填參數", 5), rep("選填參數", 2)),
+                     func=c("[Access Token]","縣市代碼", rep("擷取資料日期\n[**最多7天**]", 3), rep("匯出資料之路徑", 2)),
+                     details=c("[1.6.3 Access Token 取得方式](#access-token-取得方式)", "請參照`TDX_County`表格", "單一日期：`YYYY-MM-DD`", "多個日期：`YYYY-MM-DD;YYYY/-MM-DD;...`(以分號隔開)", "日期範圍：`YYYYcMM-DD~YYYY-MM-DD`", "`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T, caption="`Bike_Shape()`函式參數設定表")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**回傳新竹市公共自行車剩餘車輛歷史資料**
+```{r Bike_His_code1, echo=T, eval=T, message=F, warning=F}
+# 介接臺北市公共自行車站點
+Hsinchu_bike_history=Bike_Remain_His(access_token, "Hsinchu", dates="2022-10-10")
+```
+
+```{r Bike_His_code2, echo=T, eval=F, message=F, warning=F}
+# 查看Hsinchu_bike_history前1000筆資料
+Hsinchu_bike_history[1:1000,]
+```
+
+```{r Bike_His_code3, echo=F, eval=T, message=F, warning=F}
+datatable(Hsinchu_bike_history[1:1000,], options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:6), fontSize='80%')
+```
+
+
+上表回傳結果中`AvailableRentBikes`表示該時刻下剩餘可租借的車輛數；`AvailableReturnBikes`則表示該站點剩餘可還車的樁架數。
