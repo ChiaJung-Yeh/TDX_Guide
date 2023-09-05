@@ -1,6 +1,7 @@
 ```{r setup2, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
+library(data.table)
 library(sf)
 library(ggplot2)
 library(ggsflabel)
@@ -15,9 +16,7 @@ windowsFonts(A=windowsFont("微軟正黑體"))
 
 client_id=read.csv("./key.txt", header=F)[1,2]
 client_secret=read.csv("./key.txt", header=F)[2,2]
-# access_token=get_token(client_id, client_secret)
-# write.table(access_token, "./access_token.txt", row.names=F, col.names=F)
-access_token=as.character(read.table("./access_token.txt"))
+access_token=get_token(client_id, client_secret)
 ```
 
 # **公車運輸資料**

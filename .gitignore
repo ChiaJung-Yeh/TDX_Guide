@@ -40,3 +40,4 @@ rsconnect/
 key.txt
 key_old.txt
 access_token.txt
+.quarto

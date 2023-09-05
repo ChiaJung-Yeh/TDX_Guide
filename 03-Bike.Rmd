@@ -17,9 +17,7 @@ tmap_mode("view")
 
 client_id=read.csv("./key.txt", header=F)[1,2]
 client_secret=read.csv("./key.txt", header=F)[2,2]
-# access_token=get_token(client_id, client_secret)
-# write.table(access_token, "./access_token.txt", row.names=F, col.names=F)
-access_token=as.character(read.table("./access_token.txt"))
+access_token=get_token(client_id, client_secret)
 ```
 
 # **自行車運輸資料**
