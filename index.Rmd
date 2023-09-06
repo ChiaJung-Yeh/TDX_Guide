@@ -14,8 +14,6 @@ github-repo: ChiaJung-Yeh/TDX_Guide
 description: "運輸資料介接"
 ---
 
-<meta name="google-site-verification" content="i4Iib3GevuN2t_jtsNp0YabkQRXcrER03lw4OKVffco" />
-
 ```{r setup, include=FALSE}
 # devtools::install_github("kupietz/kableExtra")
 knitr::opts_chunk$set(echo = TRUE)
