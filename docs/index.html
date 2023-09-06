@@ -155,7 +155,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#套件下載"><i class="fa fa-check"></i><b>1.2.1</b> 套件下載</a></li>
 <li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#api-金鑰申請"><i class="fa fa-check"></i><b>1.2.2</b> API 金鑰申請</a></li>
 <li class="chapter" data-level="1.2.3" data-path="index.html"><a href="index.html#access-token-取得方式"><i class="fa fa-check"></i><b>1.2.3</b> Access Token 取得方式</a></li>
-<li class="chapter" data-level="1.2.4" data-path="index.html"><a href="index.html#r-套件版本目錄"><i class="fa fa-check"></i><b>1.2.4</b> R 套件版本目錄</a></li>
+<li class="chapter" data-level="1.2.4" data-path="index.html"><a href="index.html#套件函式功能查詢"><i class="fa fa-check"></i><b>1.2.4</b> 套件函式功能查詢</a></li>
+<li class="chapter" data-level="1.2.5" data-path="index.html"><a href="index.html#r-套件版本目錄"><i class="fa fa-check"></i><b>1.2.5</b> R 套件版本目錄</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html"><i class="fa fa-check"></i><b>2</b> <strong>軌道運輸資料</strong></a>
@@ -192,6 +193,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html#道路路網線型"><i class="fa fa-check"></i><b>6.3</b> 道路路網線型</a></li>
 <li class="chapter" data-level="6.4" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html#高快速公路線型"><i class="fa fa-check"></i><b>6.4</b> 高快速公路線型</a></li>
 <li class="chapter" data-level="6.5" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html#地理編碼服務"><i class="fa fa-check"></i><b>6.5</b> 地理編碼服務</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="運輸資料應用.html"><a href="運輸資料應用.html"><i class="fa fa-check"></i><b>7</b> <strong>運輸資料應用</strong></a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="運輸資料應用.html"><a href="運輸資料應用.html#計算公車站點間旅行距離"><i class="fa fa-check"></i><b>7.1</b> 計算公車站點間旅行距離</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
@@ -681,8 +686,14 @@ GTFS
 <span id="cb3-2"><a href="index.html#cb3-2" tabindex="-1"></a><span class="fu">get_token</span>(<span class="at">client_id=</span><span class="st">&quot;YOUR-ID&quot;</span>, <span class="at">client_secret=</span><span class="st">&quot;YOUR-SECRET&quot;</span>)</span></code></pre></div>
 <p>此一函式中必須設定兩個參數，即自 TDX 平臺申請所得到的 Client Id 與 Client Secret，輸入完畢後即產生一組有效期限為一天的 Access Token，後續使用本套件的介接函式時，皆必須設定此序號。</p>
 </div>
-<div id="r-套件版本目錄" class="section level3 hasAnchor" number="1.2.4">
-<h3><span class="header-section-number">1.2.4</span> R 套件版本目錄<a href="index.html#r-套件版本目錄" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="套件函式功能查詢" class="section level3 hasAnchor" number="1.2.4">
+<h3><span class="header-section-number">1.2.4</span> 套件函式功能查詢<a href="index.html#套件函式功能查詢" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="index.html#cb4-1" tabindex="-1"></a><span class="co"># 查詢公車費率函式</span></span>
+<span id="cb4-2"><a href="index.html#cb4-2" tabindex="-1"></a>?Bus_RouteFare</span></code></pre></div>
+<p><a href="%22https://chiajung-yeh.github.io/TDX_Guide/Bus_RouteFare.html%22"><strong>查詢結果</strong></a></p>
+</div>
+<div id="r-套件版本目錄" class="section level3 hasAnchor" number="1.2.5">
+<h3><span class="header-section-number">1.2.5</span> R 套件版本目錄<a href="index.html#r-套件版本目錄" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table class="table table-striped table-hover" style="font-size: 14px; margin-left: auto; margin-right: auto;">
 <caption style="font-size: initial !important;">
 <span id="tab:TDX-version">表 1.2: </span>套件版本目錄

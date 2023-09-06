@@ -11,7 +11,8 @@ rmd_files: [
   "02-Bus.Rmd",
   "03-Bike.Rmd",
   "04-AirShip.Rmd",
-  "05-Others.Rmd"]
+  "05-Others.Rmd",
+  "06-Application.Rmd"]
 delete_merged_file: true 
 output_dir: "docs"
   

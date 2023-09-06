@@ -308,17 +308,17 @@ kable(TDX_table, booktabs=T, caption="`Road_Network()`函式參數設定表")%>%
 ```
 
 
-<!-- <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>   -->
-<!-- **回傳高速公路各交流道間路段（地理資料）** -->
-<!-- ```{r Freeway_Shape_code1, echo=T, eval=T, message=F, warning=F} -->
-<!-- # 介接高速公路各交流道間路段 -->
-<!-- freeway_shape=Freeway_Shape(geotype="link", dtype="sf") -->
-<!-- ``` -->
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>
+**回傳高速公路各交流道間路段（地理資料）**
+```{r Freeway_Shape_code1, echo=T, eval=T, message=F, warning=F}
+# 介接高速公路各交流道間路段
+freeway_shape=Freeway_Shape(geotype="section", dtype="sf")
+```
 
-<!-- ```{r Freeway_Shape_code2, echo=F, eval=T, message=F, warning=F} -->
-<!-- tm_shape(freeway_shape)+ -->
-<!--   tm_lines() -->
-<!-- ``` -->
+```{r Freeway_Shape_code2, echo=F, eval=T, message=F, warning=F}
+tm_shape(freeway_shape)+
+  tm_lines()
+```
 
 
 
