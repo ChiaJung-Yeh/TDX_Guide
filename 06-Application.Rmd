@@ -107,7 +107,7 @@ tm_shape(bus_shape_temp)+
 
 <br>
 <span style="font-size:15pt;text-decoration:underline">**步驟一：拆分公車路線之線段**</span>  
-依據直線將原始公車圖資切分成數個直線段。先利用\code{st_coordinate()}將路線所有轉折點全數萃取出。演算法如圖\@ref(fig:algo-step-1)所示。
+依據直線將原始公車圖資切分成數個直線段。先利用`st_coordinate()`將路線所有轉折點全數萃取出。演算法如圖\@ref(fig:algo-step-1)所示。
 
 需注意的是，本演算法的執行係假設路線圖資是依據公車路線由第一站至最後一站方式數化，故部分縣市（如雙北市）公車路線若未依據此一原則數化，則演算法將出現諸多謬誤。
 
@@ -216,7 +216,7 @@ all_dist_poss=apply(all_dist, 1, min_ret)
 all_dist_poss[[1]]
 ```
 
-由以上回傳資料可知，第一個站牌鄰近 30 公尺內的候選點共 5 個，為切分點資料的第 1、2、3、4、1538 筆資料（\code{Seq}之標籤），而其距離存於\code{Dist}之標籤中。
+由以上回傳資料可知，第一個站牌鄰近 30 公尺內的候選點共 5 個，為切分點資料的第 1、2、3、4、1538 筆資料（`$Seq`之標籤），而其距離存於`$Dist`之標籤中。
 
 
 <br>
@@ -262,7 +262,7 @@ tm_shape(bus_shape_temp)+
   tm_dots(col="red")
 ```
 
-地圖中紅色點表示最終匹配的點位，所有點位必定落於公車路線上。最終結果匯出如下表所示。其中\code{Dist_Cum}是站點累積里程，\code{Dist_Intv}是該站與前一站之間的路網距離。
+地圖中紅色點表示最終匹配的點位，所有點位必定落於公車路線上。最終結果匯出如下表所示。其中`Dist_Cum`是站點累積里程，`Dist_Intv`是該站與前一站之間的路網距離。
 
 ```{r algo-step-6-code-2, echo=F, eval=T}
 datatable(st_drop_geometry(bus_stop_temp_rev), options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(

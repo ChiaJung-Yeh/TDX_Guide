@@ -138,7 +138,7 @@ get_token(client_id="YOUR-ID", client_secret="YOUR-SECRET")
 # 查詢公車費率函式
 ?Bus_RouteFare
 ```
-[**查詢結果**]("https://chiajung-yeh.github.io/TDX_Guide/Bus_RouteFare.html")
+[**查詢結果**](https://chiajung-yeh.github.io/TDX_Guide/Bus_RouteFare.html)
 
 
 ### R 套件版本目錄
