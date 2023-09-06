@@ -89,3 +89,8 @@ r-套件版本目錄
 使用資料與函式
 演算概念與步驟
 fig:algo-step
+fig:algo-step-1
+fig:algo-step-2
+fig:algo-step-3
+fig:algo-step-4
+fig:algo-step-5

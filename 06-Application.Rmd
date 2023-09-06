@@ -29,7 +29,7 @@ access_token=get_token(client_id, client_secret)
 
 
 ### 目的
-站點間距離可用以反映任兩站點間公車行駛的實際里程，該數據可進一步與 TDX 歷史資料中的行駛時間（[`Bus_TravelTime()`](#公車站間旅行時間資料)）或公車歷史動態資料（[`Bus_RealTime()`](#公車動態)）對應，以計算各區間的平均速度，尋找公車各時段阻塞的區間，進而提出相對應的改善方式。在 [GTFS](https://gtfs.org/) 格式中，里程資訊為必備欄位，如是可依據各站點的累積里程推算任兩站點間的距離。然而 TDX 的公車站點資料（Bus_StopOfRoute）中並未提供該數據，進而無法計算站點間距離。其一解決方式是將各站點的經緯度輸入至地圖路徑規劃的 API 中，尋找公共運輸的最佳路徑，然而此一方法並不能確保所選擇的運具為特定公車路線；若以私有運具的路徑概似之，其缺點乃公車路線並不確保是最短距離，乃因受限於公車營運之限制或提升服務可及性，站點間距離可能大於兩點間的最短路徑長度。此外，使用地圖 API 曠日廢時或所需費用甚高，因此實務上可能並不合適。綜上所述，本節將建構一套演算法，透過 TDX 既有的公車路線圖資（[`Bus_Shape()`](#公車路線線型資料)）與公車站牌圖資（[`Bus_StopOfRoute()`](#公車站點資料)）切分數個站牌間的區間，依此計算各區間的長度即為站點間旅行距離。由於公車站點並不一定落於公車路線上（通常不可能是），故必須先行地圖匹配（map-matching），本演算法中簡單應用 Paul Newson 與 John Krumm 所提出之先進地圖匹配法（advanced map-matching），將所有公車站牌定位至路線上，以便於拆分並計算累積里程。
+站點間距離可用以反映任兩站點間公車行駛的實際里程，該數據可進一步與 TDX 歷史資料中的行駛時間（[`Bus_TravelTime()`](#公車站間旅行時間資料)）或公車歷史動態資料（[`Bus_RealTime()`](#公車動態)）對應，以計算各區間的平均速度，尋找公車各時段阻塞的區間，進而提出相對應的改善方式。在 [GTFS](https://gtfs.org/) 格式中，里程資訊為必備欄位，如是可依據各站點的累積里程推算任兩站點間的距離。然而 TDX 的公車站點資料（Bus_StopOfRoute）中並未提供該數據，進而無法計算站點間距離。其一解決方式是將各站點的經緯度輸入至地圖路徑規劃的 API 中，尋找公共運輸的最佳路徑，然而此一方法並不能確保所選擇的運具為特定公車路線；若以私有運具的路徑概似之，其缺點乃公車路線並不確保是最短距離，乃因受限於公車營運之限制或提升服務可及性，站點間距離可能大於兩點間的最短路徑長度。此外，使用地圖 API 曠日廢時或所需費用甚高，因此實務上可能並不合適。綜上所述，本節將建構一套演算法，透過 TDX 既有的公車路線圖資（[`Bus_Shape()`](#公車路線線型資料)）與公車站牌圖資（[`Bus_StopOfRoute()`](#公車站點資料)）切分數個站牌間的區間，依此計算各區間的長度即為站點間旅行距離。由於公車站點並不一定落於公車路線上（通常不可能是），故必須先行地圖匹配（map-matching），本演算法中簡單應用 Paul Newson 與 John Krumm 所提出之[先進地圖匹配法（advanced map-matching）](https://dl.acm.org/doi/pdf/10.1145/1653771.1653818)，將所有公車站牌定位至路線上，以便於拆分並計算累積里程。
 
 ### 使用資料與函式
 ```{r use_function, echo=T, eval=F}
@@ -49,8 +49,233 @@ Bus_StopOfRoute()
 include_graphics("./figure/OD_dist.gif")
 ```
 
+請注意此演算法仍會產出部分錯誤的結果，須另行檢查，計算結果的優劣取決於原始 TDX 路線圖資的品質，如雙北市的公車路線圖資出現許多錯誤繞行、數化順序錯誤、SubRouteUID 錯誤對應等情形，導致計算結果錯誤甚大。因此本節以路線品質相對較佳的基隆市市區公車作為範例。
 
+
+<span style="font-size:15pt;text-decoration:underline">**步驟零：介接公車資料**</span>  
+透過 TDX 套件介接公車路線、公車站牌、公車路線圖資三份資料。
+
+```{r TDX_data_download, echo=T, eval=F}
+access_token=get_token(client_id, client_secret)
+
+#---介接資料---#
+# 公車路線資訊
+bus_route=Bus_Route(access_token, "Keelung")
+# 公車站牌
+bus_shape=Bus_Shape(access_token, "Keelung", dtype="sf")%>%
+  st_transform(crs=3826)
+# 公車路線圖資
+bus_stop=Bus_StopOfRoute(access_token, "Keelung", dtype="sf")%>%
+  st_transform(crs=3826)
+
+#---以第一條為範例---#
+bus_shape_temp=filter(bus_shape, SubRouteUID==bus_route$SubRouteUID[1])
+bus_stop_temp=filter(bus_stop, SubRouteUID==bus_route$SubRouteUID[1], Direction==bus_route$Direction[1])
+
+tm_shape(bus_shape_temp)+
+  tm_lines()+
+  tm_shape(bus_stop_temp)+
+  tm_dots()
+```
+
+```{r TDX_data_download_output, echo=F, eval=T}
+# bus_route=Bus_Route(access_token, "Keelung")
+# write.csv(bus_route, "./data/bus_route_keelung.csv", row.names=F)
+# bus_shape=Bus_Shape(access_token, "Keelung")
+# write.csv(bus_shape, "./data/bus_shape_keelung.csv", row.names=F)
+# bus_stop=Bus_StopOfRoute(access_token, "Keelung")
+# write.csv(bus_stop, "./data/bus_stop_keelung.csv", row.names=F)
+
+bus_route=read.csv("./data/bus_route_keelung.csv")
+bus_shape=read.csv("./data/bus_shape_keelung.csv")%>%
+  mutate(geometry=st_as_sfc(geometry))%>%
+  st_sf(crs=4326)%>%
+  st_transform(crs=3826)
+bus_stop=read.csv("./data/bus_stop_keelung.csv")%>%
+  mutate(geometry=st_as_sfc(paste0("POINT(", PositionLon, " ", PositionLat, ")")))%>%
+  st_sf(crs=4326)%>%
+  st_transform(crs=3826)
+bus_shape_temp=filter(bus_shape, SubRouteUID==bus_route$SubRouteUID[1])
+bus_stop_temp=filter(bus_stop, SubRouteUID==bus_route$SubRouteUID[1], Direction==bus_route$Direction[1])
+tm_shape(bus_shape_temp)+
+  tm_lines()+
+  tm_shape(bus_stop_temp)+
+  tm_dots()
+```
+<br>
+由地圖可見，公車站牌大多未落於公車路線上，故本演算法必須先行透過地圖匹配將點位移至路線上！
+
+<br>
 <span style="font-size:15pt;text-decoration:underline">**步驟一：拆分公車路線之線段**</span>  
+依據直線將原始公車圖資切分成數個直線段。先利用\code{st_coordinate()}將路線所有轉折點全數萃取出。演算法如圖\@ref(fig:algo-step-1)所示。
+
+需注意的是，本演算法的執行係假設路線圖資是依據公車路線由第一站至最後一站方式數化，故部分縣市（如雙北市）公車路線若未依據此一原則數化，則演算法將出現諸多謬誤。
+
+```{r algo-step-1, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="拆分公車路線示意圖"}
+include_graphics("./figure/OD_dist_algo/OD_dist_algo_1.png")
+```
+
+```{r algo-step-1-code, echo=T, eval=T}
+# 拆分公車路線之線段
+bus_shape_coord=data.frame(st_coordinates(bus_shape_temp)[, c(1:2)])%>%
+  mutate(geometry=st_as_sfc(paste0("POINT(", X, " ", Y, ")")))%>%
+  st_sf(crs=3826)
+dist_point=as.numeric(st_distance(bus_shape_coord[1:(nrow(bus_shape_coord)-1),],
+                                  bus_shape_coord[2:(nrow(bus_shape_coord)),], by_element=T))
+
+tm_shape(bus_shape_temp)+
+  tm_lines()+
+  tm_shape(bus_stop_temp)+
+  tm_dots()+
+  tm_shape(bus_shape_coord)+
+  tm_dots(col="blue")
+```
+
+
+<br>
+<span style="font-size:15pt;text-decoration:underline">**步驟二：將各路段細分**</span>  
+由於直線段可能很長，致使後續點為匹配過於粗糙，並非最接近的點位，故須將步驟一切分完成的路段再細分為至多每 10 公尺之路段，確保精確匹配。
+
+```{r algo-step-2, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="公車路段細分示意圖"}
+include_graphics("./figure/OD_dist_algo/OD_dist_algo_2.png")
+```
+
+```{r algo-step-2-code, echo=T, eval=T}
+# 將各路段細分為至多每10公尺一段(使配對更為精確)
+all_point=data.frame()
+for(i in c(1:nrow(bus_shape_coord))){
+  if(i!=nrow(bus_shape_coord)){
+    new_int_num=ceiling(dist_point[i]/10)
+    if(new_int_num>1){
+      new_point=data.frame(X=mapply(function(x) bus_shape_coord$X[i]+((bus_shape_coord$X[i+1]-bus_shape_coord$X[i])/new_int_num)*x, c(1:(new_int_num-1))),
+                           Y=mapply(function(x) bus_shape_coord$Y[i]+((bus_shape_coord$Y[i+1]-bus_shape_coord$Y[i])/new_int_num)*x, c(1:(new_int_num-1))))
+      temp_point=rbind(data.frame(X=bus_shape_coord$X[i], Y=bus_shape_coord$Y[i]), new_point)
+      all_point=rbind(all_point, temp_point)
+    }else{
+      all_point=rbind(all_point, data.frame(X=bus_shape_coord$X[i], Y=bus_shape_coord$Y[i]))
+    }
+  }else{
+    all_point=rbind(all_point, data.frame(X=bus_shape_coord$X[i], Y=bus_shape_coord$Y[i]))
+  }
+}
+all_point=mutate(all_point, geometry=st_as_sfc(paste0("POINT(", X, " ", Y, ")")))%>%
+  st_sf(crs=3826)
+
+tm_shape(bus_shape_temp)+
+  tm_lines()+
+  tm_shape(bus_stop_temp)+
+  tm_dots()+
+  tm_shape(all_point)+
+  tm_dots(col="blue")
+```
+
+
+<br>
+<span style="font-size:15pt;text-decoration:underline">**步驟三：計算各路線切分點之間的距離與累積里程**</span>  
+將所有路線的點萃取完成後，即可計算每一個點的累積里程。事實上 GTFS 資料即是透過這樣的方式建立資料，故若未來 TDX 可提供「符合國際公定標準」的公共運輸資料格式，則本演算法無須如此複雜。
+
+```{r algo-step-3, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="累積里程計算示意圖"}
+include_graphics("./figure/OD_dist_algo/OD_dist_algo_3.png")
+```
+
+```{r algo-step-3-code, echo=T, eval=T}
+# 計算各點之間的距離與累積里程
+dist_point=as.numeric(st_distance(all_point[1:(nrow(all_point)-1),], all_point[2:(nrow(all_point)),], by_element=T))
+all_point$Dist_Cum=c(0, mapply(function(x) sum(dist_point[1:x]), c(1:length(dist_point))))
+
+head(all_point)
+```
+
+
+<br>
+<span style="font-size:15pt;text-decoration:underline">**步驟四：計算原始公車站牌與路線切分點間的距離關係**</span>  
+計算原始公車站牌與路線切分點兩圖資間各點的距離，並挑選可匹配的候選點。為避免擷取過多資料運算，在此僅挑選鄰近站牌 30 公尺以內作為候選點。
+
+```{r algo-step-4, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="計算站牌與切分點間之距離示意圖"}
+include_graphics("./figure/OD_dist_algo/OD_dist_algo_4.png")
+```
+
+```{r algo-step-4-code, echo=T, eval=T}
+# 計算站點與候選點間距離並給定標籤(只篩選小於30公尺者)
+min_ret=function(x, y){
+  Dist=x[x<30]
+  Seq=which(x<30)
+  
+  if(length(Dist)==0){
+    Dist=min(x)
+    Seq=which.min(x)
+  }
+  return(list(Dist=Dist, Seq=Seq))
+}
+
+# 計算各點之間的距離與累積里程
+all_dist=as.matrix(st_distance(bus_stop_temp, all_point))
+all_dist_poss=apply(all_dist, 1, min_ret)
+
+# 查看第一個站牌的距離與配對的候選點
+all_dist_poss[[1]]
+```
+
+由以上回傳資料可知，第一個站牌鄰近 30 公尺內的候選點共 5 個，為切分點資料的第 1、2、3、4、1538 筆資料（\code{Seq}之標籤），而其距離存於\code{Dist}之標籤中。
+
+
+<br>
+<span style="font-size:15pt;text-decoration:underline">**步驟五：演算法尋找最可能匹配點位**</span>  
+此一步驟為本演算法的核心，係利用 Hidden Markov Model 之地圖匹配法，此一演算法大量應用於 GPS 或信令資料的地圖匹配程序中。其中機率分為 emission probability 與 transition probability。前者為打點位置與候選點間匹配的機率，若兩者直線距離愈大，機率愈低，於本案例中即是公車站牌至鄰近公車路線上候選點間的距離，若距離愈大機率即愈低。後者則為打點位置所匹配之候選點轉移至下一個候選點的機率，通常是兩者的距離愈短，機率愈高。Hidden Markov Model 照理而言是動態的模型，前一次的決定會影響後者，故演算法甚為複雜。而由於本案例中公車站牌數化的飄移位置並不大，且其所對應的公車路線亦已存在出現次序，故可單純利用貪婪（myopic）的方式，將每一公車站牌當下的 emission probability 與 transition probability 相乘取最大之機率值作為最終候選點即可。
+
+```{r algo-step-5, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="尋找最可能匹配點位示意圖"}
+include_graphics("./figure/OD_dist_algo/OD_dist_algo_5.png")
+```
+
+```{r algo-step-5-code, echo=T, eval=T}
+# 演算法尋找最可能匹配點位(類似Hidden Markov Model)
+all_seq=c()
+step_seq=0
+for(m in c(1:length(all_dist_poss))){
+  emis_prob=abs(1/all_dist_poss[[m]]$Dist)
+  trans_prob=1/(all_dist_poss[[m]]$Seq-step_seq)
+  step_seq=all_dist_poss[[m]]$Seq[which.max(emis_prob*trans_prob)]
+  all_seq=c(all_seq, step_seq)
+}
+print(all_seq)
+```
+
+此一順序即是對照公車路線切分點的資料，如第一個公車站牌所對應的數值為 1，意指該公車站牌應匹配至切分點的第 1 筆資料；又如第二個公車站牌所對應的數值為 23，意指該公車站牌應匹配至切分點的第 23 筆資料，以此類推。
+
+<br>
+<span style="font-size:15pt;text-decoration:underline">**步驟六：將匹配點位貼附於原始公車資料中**</span>  
+最後把前一步驟結果的候選點合併至原始的公車站牌中，並透過累積里程計算兩站點間旅行距離。
+
+```{r algo-step-6-code-1, echo=T, eval=T}
+# 將匹配點位貼附於原始公車資料中
+bus_stop_temp_rev=cbind(st_drop_geometry(bus_stop_temp), all_point[all_seq,])%>%
+  st_sf(crs=3826)
+
+# 透過累積里程計算兩站點間距離
+bus_stop_temp_rev$Dist_Intv=c(NA, bus_stop_temp_rev$Dist_Cum[c(2:nrow(bus_stop_temp_rev))]-bus_stop_temp_rev$Dist_Cum[c(1:nrow(bus_stop_temp_rev)-1)])
+
+tm_shape(bus_shape_temp)+
+  tm_lines()+
+  tm_shape(bus_stop_temp)+
+  tm_dots()+
+  tm_shape(bus_stop_temp_rev)+
+  tm_dots(col="red")
+```
+
+地圖中紅色點表示最終匹配的點位，所有點位必定落於公車路線上。最終結果匯出如下表所示。其中\code{Dist_Cum}是站點累積里程，\code{Dist_Intv}是該站與前一站之間的路網距離。
+
+```{r algo-step-6-code-2, echo=F, eval=T}
+datatable(st_drop_geometry(bus_stop_temp_rev), options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(bus_stop_temp_rev)), fontSize='80%')%>%
+  formatRound(c("PositionLon", "PositionLat"), digits=4)%>%
+  formatRound(c("X", "Y"), digits=2)%>%
+  formatRound(c("Dist_Cum", "Dist_Intv"), digits=0)
+```
+
 
 
 
