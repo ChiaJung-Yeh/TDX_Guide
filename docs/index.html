@@ -216,7 +216,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">TDX 運輸資料介接指南</h1>
 <p class="author"><em>Chia-Jung (Robert) Yeh 葉家榮<br />
-PhD: Insitute of Transport and Logistics Studies, USYD<br />
+<a href="https://www.sydney.edu.au/business/about/our-people/research-students/chia-jung-yeh-557.html"><strong>PhD: Insitute of Transport and Logistics Studies, USYD</strong></a><br />
 M.S.: Department of Transportation and Logistics Management, NYCU</em></p>
 <p class="date"><em>2023-09-06</em></p>
 </div>
@@ -231,7 +231,7 @@ M.S.: Department of Transportation and Logistics Management, NYCU</em></p>
 <p><span style="font-size:15pt;text-decoration:underline"><strong>高公局交通資料庫</strong></span><br />
 <a href="https://tisvcloud.freeway.gov.tw/">高公局交通資料庫</a>提供高速公路偵測器（VD）、電子收費系統（eTag）、路段線型圖資等資料，其中包括即時資料與歷史資料。其中eTag資料含括：各類車種通行量統計各類車種（M03A）、站間各車種中位數旅行時間（M04A）、站間各車種中位數行駛車速（M05A）、各旅次路徑原始資料（M06A）、各類車種旅次平均長度（M07A）和各類車種旅次數量（M08A）。此外，在介接或分析資料前，建議可參考<a href="https://tisvcloud.freeway.gov.tw/documents/TDCS%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8Av34.pdf">交通資料蒐集資源系統 資料使用手冊</a>與<a href="https://drive.google.com/file/d/12GzEhuiZa7yJc5zFGVEn8U9UJR22RrGy/view">即時路況資料標準</a>，以利正確使用之。</p>
 <p><span style="font-size:15pt;text-decoration:underline"><strong>社會經濟資料服務平臺</strong></span><br />
-<a href="https://segis.moi.gov.tw/STAT/Web/Portal/STAT_PortalHome.aspx">社會經濟資料服務平臺</a>提供各層級行政區（縣市/鄉鎮市區/村里）的社經資料，涵蓋人口、勞動介業、土地營建、教育文化、醫療衛生、產業等社會各面向之資料。惟因人口資料最為完整，故本套件中僅自該平臺介接人口與住宅普查資料。</p>
+<a href="https://segis.moi.gov.tw/STAT/Web/Portal/STAT_PortalHome.aspx">社會經濟資料服務平臺</a>提供各層級行政區（縣市/鄉鎮市區/村里）的社經資料，涵蓋人口、勞動就業、土地營建、教育文化、醫療衛生、產業等社會各面向之資料。惟因人口資料最為完整，故本套件中僅自該平臺介接人口與住宅普查資料。</p>
 <p><span style="font-size:15pt;text-decoration:underline"><strong>政府資料開放平臺</strong></span><br />
 <a href="https://data.gov.tw/">政府資料開放平臺</a>涵蓋面向為所有資料庫中最廣者，泛及生育、婚姻、職業、投票等，惟在運輸領域中較常應用者為所得資料，故本套件僅自該平臺介接全臺村里所得資料。</p>
 <p><br></br>
@@ -249,8 +249,8 @@ M.S.: Department of Transportation and Logistics Management, NYCU</em></p>
 <div class="notice">
 <p><font size="4"><strong>NOTE</strong></font><br />
 請確保 TDX 套件為最新版本！<br>
-R 套件更新於2023-08-24，套件版本為3.3<br>
-Python 套件更新於2023-05-10，套件版本為0.1.42 (註：Python 套件仍在努力更新中…)</p>
+R 套件更新於 2023-08-24，套件版本為 3.3<br>
+Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件仍在努力更新中…)</p>
 </div>
 <div id="套件下載" class="section level3 hasAnchor" number="1.2.1">
 <h3><span class="header-section-number">1.2.1</span> 套件下載<a href="index.html#套件下載" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -470,10 +470,10 @@ Python 套件更新於2023-05-10，套件版本為0.1.42 (註：Python 套件仍
 </tr>
 <tr>
 <td style="text-align:left;">
-公共自行車站點動態
+公共自行車站點歷史動態
 </td>
 <td style="text-align:left;">
-<a href="#公共自行車站點動態資料"><code>Bike_Remain_His()</code></a>
+<a href="#公共自行車站點歷史動態資料"><code>Bike_Remain_His()</code></a>
 </td>
 </tr>
 <tr>
@@ -874,7 +874,7 @@ TDX 大改版，重新更正介接方式（存取 API 服務的 token）與各�
 2023-08-19
 </td>
 <td style="text-align:left;">
-新增收入函式
+新增所得資料介接函式
 </td>
 </tr>
 <tr>
