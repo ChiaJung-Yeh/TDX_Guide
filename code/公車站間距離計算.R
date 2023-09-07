@@ -1,13 +1,6 @@
 library(dplyr)
 library(sf)
-library(ggplot2)
-library(nngeo)
-library(maptools)
-library(lwgeom)
-library(tmap)
-library(stringr)
 library(TDX)
-library(gifski)
 library(cli)
 
 client_id="client_id"
