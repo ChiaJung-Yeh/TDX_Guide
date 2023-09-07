@@ -139,7 +139,7 @@ get_token(client_id="YOUR-ID", client_secret="YOUR-SECRET")
 ```
 [**查詢結果**](https://chiajung-yeh.github.io/TDX_Guide/Bus_RouteFare.html)
 
-執行以上程式碼後，於 RStudio 右下角介面 Help 對話窗自動跳出函式資訊。另外亦可點[此](https://rdrr.io/github/ChiaJung-Yeh/NYCU_TDX/)查詢本套件所有函式及其功能。
+執行以上程式碼後，於 RStudio 右下角介面 Help 對話窗自動跳出函式資訊，並可透過「Run examples」執行範例程式碼。另外亦可點[此](https://rdrr.io/github/ChiaJung-Yeh/NYCU_TDX/)查詢本套件所有函式及其功能。
 
 
 ### R 套件版本目錄

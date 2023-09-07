@@ -262,7 +262,7 @@ tm_shape(bus_shape_temp)+
   tm_dots(col="red")
 ```
 
-地圖中紅色點表示最終匹配的點位，所有點位必定落於公車路線上。最終結果匯出如下表所示。其中`Dist_Cum`是站點累積里程，`Dist_Intv`是該站與前一站之間的路網距離。
+地圖中紅色點表示最終匹配的點位，所有點位必定落於公車路線上。最終結果匯出如下表所示。其中`Dist_Cum`是站點累積里程，`Dist_Intv`是該站與前一站之間的路網距離。如以下資料中，第一個公車站牌為「深美國小(消防分隊)」，累積里程為0；第二個公車站牌為「深美街」，累積里程為 206 公尺，故第一個公車站牌與第二個公車站牌間的旅行距離為 206 公尺。
 
 ```{r algo-step-6-code-2, echo=F, eval=T}
 datatable(st_drop_geometry(bus_stop_temp_rev), options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
