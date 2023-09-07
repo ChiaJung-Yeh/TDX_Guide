@@ -243,7 +243,7 @@ M.S.: Department of Transportation and Logistics Management, NYCU</em></p>
 <p><span style="font-size:15pt;text-decoration:underline"><strong>社會經濟資料服務平臺</strong></span><br />
 <a href="https://segis.moi.gov.tw/STAT/Web/Portal/STAT_PortalHome.aspx">社會經濟資料服務平臺</a>提供各層級行政區（縣市/鄉鎮市區/村里）的社經資料，涵蓋人口、勞動就業、土地營建、教育文化、醫療衛生、產業等社會各面向之資料。惟因人口資料最為完整，故本套件中僅自該平臺介接人口與住宅普查資料。</p>
 <p><span style="font-size:15pt;text-decoration:underline"><strong>政府資料開放平臺</strong></span><br />
-<a href="https://data.gov.tw/">政府資料開放平臺</a>涵蓋面向為所有資料庫中最廣者，泛及生育、婚姻、職業、投票等，惟在運輸領域中較常應用者為所得資料，故本套件僅自該平臺介接全臺村里所得資料。</p>
+<a href="https://data.gov.tw/">政府資料開放平臺</a>涵蓋面向為所有資料庫中最廣者，泛及生育、婚姻、職業、投票、交通等。本套件於該平臺介接全臺村里所得資料、臺北市 YouBike 租借紀錄資料。</p>
 <p><br></br>
 綜上各資料庫平臺之簡介，本套件所使用的介接平臺與資料如圖<a href="index.html#fig:TDX-outline">1.1</a>所示。</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:TDX-outline"></span>
@@ -259,7 +259,7 @@ M.S.: Department of Transportation and Logistics Management, NYCU</em></p>
 <div class="notice">
 <p><font size="4"><strong>NOTE</strong></font><br />
 請確保 TDX 套件為最新版本！<br>
-R 套件更新於 2023-08-24，套件版本為 3.3<br>
+R 套件更新於 2023-09-07，套件版本為 3.4<br>
 Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件仍在努力更新中…)</p>
 </div>
 <div id="套件下載" class="section level3 hasAnchor" number="1.2.1">
@@ -446,7 +446,7 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 <td style="text-align:left;">
 公車動態
 </td>
-<td style="text-align:left;">
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
 點
 </td>
 <td style="text-align:left;">
@@ -454,14 +454,11 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="3">
+<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="4">
 自行車
 </td>
 <td style="text-align:left;">
 公共自行車站點
-</td>
-<td style="text-align:left;">
-線
 </td>
 <td style="text-align:left;">
 <a href="自行車運輸資料.html#公共自行車站點資料"><code>Bike_Station()</code></a>
@@ -471,8 +468,8 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 <td style="text-align:left;">
 自行車路網
 </td>
-<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
-文字
+<td style="text-align:left;">
+線
 </td>
 <td style="text-align:left;">
 <a href="自行車運輸資料.html#自行車線型資料"><code>Bike_Shape()</code></a>
@@ -482,8 +479,19 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 <td style="text-align:left;">
 公共自行車站點歷史動態
 </td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+文字
+</td>
 <td style="text-align:left;">
 <a href="#公共自行車站點歷史動態資料"><code>Bike_Remain_His()</code></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+臺北市公共自行車租借紀錄
+</td>
+<td style="text-align:left;">
+<a href="#公共自行車租借紀錄資料"><code>Bike_OD_His()</code></a>
 </td>
 </tr>
 <tr>
@@ -494,9 +502,6 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 航空班表
 </td>
 <td style="text-align:left;">
-點
-</td>
-<td style="text-align:left;">
 <a href="航空與航運資料.html#航空班表資料"><code>Air_Schedule()</code></a>
 </td>
 </tr>
@@ -504,8 +509,8 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 <td style="text-align:left;">
 港口點位
 </td>
-<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
-文字
+<td style="text-align:left;">
+點
 </td>
 <td style="text-align:left;">
 <a href="航空與航運資料.html#港口點位資料"><code>Ship_Port()</code></a>
@@ -514,6 +519,9 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 <tr>
 <td style="text-align:left;">
 航運航線
+</td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+文字
 </td>
 <td style="text-align:left;">
 <a href="#航運航線資料"><code>Ship_Route()</code></a>
@@ -696,7 +704,7 @@ GTFS
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="index.html#cb4-1" tabindex="-1"></a><span class="co"># 查詢公車費率函式</span></span>
 <span id="cb4-2"><a href="index.html#cb4-2" tabindex="-1"></a>?Bus_RouteFare</span></code></pre></div>
 <p><a href="https://chiajung-yeh.github.io/TDX_Guide/Bus_RouteFare.html"><strong>查詢結果</strong></a></p>
-<p>執行以上程式碼後，於 RStudio 右下角介面 Help 對話窗自動跳出函式資訊。另外亦可點<a href="https://rdrr.io/github/ChiaJung-Yeh/NYCU_TDX/">此</a>查詢本套件所有函式及其功能。</p>
+<p>執行以上程式碼後，於 RStudio 右下角介面 Help 對話窗自動跳出函式資訊，並可透過「Run examples」執行範例程式碼。另外亦可點<a href="https://rdrr.io/github/ChiaJung-Yeh/NYCU_TDX/">此</a>查詢本套件所有函式及其功能。</p>
 </div>
 <div id="r-套件版本目錄" class="section level3 hasAnchor" number="1.2.5">
 <h3><span class="header-section-number">1.2.5</span> R 套件版本目錄<a href="index.html#r-套件版本目錄" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -759,7 +767,7 @@ GTFS
 2022-02-28
 </td>
 <td style="text-align:left;">
-修正地理編碼函式錯誤（Unicode亂碼問題）
+修正地理編碼函式錯誤（Unicode 亂碼問題）
 </td>
 </tr>
 <tr>
@@ -869,7 +877,7 @@ TDX 大改版，重新更正介接方式（存取 API 服務的 token）與各�
 2023-07-22
 </td>
 <td style="text-align:left;">
-將所有函式更改為以JSON格式介接，以提升效率
+將所有函式更改為以 JSON 格式介接，以提升效率
 </td>
 </tr>
 <tr>
@@ -902,7 +910,18 @@ TDX 大改版，重新更正介接方式（存取 API 服務的 token）與各�
 2023-08-24
 </td>
 <td style="text-align:left;">
-新增GTFS格式函式
+新增 GTFS 格式函式
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+3.4
+</td>
+<td style="text-align:left;">
+2023-09-07
+</td>
+<td style="text-align:left;">
+新增臺北市公共自行車租借紀錄函式
 </td>
 </tr>
 </tbody>
