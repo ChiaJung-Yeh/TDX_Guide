@@ -94,3 +94,9 @@ fig:algo-step-2
 fig:algo-step-3
 fig:algo-step-4
 fig:algo-step-5
+電子票證資料分析
+目的-1
+使用資料與函式-1
+fig:TDX-data-statistics-smartcard-exe2
+分析電子票證資料
+fig:TDX-data-statistics-smartcard-exe3

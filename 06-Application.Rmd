@@ -1,4 +1,4 @@
-```{r setup4, include=FALSE}
+```{r setup6, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(sf)
@@ -52,7 +52,7 @@ include_graphics("./figure/OD_dist.gif")
 請注意此演算法仍會產出部分錯誤的結果，須另行檢查，計算結果的優劣取決於原始 TDX 路線圖資的品質，如雙北市的公車路線圖資出現許多錯誤繞行、數化順序錯誤、SubRouteUID 錯誤對應等情形，導致計算結果錯誤甚大。因此本節以路線品質相對較佳的基隆市市區公車作為範例。
 
 
-<span style="font-size:15pt;text-decoration:underline">**步驟零：介接公車資料**</span>  
+<span style="font-size:15pt;text-decoration:underline">**步驟零：介接公車資料**</span>
 透過 TDX 套件介接公車路線、公車站牌、公車路線圖資三份資料。
 
 ```{r TDX_data_download, echo=T, eval=F}
@@ -106,7 +106,7 @@ tm_shape(bus_shape_temp)+
 由地圖可見，公車站牌大多未落於公車路線上，故本演算法必須先行透過地圖匹配將點位移至路線上！
 
 <br>
-<span style="font-size:15pt;text-decoration:underline">**步驟一：拆分公車路線之線段**</span>  
+<span style="font-size:15pt;text-decoration:underline">**步驟一：拆分公車路線之線段**</span>
 依據直線將原始公車圖資切分成數個直線段。先利用`st_coordinate()`將路線所有轉折點全數萃取出。演算法如圖\@ref(fig:algo-step-1)所示。
 
 需注意的是，本演算法的執行係假設路線圖資是依據公車路線由第一站至最後一站方式數化，故部分縣市（如雙北市）公車路線若未依據此一原則數化，則演算法將出現諸多謬誤。
@@ -133,7 +133,7 @@ tm_shape(bus_shape_temp)+
 
 
 <br>
-<span style="font-size:15pt;text-decoration:underline">**步驟二：將各路段細分**</span>  
+<span style="font-size:15pt;text-decoration:underline">**步驟二：將各路段細分**</span>
 由於直線段可能很長，致使後續點為匹配過於粗糙，並非最接近的點位，故須將步驟一切分完成的路段再細分為至多每 10 公尺之路段，確保精確匹配。
 
 ```{r algo-step-2, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="公車路段細分示意圖"}
@@ -171,7 +171,7 @@ tm_shape(bus_shape_temp)+
 
 
 <br>
-<span style="font-size:15pt;text-decoration:underline">**步驟三：計算各路線切分點之間的距離與累積里程**</span>  
+<span style="font-size:15pt;text-decoration:underline">**步驟三：計算各路線切分點之間的距離與累積里程**</span>
 將所有路線的點萃取完成後，即可計算每一個點的累積里程。事實上 GTFS 資料即是透過這樣的方式建立資料，故若未來 TDX 可提供「符合國際公定標準」的公共運輸資料格式，則本演算法無須如此複雜。
 
 ```{r algo-step-3, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="累積里程計算示意圖"}
@@ -188,7 +188,7 @@ head(all_point)
 
 
 <br>
-<span style="font-size:15pt;text-decoration:underline">**步驟四：計算原始公車站牌與路線切分點間的距離關係**</span>  
+<span style="font-size:15pt;text-decoration:underline">**步驟四：計算原始公車站牌與路線切分點間的距離關係**</span>
 計算原始公車站牌與路線切分點兩圖資間各點的距離，並挑選可匹配的候選點。為避免擷取過多資料運算，在此僅挑選鄰近站牌 30 公尺以內作為候選點。
 
 ```{r algo-step-4, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="計算站牌與切分點間之距離示意圖"}
@@ -200,7 +200,7 @@ include_graphics("./figure/OD_dist_algo/OD_dist_algo_4.png")
 min_ret=function(x, y){
   Dist=x[x<30]
   Seq=which(x<30)
-  
+
   if(length(Dist)==0){
     Dist=min(x)
     Seq=which.min(x)
@@ -220,7 +220,7 @@ all_dist_poss[[1]]
 
 
 <br>
-<span style="font-size:15pt;text-decoration:underline">**步驟五：演算法尋找最可能匹配點位**</span>  
+<span style="font-size:15pt;text-decoration:underline">**步驟五：演算法尋找最可能匹配點位**</span>
 此一步驟為本演算法的核心，係利用 Hidden Markov Model 之地圖匹配法，此一演算法大量應用於 GPS 或信令資料的地圖匹配程序中。其中機率分為 emission probability 與 transition probability。前者為打點位置與候選點間匹配的機率，若兩者直線距離愈大，機率愈低，於本案例中即是公車站牌至鄰近公車路線上候選點間的距離，若距離愈大機率即愈低。後者則為打點位置所匹配之候選點轉移至下一個候選點的機率，通常是兩者的距離愈短，機率愈高。Hidden Markov Model 照理而言是動態的模型，前一次的決定會影響後者，故演算法甚為複雜。而由於本案例中公車站牌數化的飄移位置並不大，且其所對應的公車路線亦已存在出現次序，故可單純利用貪婪（myopic）的方式，將每一公車站牌當下的 emission probability 與 transition probability 相乘取最大之機率值作為最終候選點即可。
 
 ```{r algo-step-5, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="尋找最可能匹配點位示意圖"}
@@ -243,7 +243,7 @@ print(all_seq)
 此一順序即是對照公車路線切分點的資料，如第一個公車站牌所對應的數值為 1，意指該公車站牌應匹配至切分點的第 1 筆資料；又如第二個公車站牌所對應的數值為 23，意指該公車站牌應匹配至切分點的第 23 筆資料，以此類推。
 
 <br>
-<span style="font-size:15pt;text-decoration:underline">**步驟六：將匹配點位貼附於原始公車資料中**</span>  
+<span style="font-size:15pt;text-decoration:underline">**步驟六：將匹配點位貼附於原始公車資料中**</span>
 最後把前一步驟結果的候選點合併至原始的公車站牌中，並透過累積里程計算兩站點間旅行距離。
 
 ```{r algo-step-6-code-1, echo=T, eval=T}
@@ -278,4 +278,198 @@ datatable(st_drop_geometry(bus_stop_temp_rev), options=list(pageLength=5, scroll
 
 
 完整程式碼請參見[此](https://raw.githubusercontent.com/ChiaJung-Yeh/TDX_Guide/master/code/%E5%85%AC%E8%BB%8A%E7%AB%99%E9%96%93%E8%B7%9D%E9%9B%A2%E8%A8%88%E7%AE%97.R)。
+
+
+
+## 電子票證資料分析
+本節透過 TDX 函式介接 YouBike 場站資料與臺北市公共自行車電子票證資料，並分析起訖對（OD Pair）流量與繪製地圖。
+
+### 目的
+電子票證資料係具有極高價值的資料，可細部瞭解民眾搭乘公共運輸的行為，諸如起訖對分布、轉乘行為、使用者類型等，以探勘既有公共運輸系統下民眾的旅運分布，並針對未來公共運輸發展提出具體政策建議。惟須注意的是，目前電子票證資料僅臺北市公共自行車為公開介接，可清楚每一使用者騎乘的租還時間與站點，其他縣市或運具的電子票證資料皆為「非公開資料」，必須撰寫計畫書向交通部數據匯流平臺申請([詳見此](#常見運輸資料平臺))。是故，本節利用公開的臺北市公共自行車電子票證資料作為示範分析。
+
+### 使用資料與函式
+```{r use_function_smartcard, echo=T, eval=F, warning=F, message=F}
+library(TDX)
+
+# TDX 套件中應用函式
+Bike_Station()
+Bike_OD_His()
+```
+
+```{r TDX_data_download_smartcard, echo=T, eval=F, warning=F, message=F}
+access_token=get_token(client_id, client_secret)
+
+#---介接資料---#
+# 臺北市公共自行車站點資料(介接2023年5月31日的資料)
+bike_station=Bike_Station(access_token, "Taipei", dates="2023-05-31", dtype="sf")
+
+# 臺北市公共自行車電子票證資料
+bike_od_his=Bike_OD_His(bikesys=2, time="2023-05")
+
+# 站點分布地圖
+tm_shape(bike_station)+
+  tm_dots()
+```
+
+```{r TDX_data_download_smartcard_exe, echo=F, eval=T, warning=F, message=F}
+# bike_station=Bike_Station(access_token, "Taipei", dates="2023-05-31", out="./data/bike_station_taipei.csv")
+# bike_od_his=Bike_OD_His(bikesys=2, time="2023-05", "C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/R Github Project/Data_Out/bike_od_his_taipei.csv")
+
+bike_station=read.csv("./data/bike_station_taipei.csv")%>%
+  mutate(geometry=st_as_sfc(paste0("POINT(", PositionLon, " ", PositionLat, ")")))%>%
+  st_sf(crs=4326)%>%
+  st_transform(crs=3826)
+bike_od_his=data.table::fread("C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/R Github Project/Data_Out/bike_od_his_taipei.csv")
+
+tm_shape(bike_station)+
+  tm_dots()
+```
+<br>
+由地圖先行觀察臺北市 YouBike 站點分布，可發現 YouBike 2.0 的密度非常高，截至 2023 年 5 月 31 日止，共計 1281 個站點。
+
+### 分析電子票證資料
+<br>
+<span style="font-size:15pt;text-decoration:underline">**整理電子票證**</span>
+```{r TDX_data_clean_smartcard, echo=T, eval=F, warning=F, message=F}
+#---處理時間格式---#
+
+# 將時間格式轉換為臺北標準時間
+library(lubridate) # 引入處理時間的套件
+bike_od_his$RentTime=as_datetime(bike_od_his$RentTime, tz="Asia/Taipei")
+bike_od_his$ReturnTime=as_datetime(bike_od_his$ReturnTime, tz="Asia/Taipei")
+
+# 建立計算時間的函式(將「時:分:秒」轉換為分鐘數)
+time_conv=function(x){
+  time_hr=as.numeric(substr(x, 1, regexpr(":", x)-1)) # 小時數
+  time_min=as.numeric(substr(x, regexpr(":", x)+1, regexpr(":", x)+2)) # 分鐘數
+  time_sec=as.numeric(substr(x, regexpr(":", x)+4, regexpr(":", x)+5)) # 秒數
+  return((time_hr*60+time_min+time_sec/60))
+}
+
+# 計算騎乘時間(分鐘)
+bike_od_his$RideTime=time_conv(bike_od_his$RideTime)
+```
+
+```{r TDX_data_clean_smartcard_exe, echo=F, eval=T, warning=F, message=F}
+library(lubridate)
+bike_od_his$RentTime=force_tz(bike_od_his$RentTime, tz="Asia/Taipei")
+bike_od_his$ReturnTime=force_tz(bike_od_his$ReturnTime, tz="Asia/Taipei")
+time_conv=function(x){
+  time_hr=as.numeric(substr(x, 1, regexpr(":", x)-1)) # 小時數
+  time_min=as.numeric(substr(x, regexpr(":", x)+1, regexpr(":", x)+2)) # 分鐘數
+  time_sec=as.numeric(substr(x, regexpr(":", x)+4, regexpr(":", x)+5)) # 秒數
+  return((time_hr*60+time_min+time_sec/60))
+}
+bike_od_his$RideTime=time_conv(bike_od_his$RideTime)
+```
+
+程式碼中`lubridate`為 R 語言中處理時間的套件，利用 `as_datetime()`函式將租借與還車時間欄位（`RentTime`與`ReturnTime`）的文字資料轉換為時間格式。此外，以上程式碼中建立計算時間的函式（`time_conv()`），將原本騎乘時間欄位（`RideTime`）轉換為分鐘數，以便後續計算與分析。該函式中的[`substr()`](https://statisticsglobe.com/r-substr-substring)係用以截取自串中的第 X 個字元到第 Y 個字元；[`regexpr()`](https://cran.r-project.org/web/packages/stringr/vignettes/regular-expressions.html)係用以檢查特定文字位於字串中的第幾個字元。
+
+<br>
+<span style="font-size:15pt;text-decoration:underline">**統計騎乘時間分布**</span>
+
+接著針對騎乘時間分布計算統計值，常見指標如平均值（`mean()`）、中位數（`median()`）、全距（`range`()`）、標準差（`sd`()`）、最大值（`max`()`）、最小值（`min()`）、敘述性統計（`summary`()`），並繪製騎乘時間四分位數圖如圖\@ref(fig:TDX-data-statistics-smartcard-exe2)所示，及騎乘時間密度圖如圖\@ref(fig:TDX-data-statistics-smartcard-exe3)所示。
+
+```{r TDX_data_statistics_smartcard, echo=T, eval=F, warning=F, message=F}
+#---計算騎乘時間統計值(Descriptive Statistics)---#
+# 平均值
+mean(bike_od_his$RideTime)
+# 中位數
+median(bike_od_his$RideTime)
+# 全距
+range(bike_od_his$RideTime)
+# 標準差
+sd(bike_od_his$RideTime)
+# 最大值
+max(bike_od_his$RideTime)
+# 最小值
+min(bike_od_his$RideTime)
+# 利用summary函式查看主要統計指標
+summary(bike_od_his$RideTime)
+
+#---刪除離群值---#
+# 計算四分位距(Interquartile range)
+IQR=quantile(bike_od_his$RideTime, 0.75)-quantile(bike_od_his$RideTime, 0.25)
+# Q3+1.5*IQR以上者，定義為離群值
+outlier=as.numeric(quantile(bike_od_his$RideTime, 0.75)+1.5*IQR)
+# 計算離群值個數
+sum(bike_od_his$RideTime>quantile(bike_od_his$RideTime, 0.75)+1.5*IQR)
+# 刪除離群值
+bike_od_his=bike_od_his[which(bike_od_his$RideTime<outlier)]
+
+# 畫騎乘時間四分位數圖
+ggplot()+
+  geom_boxplot(aes(y=bike_od_his$RideTime))
+
+# 畫騎乘時間密度圖
+ggplot()+
+  geom_density(aes(x=bike_od_his$RideTime))
+```
+
+```{r TDX_data_statistics_smartcard_exe1, echo=F, eval=T, warning=F, message=F}
+cat(paste0("平均值： ", round(mean(bike_od_his$RideTime), 3)))
+cat(paste0("全距： ", round(median(bike_od_his$RideTime), 3)))
+cat(paste0("標準差： ", round(sd(bike_od_his$RideTime), 3)))
+cat(paste0("最大值： ", round(max(bike_od_his$RideTime), 3)))
+cat(paste0("最小值： ", round(min(bike_od_his$RideTime), 3)))
+cat(paste0("主要統計指標：\n"))
+summary(bike_od_his$RideTime)
+
+IQR=quantile(bike_od_his$RideTime, 0.75)-quantile(bike_od_his$RideTime, 0.25)
+outlier=as.numeric(quantile(bike_od_his$RideTime, 0.75)+1.5*IQR)
+cat(paste0("離群值個數： ", sum(bike_od_his$RideTime>quantile(bike_od_his$RideTime, 0.75)+1.5*IQR)))
+
+bike_od_his=bike_od_his[which(bike_od_his$RideTime<outlier)]
+```
+
+```{r TDX-data-statistics-smartcard-exe2, echo=F, eval=T, out.width="80%", fig.align="center", fig.cap="騎乘時間四分位數圖", warning=F, message=F}
+ggplot()+
+  geom_boxplot(aes(y=bike_od_his$RideTime))+
+  ylab("騎乘時間")+
+  theme_minimal()+
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.title.y=element_text(family="A", size=15),
+        axis.text.y=element_text(family="A", size=12))
+```
+
+```{r TDX-data-statistics-smartcard-exe3, echo=F, eval=T, out.width="80%", fig.align="center", fig.cap="騎乘時間密度圖", warning=F, message=F}
+ggplot()+
+  geom_density(aes(x=bike_od_his$RideTime))+
+  xlab("騎乘時間")+ ylab("密度")+
+  theme_minimal()+
+  theme(axis.title=element_text(family="A", size=15),
+        axis.text=element_text(family="A", size=12))
+```
+
+<br>
+<span style="font-size:15pt;text-decoration:underline">**統計站點起訖對**</span>
+
+統計各站點起訖對於擷取資料一個月內的所有流量，進而瞭解其空間分布情形。利用 `dplyr()`套件中的 [`group_by %>% summarise()`](https://chiajung-yeh.github.io/R-Code-Sharing/R_Preliminary/R_Preliminary.html#24_Group_by_(_Summarise)) 函式，針對起站（）與訖站先行分群，並將相同起訖對者計算出現次數（`n()`），即為該起訖對於特定月份的旅次總量。此外利用 [`arrange()`](https://chiajung-yeh.github.io/R-Code-Sharing/R_Preliminary/R_Preliminary.html#26_Arrange) 函式將計算結果由多至少排列。
+
+```{r TDX_data_od_smartcard, echo=T, eval=F, warning=F, message=F}
+#---統計站點起訖對流量---#
+# 統計完成後依據旅次量由多至少排列
+bike_od_trip=group_by(bike_od_his, RentStation, ReturnStation)%>%
+  summarise(Trips=n())%>%
+  arrange(desc(Trips))
+
+# 擷取前二十大起訖對
+bike_od_trip[1:20,]
+```
+
+計算結果如下表所示。由表中可見，往返於「臺灣科技大學側門」與「捷運公館站(2號出口)」間的起訖對為全臺北市旅次量最大者。
+
+```{r TDX_data_od_smartcard_exe, echo=F, eval=T, warning=F, message=F}
+bike_od_trip=group_by(bike_od_his, RentStation, ReturnStation)%>%
+  summarise(Trips=n())%>%
+  arrange(desc(Trips))
+datatable(bike_od_trip[1:20,], options=list(pageLength=5, scrollX=T, headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(bike_od_trip)), fontSize='80%')
+```
+
 
