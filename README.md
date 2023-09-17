@@ -453,5 +453,5 @@ GTFS
 
 ## 聯繫
 
-葉家榮 (Chia-Jung, Yeh) Email:
+葉家榮 (Chia-Jung Yeh) Email:
 <a href="mailto:chia-jung.yeh@sydney.edu.au"><u><chia-jung.yeh@sydney.edu.au></u></a>
