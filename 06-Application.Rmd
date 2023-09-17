@@ -368,7 +368,7 @@ bike_od_his$RideTime=time_conv(bike_od_his$RideTime)
 <br>
 <span style="font-size:15pt;text-decoration:underline">**統計騎乘時間分布**</span>
 
-接著針對騎乘時間分布計算統計值，常見指標如平均值（`mean()`）、中位數（`median()`）、全距（`range`()`）、標準差（`sd`()`）、最大值（`max`()`）、最小值（`min()`）、敘述性統計（`summary`()`），並繪製騎乘時間四分位數圖如圖\@ref(fig:TDX-data-statistics-smartcard-exe2)所示，及騎乘時間密度圖如圖\@ref(fig:TDX-data-statistics-smartcard-exe3)所示。
+接著針對騎乘時間分布計算統計值，常見指標如平均值（`mean()`）、中位數（`median()`）、全距（`range()`）、標準差（`sd()`）、最大值（`max()`）、最小值（`min()`）、敘述性統計（`summary()`），並繪製騎乘時間四分位數圖如圖\@ref(fig:TDX-data-statistics-smartcard-exe2)所示，及騎乘時間密度圖如圖\@ref(fig:TDX-data-statistics-smartcard-exe3)所示。
 
 ```{r TDX_data_statistics_smartcard, echo=T, eval=F, warning=F, message=F}
 #---計算騎乘時間統計值(Descriptive Statistics)---#
