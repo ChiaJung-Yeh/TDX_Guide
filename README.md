@@ -34,6 +34,10 @@ YouBike 租借紀錄資料。
 [不動產成交案件資料供應系統](https://plvr.land.moi.gov.tw/DownloadOpenData)提供介接房價與土地交易價格資料之
 API，資料含括不動產買賣、預售屋買賣與不動產租賃。
 
+本套件所介接之資料庫平臺彙整如下圖：
+
+<img src="./figure/TDX_outline.png" width="60%" style="display: block; margin: auto;" />
+
 本指南所開發之套件功能彙整如下表：
 
 <table class="table table-striped table-hover" style="font-size: 14px; margin-left: auto; margin-right: auto;">
@@ -422,7 +426,7 @@ GTFS
 
 ## 套件安裝說明
 
-<img src="../figure/TDX_icon.png" width="30%" style="display: block; margin: auto;" />
+<img src="./figure/TDX_icon.png" width="30%" style="display: block; margin: auto;" />
 
 本指南中所建立的 TDX 套件可利用 R 語言或 Python 安裝之。
 
