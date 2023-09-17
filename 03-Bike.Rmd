@@ -190,7 +190,7 @@ kable(TDX_table, booktabs=T, caption="`Bike_Shape()`函式參數設定表")%>%
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
 **回傳新竹市公共自行車剩餘車輛歷史資料**
 ```{r Bike_His_code1, echo=T, eval=T, message=F, warning=F}
-# 介接臺北市公共自行車站點
+# 介接新竹市公共自行車站點
 Hsinchu_bike_history=Bike_Remain_His(access_token, "Hsinchu", dates="2022-10-10")
 ```
 

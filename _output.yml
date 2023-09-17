@@ -10,7 +10,7 @@ bookdown::gitbook:
       before: |
         <li><a href="./">TDX 運輸資料介接指南</a></li>
       after: |
-        <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
+        <li><a href="https://www.sydney.edu.au/business/about/our-people/research-students/chia-jung-yeh-557.html" target="blank">葉家榮 Chia-Jung Yeh</a></li>
     fontsettings:
       theme: white
       family: serif
