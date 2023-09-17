@@ -422,7 +422,7 @@ GTFS
 
 ## 套件安裝說明
 
-<img src="./figure/TDX_icon.png" width="30%" style="display: block; margin: auto;" />
+<img src="../figure/TDX_icon.png" width="30%" style="display: block; margin: auto;" />
 
 本指南中所建立的 TDX 套件可利用 R 語言或 Python 安裝之。
 
@@ -447,5 +447,5 @@ GTFS
 
 ## 聯繫
 
-葉家榮 (Chia Jung, Yeh) Email:
+葉家榮 (Chia-Jung, Yeh) Email:
 <a href="mailto:chia-jung.yeh@sydney.edu.au"><u><chia-jung.yeh@sydney.edu.au></u></a>
