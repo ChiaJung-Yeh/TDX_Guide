@@ -1,33 +1,40 @@
-## Overview
+## 套件功能
 
-<img src="./figure/TDX_icon.png" width="30%" style="display: block; margin: auto;" />
+運輸資料涵蓋範圍廣泛，如公共運輸資料、交通流量資料、社會經濟資料等，皆儲存於不同的資料庫中，故本套件旨在整合各界資源，透過簡單的函式介接資料，以期提升運輸領域研究的資料蒐集效率。
 
-This package can be used to connect transportation data from TDX
-(Transport Data eXchange) in a neat and efficient way. TDX platform is
-supported by Ministry of Transportation and Communications (MOTC) in
-Taiwan, which provides lots of API for the members download the
-transportation data. Before using the function provided in this package,
-the authentication key is a must, which can be applied from [TDX
-platform](https://tdx.transportdata.tw/register). After being a member
-of TDX, you will soon get the Client Id and Client Secret, please check
-out in the [API key
-Dashboard](https://tdx.transportdata.tw/user/dataservice/key).
+## 常見運輸資料平臺
 
-## Installation
+<span style="font-size:15pt;text-decoration:underline">**運輸資料流通服務平臺**</span>  
+[運輸資料流通服務平臺（Transport Data eXchange,
+TDX）](https://tdx.transportdata.tw/)係透過 Open API
+建立運輸領域開放資料服務，並將大部分運輸資料整合為一，以利使用者自單一介面尋找各類型運輸資料，其中包括公共運輸、路況資訊、停車資訊、觀光資訊、GIS
+圖資、道路編碼、地理編碼等服務。其中公共運輸資料所涵蓋運具泛及軌道運輸（臺鐵、高鐵、捷運、輕軌）、公車（公路客運、市區公車）、公共自行車、航空、航運等。平臺上主要可分為動態資料與靜態資料，靜態資料係指更新週期較長的資料，如時刻表、線型等，而動態資料則是指短時間內定時更新的即時資料，諸如運具即時位置、即時運具剩餘數量等。本套件的大部分函式皆來自此一平臺，除可介接最新資料外，亦可下載特定歷史時間的資料。
 
-Please install the package from Github (ChiaJung-Yeh/NYCU\_TDX).  
-If you are Python user, please refer to
-[here](https://pypi.org/project/nycu-tdx-py/) for Python package via
-PyPi.
+<span style="font-size:15pt;text-decoration:underline">**交通部數據匯流平臺**</span>  
+[交通部數據匯流平臺](https://ticp.motc.gov.tw/ConvergeProj/index)主要提供歷史運輸資料，惟此平臺下載資料的方式並非透過
+Open Data
+標準介面，而是直接自官網中申請資料，待平臺管理單位審核通過後即可下載。須注意的是，若欲申請此一平臺的資料必須先行註冊會員。故本套件無法直接介接該平臺的資料，請務必至網站申請與下載。此一平臺含括旅運資料、營運資料、安全資料等。旅運資料係指公共運輸站點、路線、歷史即時位置等，以及公路車輛偵測器、電子標籤（eTag）等資料，此資料現已轉移至
+TDX
+介接，並可透過本套件的函式取得該歷史資料。營運資料則是指公共運輸各站分時資料、電子票證資料、站點起訖對統計資料等。安全資料則為交通事故
+A1、A2
+的表一與表二資料。惟須注意，營運資料、安全資料除線上申請外，尚須撰寫書面申請資料摘要（如：研究計畫、應用程式開發計畫），以及書面申請使用表，並將兩份文件寄送至交通部數據匯流平臺予以審查。申請資料摘要範例請[點此](https://github.com/ChiaJung-Yeh/TDX_Guide/raw/master/documents/%E4%BA%A4%E9%80%9A%E9%83%A8%E4%BA%A4%E9%80%9A%E6%95%B8%E6%93%9A%E8%B3%87%E6%96%99%E7%94%B3%E8%AB%8B%E4%BD%BF%E7%94%A8%E8%A1%A8%E7%AF%84%E4%BE%8B.xlsx)；申請使用表範例請[點此](https://github.com/ChiaJung-Yeh/TDX_Guide/raw/master/documents/%E7%94%B3%E8%AB%8B%E8%B3%87%E6%96%99%E6%91%98%E8%A6%81%E7%AF%84%E4%BE%8B.docx)。
 
-    install.packages("devtools")
-    devtools::install_github("ChiaJung-Yeh/NYCU_TDX")
-    library(TDX)
+<span style="font-size:15pt;text-decoration:underline">**高公局交通資料庫**</span>  
+[高公局交通資料庫](https://tisvcloud.freeway.gov.tw/)提供高速公路偵測器（VD）、電子收費系統（eTag）、路段線型圖資等資料，其中包括即時資料與歷史資料。其中eTag資料含括：各類車種通行量統計各類車種（M03A）、站間各車種中位數旅行時間（M04A）、站間各車種中位數行駛車速（M05A）、各旅次路徑原始資料（M06A）、各類車種旅次平均長度（M07A）和各類車種旅次數量（M08A）。此外，在介接或分析資料前，建議可參考[交通資料蒐集資源系統
+資料使用手冊](https://tisvcloud.freeway.gov.tw/documents/TDCS%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8Av34.pdf)與[即時路況資料標準](https://drive.google.com/file/d/12GzEhuiZa7yJc5zFGVEn8U9UJR22RrGy/view)，以利正確使用之。
 
-## Usage
+<span style="font-size:15pt;text-decoration:underline">**社會經濟資料服務平臺**</span>  
+[社會經濟資料服務平臺](https://segis.moi.gov.tw/STAT/Web/Portal/STAT_PortalHome.aspx)提供各層級行政區（縣市/鄉鎮市區/村里）的社經資料，涵蓋人口、勞動就業、土地營建、教育文化、醫療衛生、產業等社會各面向之資料。本套件中自該平臺介接人口與住宅普查資料、土地使用資料、全臺各級學校資料。
 
-All functions provided in this package are summarized in the table
-below.
+<span style="font-size:15pt;text-decoration:underline">**政府資料開放平臺**</span>  
+[政府資料開放平臺](https://data.gov.tw/)涵蓋面向為所有資料庫中最廣者，泛及生育、婚姻、職業、投票、交通等。本套件於該平臺介接全臺村里所得資料、臺北市
+YouBike 租借紀錄資料。
+
+<span style="font-size:15pt;text-decoration:underline">**不動產成交案件資料供應系統**</span>  
+[不動產成交案件資料供應系統](https://plvr.land.moi.gov.tw/DownloadOpenData)提供介接房價與土地交易價格資料之
+API，資料含括不動產買賣、預售屋買賣與不動產租賃。
+
+本指南所開發之套件功能彙整如下表：
 
 <table class="table table-striped table-hover" style="font-size: 14px; margin-left: auto; margin-right: auto;">
 <thead>
@@ -413,65 +420,32 @@ GTFS
 </tbody>
 </table>
 
-Data retrieving process requires an access token to obtain the data from
-TDX platform. Most function in this package should use function
-`get_token()` in advance to obtain the token by entering your Client ID
-and Client Secret first. Note that the access token will expire in 1
-day.
+## 套件安裝說明
 
-Take retrieving MRT stations of Taipei Metro System for example. The
-code is shown below. Here the argument `CLIENT_ID` and `CLIEN_SECRET` is
-the authentication key applied from TDX.
+<img src="./figure/TDX_icon.png" width="30%" style="display: block; margin: auto;" />
 
-    # get the access token first
-    access_token=get_token("CLIENT_ID", "CLIEN_SECRET")
+本指南中所建立的 TDX 套件可利用 R 語言或 Python 安裝之。
 
-    # retrieve Taipei MRT station
-    TRTC_station=Rail_Station(access_token, "TRTC")
+<span style="font-size:15pt;text-decoration:underline">**R**</span>
 
-    # historical data
-    # TRTC_station=Rail_Station(access_token, "TRTC", dates="2023-01-01")
+    # 安裝devtools套件
+    install.packages(devtools)
 
-    head(TRTC_station)
+    # 自GitHub下載TDX套件
+    devtools::install_github("ChiaJung-Yeh/NYCU_TDX")
 
-The result is shown as followings.
+    # 載入TDX套件
+    library(TDX)
 
-    ## #---TRTC Station Downloaded---#
+<span style="font-size:15pt;text-decoration:underline">**Python**</span>
 
-    ##   StationUID StationID StationName                       StationAddress
-    ## 1  TRTC-BL01      BL01        頂埔 236040新北市土城區中央路4段51之6號B3
-    ## 2  TRTC-BL02      BL02        永寧   236036新北市土城區中央路3段105號B1
-    ## 3  TRTC-BL03      BL03        土城   236017新北市土城區金城路1段105號B1
-    ## 4  TRTC-BL04      BL04        海山       236023新北市土城區海山路39號B2
-    ## 5  TRTC-BL05      BL05    亞東醫院  220056新北市板橋區南雅南路2段17號B1
-    ## 6  TRTC-BL06      BL06        府中 220052新北市板橋區縣民大道1段193號B1
-    ##   BikeAllowOnHoliday LocationCity LocationCityCode LocationTown
-    ## 1               TRUE       新北市              NWT       土城區
-    ## 2               TRUE       新北市              NWT       土城區
-    ## 3               TRUE       新北市              NWT       土城區
-    ## 4               TRUE       新北市              NWT       土城區
-    ## 5               TRUE       新北市              NWT       板橋區
-    ## 6               TRUE       新北市              NWT       板橋區
-    ##   LocationTownCode PositionLon PositionLat
-    ## 1         65000130    121.4187    24.95935
-    ## 2         65000130    121.4361    24.96682
-    ## 3         65000130    121.4443    24.97313
-    ## 4         65000130    121.4488    24.98545
-    ## 5         65000010    121.4525    24.99828
-    ## 6         65000010    121.4593    25.00847
+    # 自PyPI下載TDX套件(使用Anaconda Prompt)
+    pip install nycu-tdx-py
 
-Usages of other functions can be found in the **[TDX
-Guide](https://chiajung-yeh.github.io/TDX_Guide/)** website.
+    # 載入TDX套件
+    from nycu_tdx_py import tdx
 
-## Support
+## 聯繫
 
-This package takes advantage of API service provided by TDX, MOTC.
-
-<img src="./figure/TDX.png" width="60%" style="display: block; margin: auto;" />
-
-## Contact
-
-For questions, bugs, and other discussion, please feel free to contact
-the package maintainer, Chia Jung, Yeh.  
-Email:
+葉家榮 (Chia Jung, Yeh) Email:
 <a href="mailto:chia-jung.yeh@sydney.edu.au"><u><chia-jung.yeh@sydney.edu.au></u></a>
