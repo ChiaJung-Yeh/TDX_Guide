@@ -43,6 +43,9 @@ API，資料含括不動產買賣、預售屋買賣與不動產租賃。
 本指南所開發之套件功能彙整如下表：
 
 <table class="table table-striped table-hover" style="font-size: 14px; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">
+本套件函式綜覽
+</caption>
 <thead>
 <tr>
 <th style="text-align:left;font-weight: bold;color: white !important;background-color: #8E8E8E !important;">
@@ -371,28 +374,74 @@ API，資料含括不動產買賣、預售屋買賣與不動產租賃。
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
-人口
+<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="7">
+社經與土地
 </td>
 <td style="text-align:left;">
 人口（含各年齡層與性別資料）
 </td>
 <td style="text-align:left;vertical-align: middle !important;" rowspan="2">
-文字
+面
 </td>
 <td style="text-align:left;">
 `Population()`
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
-所得
+<td style="text-align:left;">
+土地使用
 </td>
+<td style="text-align:left;">
+`Landuse()`
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 所得（各村里）
 </td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+文字
+</td>
 <td style="text-align:left;">
 `Income()`
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+房價
+</td>
+<td style="text-align:left;">
+`House_Price()`
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+學校
+</td>
+<td style="text-align:left;">
+點
+</td>
+<td style="text-align:left;">
+`School()`
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+醫院
+</td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+面
+</td>
+<td style="text-align:left;">
+`Hospital()`
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+工商服務業
+</td>
+<td style="text-align:left;">
+`Business()`
 </td>
 </tr>
 <tr>
@@ -401,9 +450,6 @@ API，資料含括不動產買賣、預售屋買賣與不動產租賃。
 </td>
 <td style="text-align:left;">
 行政區疆域
-</td>
-<td style="text-align:left;">
-面
 </td>
 <td style="text-align:left;">
 `District_Shape()`
@@ -421,6 +467,20 @@ GTFS
 </td>
 <td style="text-align:left;">
 `gtfs()`
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+事故資料
+</td>
+<td style="text-align:left;">
+全臺事故資料
+</td>
+<td style="text-align:left;">
+點/文字
+</td>
+<td style="text-align:left;">
+`Crash()`
 </td>
 </tr>
 </tbody>
