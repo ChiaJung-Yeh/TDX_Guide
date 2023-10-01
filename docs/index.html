@@ -23,7 +23,7 @@
 <meta name="author" content="Chia-Jung (Robert) Yeh 葉家榮 PhD: Insitute of Transport and Logistics Studies, USYD M.S.: Department of Transportation and Logistics Management, NYCU" />
 
 
-<meta name="date" content="2023-09-17" />
+<meta name="date" content="2023-10-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -185,6 +185,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="5.1" data-path="航空與航運資料.html"><a href="航空與航運資料.html#航空班表資料"><i class="fa fa-check"></i><b>5.1</b> 航空班表資料</a></li>
 <li class="chapter" data-level="5.2" data-path="航空與航運資料.html"><a href="航空與航運資料.html#港口點位資料"><i class="fa fa-check"></i><b>5.2</b> 港口點位資料</a></li>
+<li class="chapter" data-level="5.3" data-path="航空與航運資料.html"><a href="航空與航運資料.html#航運航線資料"><i class="fa fa-check"></i><b>5.3</b> 航運航線資料</a></li>
+<li class="chapter" data-level="5.4" data-path="航空與航運資料.html"><a href="航空與航運資料.html#航線靠港順序資料"><i class="fa fa-check"></i><b>5.4</b> 航線靠港順序資料</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html"><i class="fa fa-check"></i><b>6</b> <strong>其他 TDX 資料</strong></a>
 <ul>
@@ -234,7 +236,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p class="author"><em>Chia-Jung (Robert) Yeh 葉家榮<br />
 <a href="https://www.sydney.edu.au/business/about/our-people/research-students/chia-jung-yeh-557.html"><strong>PhD: Insitute of Transport and Logistics Studies, USYD</strong></a><br />
 M.S.: Department of Transportation and Logistics Management, NYCU</em></p>
-<p class="date"><em>2023-09-17</em></p>
+<p class="date"><em>2023-10-01</em></p>
 </div>
 <div id="運輸資料與介接套件" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> <strong>運輸資料與介接套件</strong><a href="index.html#運輸資料與介接套件" class="anchor-section" aria-label="Anchor link to header"></a></h1>
@@ -532,7 +534,7 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 文字
 </td>
 <td style="text-align:left;">
-<a href="#航運航線資料"><code>Ship_Route()</code></a>
+<a href="航空與航運資料.html#航運航線資料"><code>Ship_Route()</code></a>
 </td>
 </tr>
 <tr>
@@ -540,7 +542,7 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 航線靠港順序
 </td>
 <td style="text-align:left;">
-<a href="#航線靠港順序資料"><code>Ship_StopOfRoute()</code></a>
+<a href="航空與航運資料.html#航線靠港順序資料"><code>Ship_StopOfRoute()</code></a>
 </td>
 </tr>
 <tr>
@@ -622,7 +624,7 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="4">
+<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="7">
 社經與土地
 </td>
 <td style="text-align:left;">
@@ -663,11 +665,8 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
-學校
-</td>
 <td style="text-align:left;">
-全臺各級學校資訊
+學校
 </td>
 <td style="text-align:left;">
 點
@@ -677,14 +676,30 @@ Python 套件更新於 2023-05-10，套件版本為 0.1.42 (註：Python 套件�
 </td>
 </tr>
 <tr>
+<td style="text-align:left;">
+醫院
+</td>
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+面
+</td>
+<td style="text-align:left;">
+<a href="#醫院資料"><code>Hospital()</code></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+工商服務業
+</td>
+<td style="text-align:left;">
+<a href="#工商服務業資料"><code>Business()</code></a>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;font-weight: bold;">
 行政區
 </td>
 <td style="text-align:left;">
 行政區疆域
-</td>
-<td style="text-align:left;">
-面
 </td>
 <td style="text-align:left;">
 <a href="#行政區資料"><code>District_Shape()</code></a>
@@ -702,6 +717,20 @@ GTFS
 </td>
 <td style="text-align:left;">
 <a href="#公共運輸標準資料"><code>gtfs()</code></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+事故資料
+</td>
+<td style="text-align:left;">
+全臺事故資料
+</td>
+<td style="text-align:left;">
+點/文字
+</td>
+<td style="text-align:left;">
+<a href="#事故資料"><code>Crash()</code></a>
 </td>
 </tr>
 </tbody>
@@ -982,6 +1011,28 @@ TDX 大改版，重新更正介接方式（存取 API 服務的 token）與各�
 </td>
 <td style="text-align:left;">
 新增土地使用、學校資料介接函式
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+3.6
+</td>
+<td style="text-align:left;">
+2023-09-30
+</td>
+<td style="text-align:left;">
+新增醫院、工商服務業統計資料介接函式
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+3.7
+</td>
+<td style="text-align:left;">
+2023-10-01
+</td>
+<td style="text-align:left;">
+新增事故資料介接函式
 </td>
 </tr>
 </tbody>
