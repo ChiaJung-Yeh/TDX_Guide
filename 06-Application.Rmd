@@ -54,6 +54,7 @@ include_graphics("./figure/OD_dist.gif")
 
 
 <span style="font-size:15pt;text-decoration:underline">**步驟零：介接公車資料**</span>
+
 透過 TDX 套件介接公車路線、公車站牌、公車路線圖資三份資料。
 
 ```{r TDX_data_download, echo=T, eval=F}
@@ -108,6 +109,7 @@ tm_shape(bus_shape_temp)+
 
 <br>
 <span style="font-size:15pt;text-decoration:underline">**步驟一：拆分公車路線之線段**</span>
+
 依據直線將原始公車圖資切分成數個直線段。先利用`st_coordinate()`將路線所有轉折點全數萃取出。演算法如圖\@ref(fig:algo-step-1)所示。
 
 需注意的是，本演算法的執行係假設路線圖資是依據公車路線由第一站至最後一站方式數化，故部分縣市（如雙北市）公車路線若未依據此一原則數化，則演算法將出現諸多謬誤。
@@ -135,6 +137,7 @@ tm_shape(bus_shape_temp)+
 
 <br>
 <span style="font-size:15pt;text-decoration:underline">**步驟二：將各路段細分**</span>
+
 由於直線段可能很長，致使後續點為匹配過於粗糙，並非最接近的點位，故須將步驟一切分完成的路段再細分為至多每 10 公尺之路段，確保精確匹配。
 
 ```{r algo-step-2, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="公車路段細分示意圖"}
@@ -173,6 +176,7 @@ tm_shape(bus_shape_temp)+
 
 <br>
 <span style="font-size:15pt;text-decoration:underline">**步驟三：計算各路線切分點之間的距離與累積里程**</span>
+
 將所有路線的點萃取完成後，即可計算每一個點的累積里程。事實上 GTFS 資料即是透過這樣的方式建立資料，故若未來 TDX 可提供「符合國際公定標準」的公共運輸資料格式，則本演算法無須如此複雜。
 
 ```{r algo-step-3, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="累積里程計算示意圖"}
@@ -190,6 +194,7 @@ head(all_point)
 
 <br>
 <span style="font-size:15pt;text-decoration:underline">**步驟四：計算原始公車站牌與路線切分點間的距離關係**</span>
+
 計算原始公車站牌與路線切分點兩圖資間各點的距離，並挑選可匹配的候選點。為避免擷取過多資料運算，在此僅挑選鄰近站牌 30 公尺以內作為候選點。
 
 ```{r algo-step-4, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="計算站牌與切分點間之距離示意圖"}
@@ -222,6 +227,7 @@ all_dist_poss[[1]]
 
 <br>
 <span style="font-size:15pt;text-decoration:underline">**步驟五：演算法尋找最可能匹配點位**</span>
+
 此一步驟為本演算法的核心，係利用 Hidden Markov Model 之地圖匹配法，此一演算法大量應用於 GPS 或信令資料的地圖匹配程序中。其中機率分為 emission probability 與 transition probability。前者為打點位置與候選點間匹配的機率，若兩者直線距離愈大，機率愈低，於本案例中即是公車站牌至鄰近公車路線上候選點間的距離，若距離愈大機率即愈低。後者則為打點位置所匹配之候選點轉移至下一個候選點的機率，通常是兩者的距離愈短，機率愈高。Hidden Markov Model 照理而言是動態的模型，前一次的決定會影響後者，故演算法甚為複雜。而由於本案例中公車站牌數化的飄移位置並不大，且其所對應的公車路線亦已存在出現次序，故可單純利用貪婪（myopic）的方式，將每一公車站牌當下的 emission probability 與 transition probability 相乘取最大之機率值作為最終候選點即可。
 
 ```{r algo-step-5, echo=F, eval=T, out.width="90%", fig.align="center", fig.cap="尋找最可能匹配點位示意圖"}
@@ -245,6 +251,7 @@ print(all_seq)
 
 <br>
 <span style="font-size:15pt;text-decoration:underline">**步驟六：將匹配點位貼附於原始公車資料中**</span>
+
 最後把前一步驟結果的候選點合併至原始的公車站牌中，並透過累積里程計算兩站點間旅行距離。
 
 ```{r algo-step-6-code-1, echo=T, eval=T}
