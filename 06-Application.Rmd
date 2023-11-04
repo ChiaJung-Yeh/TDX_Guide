@@ -11,6 +11,7 @@ library(kableExtra)
 library(TDX)
 library(DT)
 library(tmap)
+library(rvest)
 
 windowsFonts(A=windowsFont("微軟正黑體"))
 tmap_mode("view")
@@ -471,5 +472,188 @@ datatable(bike_od_trip[1:20,], options=list(pageLength=5, scrollX=T, headerCallb
   )))%>%
   formatStyle(columns=c(1:ncol(bike_od_trip)), fontSize='80%')
 ```
+
+
+
+## 大臺北公車資訊爬蟲
+TDX 提供相當優渥的公共運輸資料，然而部分資料存在瑕疵，使分析或應用上相當困難。臺北市公車路線資料中，同一路線通常含有數條公車子路線，卻無法一一對應於線型資料（shape），且該資料中的子路線代碼部分為空白。此外線型資料不分去返程方向，故在使用時需格外注意，以避免分析謬誤。舉例而言，臺北公車「508」路線，其路線資訊與幾何線型分別如表\@ref(tab:taipei-bus-eg1)與表\@ref(tab:taipei-bus-eg2)所示。由表\@ref(tab:taipei-bus-eg1)可知，508 公車路線共計兩條，其一為去程（Direction:0），另一為返程（Direction:1）。由表\@ref(tab:taipei-bus-eg2)可知，路線線型幾何僅一筆資料，其幾何型態為`MULTILINESTRING`，含括多個線段。由此可見，無法將每一路線對應至唯一的幾何線型。另參見下方地圖，可發現 508 公車的`MULTILINESTRING`在一條道路中最多上達 4 條平行的路徑（放大地圖觀察！），並不合理，顯見 TDX 平臺所提供的路徑有些許瑕疵。
+
+[大臺北公車](https://ebus.gov.taipei/ebus)網站為一公車資訊查詢平臺，使用者可查詢每一條公車的去返程路線，並於地圖上顯示公車路線的站牌與線形。此一平臺的公車路線具方向性，此意味著該平臺後臺的路線幾何資訊應與 TDX 不相同，且其所使用的資訊更為精確。該平臺的[508路線](https://ebus.gov.taipei/Route/StopsOfRoute?routeid=0100050800)如圖\@ref(fig:TaipeiBus508)所示，由網頁介面可發現，路線去返程的線型係分開顯示，且無重疊的路線。
+
+```{r taipei-bus-eg1, echo=F, eval=T}
+# bus_shape=Bus_Shape(access_token, "Taipei", dtype="sf", out="C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/R Github Project/Data_Out/taipei_shape.shp")
+# bus_route=Bus_Route(access_token, "Taipei", out="C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/R Github Project/Data_Out/taipei_route.csv")
+bus_shape=read_sf("C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/R Github Project/Data_Out/taipei_shape.shp")
+colnames(bus_shape)=c("RouteUID","RouteID","RouteName","SubRouteUID","SubRouteID","SubRouteName","geometry")
+bus_route=read.csv("C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/R Github Project/Data_Out/taipei_route.csv", encoding="UTF-8")
+
+kable(filter(bus_route, RouteName %in% c("508"))[, c("RouteUID","RouteName","SubRouteUID","SubRouteName","Direction")], booktabs=T, caption="508 公車路線資訊")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")
+```
+
+```{r taipei-bus-eg2, echo=F, eval=T}
+kable(filter(bus_shape, RouteName %in% c("508"))[, c("RouteUID","RouteName","SubRouteUID","SubRouteName","geometry")], booktabs=T, caption="508 公車路線幾何")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")
+
+tm_shape(filter(bus_shape, RouteName %in% c("508")))+
+  tm_lines(col="blue")
+```
+
+<br>
+
+```{r TaipeiBus508, echo=F, out.width="100%", fig.align="center", fig.cap="大臺北公車平臺之508公車路線"}
+include_graphics("./figure/Taipei Bus/Taipei Bus 508.png")
+```
+
+
+有鑑於此，本節將透過爬蟲擷取[大臺北公車](https://ebus.gov.taipei/ebus)的資訊。於 R 語言中，爬蟲所需使用的套件為`rvest`，內含多個函式可讀取與分析 html 檔案，並萃取所需資訊。
+
+
+<span style="font-size:15pt;text-decoration:underline">**步驟一：擷取所有路線表**</span>
+
+參見[大臺北公車網頁公車動態介面](https://ebus.gov.taipei/ebus)如圖\@ref(fig:TaipeiBusPlatform)所示，其中羅列所有雙北市的公車路線名稱，必須先將所有路線彙整於一張表，以便後續分析與查詢。
+
+```{r TaipeiBusPlatform, echo=F, out.width="100%", fig.align="center", fig.cap="大臺北公車平臺介面"}
+include_graphics("./figure/Taipei Bus/Taipei Bus Platform.png")
+```
+
+
+```{r TaipeiBus-code1, echo=T, eval=F}
+# 擷取所有路線表
+url="https://ebus.gov.taipei/ebus"
+html_content=read_html(url)
+
+# 擷取標籤(方法一)
+all_route=html_nodes(html_content, "div section ul li a")
+
+# 擷取標籤(方法二)
+all_route=html_nodes(html_content, "#list a")
+
+# 萃取資訊
+all_route=data.frame(UniRouteId=gsub("javascript:go\\(|\\)|'", "", html_attr(all_route, 'href')),
+                     UniRouteName=gsub(" ", "", html_text(all_route)))
+```
+
+
+程式碼中首先藉由`read_html()`函式讀取指定網頁（url）的 html 檔案，接著萃取節點資訊。`"div section ul li a"`與`"#list a"`皆為圖\@ref(fig:TaipeiBusPlatform)中所有路線名稱的 html 標籤，可以透過兩種方式尋找之：
+
+* 方法一：
+  1. 於網頁任意處點選滑鼠右鍵，並點選「檢視網頁原始碼」（或 Ctrl+U）
+  2. 尋找到公車路線名稱的標籤，如圖\@ref(fig:html-node)所示
+  3. 依據層級設定標籤（如`"div section ul li a"`）
+
+
+```{r html-node, echo=F, out.width="100%", fig.align="center", fig.cap="html 網頁標籤"}
+include_graphics("./figure/Taipei Bus/html node.png")
+```
+
+* 方法二：
+  1. 下載 [chrome SelectorGadget](https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb)
+  2. 在 chrome 網頁的擴充功能（通常位於畫面右上角）中點選 SelectorGadget
+  3. 挑選所需要元素（黃框），並移除不需要的元素（紅框），待畫面黃色框選處皆為需要的元素後即可複製當下所顯示的 html 標籤（參見以下影片）
+  
+<p align="center"><iframe width="600" height="338" src="https://www.youtube.com/embed/fAI55Kl2QPo" title="SelectorGadget 操作說明" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></p>
+
+
+`html_nodes()`函式中第一個引數放置讀取的 html 檔案（html_content），第二個引數則放置前文所尋得的節點，如是即可萃取所有該節點內的公車路線資訊，此時所得資訊如下：
+
+```{r TaipeiBus-code1-output, echo=F, eval=T}
+html_content=read_html("https://ebus.gov.taipei/ebus")
+all_route=html_nodes(html_content, "div section ul li a")
+print(all_route)
+```
+
+由於路線名稱為每一個標籤的結果，故可直接透過`html_text()`函式萃取路線名稱。路線代碼則位於 href 的屬性中（`javascript:go('XXXXXXXXXX')`），故透過`html_attr()`函式萃取連結屬性。程式碼中的`gsub()`函式係用以去除不重要的字元，以取得完整的路線代碼與名稱。
+
+
+
+<span style="font-size:15pt;text-decoration:underline">**步驟二：逐一擷取路線與站點**</span>
+
+依據雷同的爬蟲方式，務必觀察網頁原始碼，取得網頁的節點資訊，並從中萃取站點與路線相關資訊，程式碼撰寫如下。
+
+```{r TaipeiBus-code2, echo=T, eval=F}
+# 逐一擷取路線與站點
+bus_route_all=data.frame()
+bus_stop_all=data.frame()
+bus_shape_all=data.frame()
+
+for(i in c(1:length(all_route$UniRouteId))){
+  url=paste0("https://ebus.gov.taipei/Route/StopsOfRoute?routeid=", all_route$UniRouteId[i])
+  html_content=read_html(url)
+  html_content=html_nodes(html_content, "script")
+  html_content=html_content[grepl("routeJsonString", html_content)]
+  html_content=strsplit(as.character(html_content), "\n")[[1]]
+  html_content=html_content[grepl("routeJsonString", html_content)]
+  html_content=strsplit(as.character(html_content), ";\\r")[[1]]
+  html_content=as.character(html_content[grepl("stringify", html_content)])
+  html_content=substr(html_content, regexpr("stringify", html_content)+10, max(which(strsplit(html_content, "")[[1]]=="}")))
+  html_content=rjson::fromJSON(html_content)
+  
+  # Bus Route
+  bus_route=data.frame(html_content[c("UniRouteId","Name","BeginStop","LastStop","TicketPrice","BusTimeDesc","HeadwayDesc","HolidayBusTimeDesc","HolidayHeadwayDesc","SegmentBuffer","orgphone")])%>%
+    rename(UniRouteName=Name)
+  
+  # Bus Stop
+  temp1=data.frame(UniRouteId=bus_route$UniRouteId,
+                   UniRouteName=bus_route$UniRouteName,
+                   UniStopId=mapply(function(x) html_content$GoDirStops[[x]]$UniStopId, c(1:length(html_content$GoDirStops))),
+                   UniStopName=mapply(function(x) html_content$GoDirStops[[x]]$Name, c(1:length(html_content$GoDirStops))),
+                   Longitude=mapply(function(x) html_content$GoDirStops[[x]]$Longitude, c(1:length(html_content$GoDirStops))),
+                   Latitude=mapply(function(x) html_content$GoDirStops[[x]]$Latitude, c(1:length(html_content$GoDirStops))),
+                   Direction=1,
+                   StopSequence=c(1:length(html_content$GoDirStops)))
+  if(!is.null(html_content$BackDirStops)){
+    temp2=data.frame(UniRouteId=bus_route$UniRouteId,
+                     UniRouteName=bus_route$UniRouteName,
+                     UniStopId=mapply(function(x) html_content$BackDirStops[[x]]$UniStopId, c(1:length(html_content$BackDirStops))),
+                     UniStopName=mapply(function(x) html_content$BackDirStops[[x]]$Name, c(1:length(html_content$BackDirStops))),
+                     Longitude=mapply(function(x) html_content$BackDirStops[[x]]$Longitude, c(1:length(html_content$BackDirStops))),
+                     Latitude=mapply(function(x) html_content$BackDirStops[[x]]$Latitude, c(1:length(html_content$BackDirStops))),
+                     Direction=2,
+                     StopSequence=c(1:length(html_content$BackDirStops)))
+    bus_stop=rbind(temp1, temp2)
+  }else{
+    bus_stop=temp1
+  }
+  
+  # Bus Shape
+  bus_shape=data.frame(UniRouteId=bus_route$UniRouteId,
+                       UniRouteName=bus_route$UniRouteName,
+                       WKT=c("wkt","wkt0","wkt1"),
+                       geometry=c(ifelse(is.null(html_content$wkt), NA, html_content$wkt),
+                                  ifelse(is.null(html_content$wkt0), NA, html_content$wkt0),
+                                  ifelse(is.null(html_content$wkt1), NA, html_content$wkt1)))
+  
+  bus_route_all=rbind(bus_route_all, bus_route)
+  bus_stop_all=rbind(bus_stop_all, bus_stop)
+  bus_shape_all=rbind(bus_shape_all, bus_shape)
+  print(i)
+}
+```
+
+再次回到 508 公車之案例，路線分為去返程兩條，如下地圖以不同顏色標記之，且不再有路線重疊之情況。
+
+```{r TaipeiBus-result, echo=F, eval=T}
+# bus_route=read.csv("C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/Vehicle Track/Bus Timetable/Bus Shape/Taipei Bus/Taipei Bus Route.csv", encoding="UTF-8")
+bus_shape=read_sf("C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/Vehicle Track/Bus Timetable/Bus Shape/Taipei Bus/Taipei Bus Shape.shp")
+names(bus_shape)=c("UniRouteId","UniRouteName","WKT","geometry")
+bus_stop=read.csv("C:/Users/USER/OneDrive - The University of Sydney (Students)/Desktop/R Transportation/Vehicle Track/Bus Timetable/Bus Shape/Taipei Bus/Taipei Bus Stop.csv", encoding="UTF-8")%>%
+  st_as_sf(coords=c("Longitude","Latitude"), crs=4326)
+
+temp1=filter(bus_shape, UniRouteName=="508")%>%
+  filter(WKT!="wkt")%>%
+  mutate(Direction=ifelse(WKT=="wkt0", "去程", "返程"))
+temp2=filter(bus_stop, UniRouteName=="508")%>%
+  mutate(Direction=ifelse(Direction==1, "去程", "返程"))
+
+tm_shape(temp1)+
+  tm_lines(col="Direction", palette=c("red", "blue"))+
+  tm_shape(temp2)+
+  tm_dots(col="Direction", palette=c("red", "blue"), legend.show=F)
+
+```
+
 
 
