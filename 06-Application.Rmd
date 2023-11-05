@@ -560,7 +560,7 @@ include_graphics("./figure/Taipei Bus/html node.png")
   1. 下載 [chrome SelectorGadget](https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb)
   2. 在 chrome 網頁的擴充功能（通常位於畫面右上角）中點選 SelectorGadget
   3. 挑選所需要元素（黃框），並移除不需要的元素（紅框），待畫面黃色框選處皆為需要的元素後即可複製當下所顯示的 html 標籤（參見以下影片）
-  
+
 <p align="center"><iframe width="600" height="338" src="https://www.youtube.com/embed/fAI55Kl2QPo" title="SelectorGadget 操作說明" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></p>
 
 
@@ -597,11 +597,11 @@ for(i in c(1:length(all_route$UniRouteId))){
   html_content=as.character(html_content[grepl("stringify", html_content)])
   html_content=substr(html_content, regexpr("stringify", html_content)+10, max(which(strsplit(html_content, "")[[1]]=="}")))
   html_content=rjson::fromJSON(html_content)
-  
+
   # Bus Route
   bus_route=data.frame(html_content[c("UniRouteId","Name","BeginStop","LastStop","TicketPrice","BusTimeDesc","HeadwayDesc","HolidayBusTimeDesc","HolidayHeadwayDesc","SegmentBuffer","orgphone")])%>%
     rename(UniRouteName=Name)
-  
+
   # Bus Stop
   temp1=data.frame(UniRouteId=bus_route$UniRouteId,
                    UniRouteName=bus_route$UniRouteName,
@@ -624,7 +624,7 @@ for(i in c(1:length(all_route$UniRouteId))){
   }else{
     bus_stop=temp1
   }
-  
+
   # Bus Shape
   bus_shape=data.frame(UniRouteId=bus_route$UniRouteId,
                        UniRouteName=bus_route$UniRouteName,
@@ -632,7 +632,7 @@ for(i in c(1:length(all_route$UniRouteId))){
                        geometry=c(ifelse(is.null(html_content$wkt), NA, html_content$wkt),
                                   ifelse(is.null(html_content$wkt0), NA, html_content$wkt0),
                                   ifelse(is.null(html_content$wkt1), NA, html_content$wkt1)))
-  
+
   bus_route_all=rbind(bus_route_all, bus_route)
   bus_stop_all=rbind(bus_stop_all, bus_stop)
   bus_shape_all=rbind(bus_shape_all, bus_shape)
@@ -662,5 +662,17 @@ tm_shape(temp1)+
 
 ```
 
+
+完整 R 與 Python 爬蟲程式碼，及所使用的主要套件，請參見表\@ref(tab:taipei-bus-code-rpy)。
+
+```{r taipei-bus-code-rpy, echo=F, eval=T}
+temp=data.frame(title=c(rep("主要套件", 3),"程式碼"), title=c("爬蟲","資料分析","地理資料處理",""), R=c("`rvest`","`dplyr`","`sf`","[R Code](https://raw.githubusercontent.com/ChiaJung-Yeh/TDX_Guide/master/code/%E5%A4%A7%E8%87%BA%E5%8C%97%E5%85%AC%E8%BB%8A%20%E8%B3%87%E6%96%99%E7%88%AC%E8%9F%B2.R)"), python=c("`requests`, `BeautifulSoup`, `json`","`pandas`, `numpy`","`geopandas`, `shapely`","[Python Code](https://raw.githubusercontent.com/ChiaJung-Yeh/TDX_Guide/master/code/%E5%A4%A7%E8%87%BA%E5%8C%97%E5%85%AC%E8%BB%8A%20%E8%B3%87%E6%96%99%E7%88%AC%E8%9F%B2.py)"))
+colnames(temp)=c("","","R","Python")
+
+kable(temp, booktabs=T, caption="程式碼")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
 
 

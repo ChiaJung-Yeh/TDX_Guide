@@ -2,8 +2,6 @@ library(dplyr)
 library(sf)
 library(rvest)
 
-tmap_mode("view")
-
 # 擷取所有路線表
 url="https://ebus.gov.taipei/ebus"
 html_content=read_html(url)
