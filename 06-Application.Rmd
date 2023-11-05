@@ -662,11 +662,11 @@ tm_shape(temp1)+
 
 ```
 
-
+<br>
 完整 R 與 Python 爬蟲程式碼，及所使用的主要套件，請參見表\@ref(tab:taipei-bus-code-rpy)。
 
 ```{r taipei-bus-code-rpy, echo=F, eval=T}
-temp=data.frame(title=c(rep("主要套件", 3),"程式碼"), title=c("爬蟲","資料分析","地理資料處理",""), R=c("`rvest`","`dplyr`","`sf`","[R Code](https://raw.githubusercontent.com/ChiaJung-Yeh/TDX_Guide/master/code/%E5%A4%A7%E8%87%BA%E5%8C%97%E5%85%AC%E8%BB%8A%20%E8%B3%87%E6%96%99%E7%88%AC%E8%9F%B2.R)"), python=c("`requests`, `BeautifulSoup`, `json`","`pandas`, `numpy`","`geopandas`, `shapely`","[Python Code](https://raw.githubusercontent.com/ChiaJung-Yeh/TDX_Guide/master/code/%E5%A4%A7%E8%87%BA%E5%8C%97%E5%85%AC%E8%BB%8A%20%E8%B3%87%E6%96%99%E7%88%AC%E8%9F%B2.py)"))
+temp=data.frame(title=c(rep("主要套件", 3),"程式碼"), title=c("爬蟲","資料分析","地理資料處理",""), R=c("`rvest`,`rjson`","`dplyr`","`sf`","[R Code](https://raw.githubusercontent.com/ChiaJung-Yeh/TDX_Guide/master/code/%E5%A4%A7%E8%87%BA%E5%8C%97%E5%85%AC%E8%BB%8A%20%E8%B3%87%E6%96%99%E7%88%AC%E8%9F%B2.R)"), python=c("`requests`, `BeautifulSoup`, `json`","`pandas`, `numpy`","`geopandas`, `shapely`","[Python Code](https://raw.githubusercontent.com/ChiaJung-Yeh/TDX_Guide/master/code/%E5%A4%A7%E8%87%BA%E5%8C%97%E5%85%AC%E8%BB%8A%20%E8%B3%87%E6%96%99%E7%88%AC%E8%9F%B2.py)"))
 colnames(temp)=c("","","R","Python")
 
 kable(temp, booktabs=T, caption="程式碼")%>%
