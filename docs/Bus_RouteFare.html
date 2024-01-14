@@ -1,0 +1,197 @@
+<!DOCTYPE html><html><head><title>R: Retrieve the route fare of each bus route</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link href="/doc/html/prism.css" rel="stylesheet" />
+<link rel="stylesheet" href="/doc/html/katex/katex.css">
+<script type="text/javascript" src="/doc/html/katex-config.js"></script>
+<script defer src="/doc/html/katex/katex.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="/doc/html/R.css" />
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>Bus_RouteFare {TDX}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2 id='Bus_RouteFare'>
+Retrieve the route fare of each bus route
+</h2>
+
+<h3>Description</h3>
+
+<p>The function is used to download the bus route fare.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>Bus_RouteFare(access_token, county, out=F)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr><td><code id="Bus_RouteFare_:_access_token">access_token</code></td>
+<td>
+<p>Your access token given by TDX platform. This can be derived from the function <code>get_token()</code>.</p>
+</td></tr>
+<tr><td><code id="Bus_RouteFare_:_county">county</code></td>
+<td>
+<p>Please fill in the English county name. Checking out the appropriate county name in dataframe <code>TDX_County</code>. If <code>Intercity</code> is used, the function retrieves the intercity bus data.</p>
+</td></tr>
+<tr><td><code id="Bus_RouteFare_:_out">out</code></td>
+<td>
+<p>If the result should be exported to the local, please fill in the directory. The default value is FALSE, which does not export the data.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Some columns definition are listed below.
+</p>
+
+<table>
+<tr>
+ <td style="text-align: right;">
+      </td><td style="text-align: left;"> <strong>RouteUID</strong>   </td><td style="text-align: left;"> It contains every subroutes and directions in a same RouteUID.</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+      </td><td style="text-align: left;"> <strong>BZOStopID</strong>   </td><td style="text-align: left;"> The origin of StopID of buffer zone.</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+      </td><td style="text-align: left;"> <strong>BZDStopID</strong>   </td><td style="text-align: left;"> The destination of StopID of buffer zone.</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td>
+</tr>
+
+</table>
+
+<p>Codes of <strong>FarePricingType</strong> are listed below.
+</p>
+
+<table>
+<tr>
+ <td style="text-align: right;">
+  <strong>0</strong>   </td><td style="text-align: left;"> price by times</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+  <strong>1</strong>   </td><td style="text-align: left;"> price by OD</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+  <strong>2</strong>   </td><td style="text-align: left;"> price by buffer zone</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+</td>
+</tr>
+
+</table>
+
+<p>Codes of <strong>TicketType</strong> are listed below.
+</p>
+
+<table>
+<tr>
+ <td style="text-align: right;">
+    <strong>1</strong>   </td><td style="text-align: left;"> One-way ticket</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>2</strong>   </td><td style="text-align: left;"> Round-trip ticket</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>3</strong>   </td><td style="text-align: left;"> Smart card</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>4</strong>   </td><td style="text-align: left;"> Multi-ride ticket</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>5</strong>   </td><td style="text-align: left;"> 30 days periodic ticket</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>6</strong>   </td><td style="text-align: left;"> 60 days periodic ticket</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+  </td>
+</tr>
+
+</table>
+
+<p>Codes of <strong>FareClass</strong> are listed below.
+</p>
+
+<table>
+<tr>
+ <td style="text-align: right;">
+    <strong>1</strong>   </td><td style="text-align: left;"> Adult</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>2</strong>   </td><td style="text-align: left;"> Student</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>3</strong>   </td><td style="text-align: left;"> Child</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>4</strong>   </td><td style="text-align: left;"> Senior</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>5</strong>   </td><td style="text-align: left;"> Disabled</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>6</strong>   </td><td style="text-align: left;"> Disabled Child</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>7</strong>   </td><td style="text-align: left;"> Disabled accompany</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    <strong>8</strong>   </td><td style="text-align: left;"> Group</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+  </td>
+</tr>
+
+</table>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Maintainer: Chia Jung, Yeh  <a href="mailto:chia-jung.yeh@sydney.edu.au">chia-jung.yeh@sydney.edu.au</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<p><a href='../Example/Bus_RouteFare'>Run examples</a></p><pre><code class='language-R'>bus_fare=Bus_RouteFare(access_token, "Taipei")
+
+# Buffer zone of the bus route
+bus_fare$BufferZone
+# Fare in the zones
+bus_fare$ZoneFare
+
+Bus_RouteFare(access_token, "Hsinchu", out="./Hsinchu_Bus_Route.csv")
+</code></pre>
+
+<hr /><div style="text-align: center;">[Package <em>TDX</em> version 3.3 <a href="00Index.html">Index</a>]</div>
+</div>
+<script src="/doc/html/prism.js"></script>
+</body></html>

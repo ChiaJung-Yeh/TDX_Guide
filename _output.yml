@@ -1,0 +1,23 @@
+bookdown::gitbook:
+  css:
+    - lib/css/bootstrap.min.css
+    - lib/css/style.css
+    - lib/css/lesson.css
+    - stylebox.css
+  includes:
+  config:
+    toc:
+      before: |
+        <li><a href="./">TDX 運輸資料介接指南</a></li>
+      after: |
+        <li><a href="https://www.sydney.edu.au/business/about/our-people/research-students/chia-jung-yeh-557.html" target="blank">葉家榮 Chia-Jung Yeh</a></li>
+    fontsettings:
+      theme: white
+      family: serif
+    edit: https://github.com/ChiaJung-Yeh/TDX_Guide/tree/master/%s
+    download: ["pdf"]
+#bookdown::pdf_book:
+#  includes:
+#    in_header: _preamble.tex
+#  latex_engine: xelatex
+#  keep_tex: no
