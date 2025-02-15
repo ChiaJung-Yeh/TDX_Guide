@@ -195,13 +195,13 @@ kable(TDX_table, booktabs=T, caption="`Rail_Shape()`函式參數設定表")%>%
 <font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
 **1. 回傳臺鐵路線資料（純文字）**
 ```{r Rail_Shape_code1, echo=T, eval=T, message=F, warning=F}
-# 介接高鐵站點資料
+# 介接臺鐵站點資料
 TRA_railshape=Rail_Shape(access_token, "TRA")
 ```
 
 ```{r Rail_Shape_code2, echo=T, eval=T, message=F, warning=F}
-# 查看THSR_station第2筆資料(東部幹線)
-TRA_railshape[2,]
+# 查看THSR_station第1筆資料(成追線)
+TRA_railshape[1,]
 ```
 
 
