@@ -26,7 +26,7 @@ TDX_Railway
 
 ```{r TDX-Railway-table, echo=F, eval=T}
 TDX_Railway_temp=TDX_Railway
-TDX_Railway_temp=cbind(TDX_Railway_temp[1:5,], rbind(TDX_Railway_temp[6:9,], c("","")))
+TDX_Railway_temp=cbind(TDX_Railway_temp[1:5,], rbind(TDX_Railway_temp[6:10,]))
 colnames(TDX_Railway_temp)=c("軌道運輸營運單位","代碼","軌道運輸營運單位","代碼")
 kable(TDX_Railway_temp, booktabs=T, caption="軌道營運單位名稱代碼表")%>%
   kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
@@ -388,5 +388,73 @@ datatable(KLRT_odfare, options=list(pageLength=5, scrollX=T, headerCallback = DT
   )))%>%
   formatStyle(columns=c(1:ncol(KLRT_odfare)), fontSize='80%')
 ```
+
+
+
+## 軌道進出站人次資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+軌道進出站係指軌道系統中各站點進站與出站的人次統計，目前可介接的運具包含臺鐵、高鐵、臺北捷運、桃園捷運、高雄捷運。其中臺北捷運另可介接站點間人次的統計數據，為更詳細的資料。
+
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Rail_Patronage_code, echo=T, eval=F}
+Rail_Patronage(operator, ym, OD=FALSE, out=FALSE)
+```
+
+```{r Rail-Patronage-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`operator=`", "`ym=`", "`OD=`", rep("`out=`", 2)),
+                     must=c(rep("必填參數", 2), rep("選填參數", 3)),
+                     func=c("營運單位代碼", "年度與月份", "是否介接起訖資料", rep("匯出資料之路徑", 2)),
+                     details=c("請參照`TDX_Railway`表格", "格式為`YYYY-MM`", "目前僅臺北捷運提供起訖資料", "`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T, caption="`Rail_Patronage()`函式參數設定表")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+輸出資料中`gateInComingCnt`為進站人次；`gateOutGoingCnt`則為出站人次。此外，起訖對運量資料中，`gateIn`為進站站點；`gateOut`為出站站點，並依據各天各時段（24小時）紀錄。所有運量資料並非來自 TDX，而是各運具的官方網站或公開資料平臺，各運具資料來源彙整如表\@ref(tab:Rail-Patronage-sources)。  
+
+```{r Rail-Patronage-sources, echo=F, eval=T}
+rail_source=data.frame(railsystem=c("臺鐵（`TRA`）","高鐵（`THSR`）",rep("臺北捷運（`TRTC`）", 2),"高雄捷運（`KRTC`）","桃園捷運（`TYMC`）"),
+                       detail=c(rep("進出站", 3), "起訖對", rep("進出站", 2)),
+                     source=c("[政府資料開放平臺](https://data.nat.gov.tw/dataset/8792)", "[高鐵官方網站](https://www.thsrc.com.tw/corp/9571df11-8524-4935-8a46-0d5a72e6bc7c)", "[臺北捷運公司官方網站](https://www.metro.taipei/cp.aspx?n=FF31501BEBDD0136)","[臺北市資料大平臺](https://data.taipei/dataset/detail?id=178ebf06-0451-4ac1-bbba-c255ca1fdac6)","[高雄捷運公司官方網站](https://corp.krtc.com.tw/News/statistics)","[政府資料開放平臺](https://data.gov.tw/dataset/164957)"))
+
+colnames(rail_source)=c("軌道系統","資料類別","資料來源")
+
+kable(rail_source, booktabs=T, caption="軌道運量資料來源")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**回傳臺北捷運各站進出人次資料**
+```{r Rail_Patronage_code1, echo=T, eval=T, message=F, warning=F}
+# 介接臺北捷運各站進出人次資料
+TRTC_Patro=Rail_Patronage("TRTC", "2024-12")
+
+# 統計TRTC_Patro資料
+TRTC_Patro_sum=group_by(TRTC_Patro, StationName)%>%
+  summarise(gateInComingCnt=sum(gateInComingCnt, na.rm=T),
+            gateOutGoingCnt=sum(gateOutGoingCnt, na.rm=T))
+```
+
+
+```{r Rail_Patronage_code2, echo=F, eval=T, message=F, warning=F}
+datatable(TRTC_Patro_sum, options=list(pageLength=8, scrollX=T, headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:ncol(TRTC_Patro_sum)), fontSize='80%')
+```
+
 
 

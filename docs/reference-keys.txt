@@ -108,3 +108,10 @@ tab:taipei-bus-eg1
 tab:taipei-bus-eg2
 fig:html-node
 tab:taipei-bus-code-rpy
+軌道進出站人次資料
+tab:Rail-Patronage-table
+tab:Rail-Patronage-sources
+tab:Air-Patronage-table
+航空出入境人次
+tab:Air-Patronage-export-table
+航空出入境人次資料

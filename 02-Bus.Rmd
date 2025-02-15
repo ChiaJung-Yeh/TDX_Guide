@@ -27,7 +27,7 @@ TDX_County
 ```
 
 ```{r TDX-County-table, echo=F, eval=T, message=F}
-TDX_County_temp=TDX_County
+TDX_County_temp=select(TDX_County, Operator, Code)
 TDX_County_temp=bind_cols(TDX_County_temp[1:12,], rbind(TDX_County_temp[13:23,], c("","")))
 colnames(TDX_County_temp)=c("縣市名稱","縣市代碼","縣市名稱","縣市代碼")
 

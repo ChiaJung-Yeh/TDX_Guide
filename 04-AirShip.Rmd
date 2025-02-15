@@ -123,10 +123,10 @@ datatable(st_drop_geometry(taiwan_port), options=list(pageLength=5, scrollX=T, h
 
 
 ## 航運航線資料
-<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
 回傳國內航運之航線班表資料。
 
-<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Ship_Route_code, echo=T, eval=F}
 Ship_Route(access_token, county, out=FALSE)
 ```
@@ -147,7 +147,7 @@ kable(TDX_table, booktabs=T, caption="`Ship_Route()`函式參數設定表")%>%
   collapse_rows(columns=c(1:3))
 ```
 
-<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
 **回傳新北市航運航線資料**
 ```{r Ship_Route_code1, echo=T, eval=T, message=F, warning=F}
 # 介接新北市航運航線資料
@@ -171,10 +171,10 @@ datatable(NWT_shiproute, options=list(pageLength=5, scrollX=T, headerCallback = 
 
 
 ## 航線靠港順序資料
-<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
 回傳國內航線停靠港口順序資料。
 
-<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
 ```{r Ship_StopOfRoute_code, echo=T, eval=F}
 Ship_StopOfRoute(access_token, county, out=FALSE)
 ```
@@ -195,7 +195,7 @@ kable(TDX_table, booktabs=T, caption="`Ship_StopOfRoute()`函式參數設定表"
   collapse_rows(columns=c(1:3))
 ```
 
-<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
 **回傳新北市各航線靠港順序資料**
 ```{r Ship_StopOfRoute_code1, echo=T, eval=T, message=F, warning=F}
 # 介接新北市各航線靠港順序
@@ -219,5 +219,71 @@ datatable(NWT_ship_portseq, options=list(pageLength=5, scrollX=T, headerCallback
 
 
 
+## 航空出入境人次資料
+<font color="#484891" size="4"><u>**◎ 資料概述**</u></font>  
+本函式介接[民航運輸常用統計資料](https://www.caa.gov.tw/TransStatistics.aspx?a=1089&lang=1)，依據所輸入的年度下載並整理各航線及航空公司之國內與國際（含兩岸）航線班機載客人數等營運相關資料。本函式中可提供國內與國際航線之運量資料，僅須設定`domestic=`之參數即可。  
 
+<font color="#484891" size="4"><u>**◎ 函式參數**</u></font>  
+```{r Air_Patronage_code, echo=T, eval=F}
+Air_Patronage(ym, domestic=FALSE, out=FALSE)
+```
+
+
+```{r Air-Patronage-table, echo=F, eval=T}
+TDX_table=data.frame(parameter=c("`ym=`", "`domestic=`", rep("`out=`", 2)),
+                     must=c(rep("必填參數", 1), rep("選填參數", 3)),
+                     func=c("年度與月份", "國際或國內線", rep("匯出資料之路徑", 2)),
+                     details=c("時間格式為`YYYY-MM`","`TRUE`:國內線<br>`FALSE`:國際線（預設值）","`FALSE`：不匯出資料至本機 [**預設值**]" ,"若欲輸出此結果，路徑中必須含有`.csv`或`.txt`"))
+
+colnames(TDX_table)=c("參數","必選填","功能","參數設定值")
+
+kable(TDX_table, booktabs=T, caption="`Air_Patronage()`函式參數設定表")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(1, bold=T)%>%
+  column_spec(1:4, background="white")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+介接國內線資料時，將會下載所有該年度的資料；而國際線資料則會依據所輸入的`ym=`參數介接指定月份資料。而輸出資料結果個欄位名稱意義彙整如表\@ref(tab:Air-Patronage-export-table)。  
+
+```{r Air-Patronage-export-table, echo=F, eval=T}
+temp1=data.frame(parameter=c("`Flight_`", "`Seat_`", "`Patronage_`", "`LoadFactor_`"),
+                     func=c("班次數", "總座位數", "總人次數", "承載率（總人次數/總座位數）"))
+temp2=data.frame(parameter=c("`_Total`", "`_Departure`", "`_Arrival`"),
+                     func=c("總數（出境+入境）", "出境", "入境"))
+TDX_table=cbind(temp1, rbind(temp2, c("","")))
+colnames(TDX_table)=c("前綴名稱","前綴意義","後綴名稱","後綴意義")
+
+kable(TDX_table, booktabs=T, caption="`Air_Patronage()`函式輸出結果欄位名稱")%>%
+  kable_styling(bootstrap_options=c("striped", "hover"), font_size=14)%>%
+  column_spec(c(1,3), bold=T)%>%
+  column_spec(2, border_right="2px solid #E0E0E0")%>%
+  row_spec(0, bold=T, color="white", background="#8E8E8E")%>%
+  collapse_rows(columns=c(1:3))
+```
+
+
+<font color="#484891" size="4"><u>**◎ 程式碼撰寫範例**</u></font>  
+**回傳國際航線出入境人次資料**  
+```{r Air_Patronage_code1, echo=T, eval=F, message=F, warning=F}
+# 介接國際航線出入境人次資料
+air_patro=Air_Patronage("2024-12")
+
+# 查看air_patro資料
+air_patro
+```
+
+```{r Air_Patronage_code2, echo=F, eval=T, message=F, warning=F}
+air_patro=read.csv("data/air_patro.csv")
+```
+
+```{r Air_Patronage_code3, echo=F, eval=T, message=F, warning=F}
+datatable(air_patro, options=list(pageLength=10, scrollX=T, headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )))%>%
+  formatStyle(columns=c(1:nrow(air_patro)), fontSize='80%')
+```
 

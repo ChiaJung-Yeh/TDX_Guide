@@ -166,6 +166,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.3" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html#軌道路線線型資料"><i class="fa fa-check"></i><b>2.3</b> 軌道路線線型資料</a></li>
 <li class="chapter" data-level="2.4" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html#軌道班表資料"><i class="fa fa-check"></i><b>2.4</b> 軌道班表資料</a></li>
 <li class="chapter" data-level="2.5" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html#軌道票價資料"><i class="fa fa-check"></i><b>2.5</b> 軌道票價資料</a></li>
+<li class="chapter" data-level="2.6" data-path="軌道運輸資料.html"><a href="軌道運輸資料.html#軌道進出站人次資料"><i class="fa fa-check"></i><b>2.6</b> 軌道進出站人次資料</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="公車運輸資料.html"><a href="公車運輸資料.html"><i class="fa fa-check"></i><b>3</b> <strong>公車運輸資料</strong></a>
 <ul>
@@ -187,6 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.2" data-path="航空與航運資料.html"><a href="航空與航運資料.html#港口點位資料"><i class="fa fa-check"></i><b>5.2</b> 港口點位資料</a></li>
 <li class="chapter" data-level="5.3" data-path="航空與航運資料.html"><a href="航空與航運資料.html#航運航線資料"><i class="fa fa-check"></i><b>5.3</b> 航運航線資料</a></li>
 <li class="chapter" data-level="5.4" data-path="航空與航運資料.html"><a href="航空與航運資料.html#航線靠港順序資料"><i class="fa fa-check"></i><b>5.4</b> 航線靠港順序資料</a></li>
+<li class="chapter" data-level="5.5" data-path="航空與航運資料.html"><a href="航空與航運資料.html#航空出入境人次資料"><i class="fa fa-check"></i><b>5.5</b> 航空出入境人次資料</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="其他-tdx-資料.html"><a href="其他-tdx-資料.html"><i class="fa fa-check"></i><b>6</b> <strong>其他 TDX 資料</strong></a>
 <ul>
@@ -317,7 +319,7 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="7">
+<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="8">
 軌道
 </td>
 <td style="text-align:left;">
@@ -361,7 +363,7 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 <td style="text-align:left;">
 軌道班表
 </td>
-<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+<td style="text-align:left;vertical-align: middle !important;" rowspan="4">
 文字
 </td>
 <td style="text-align:left;">
@@ -382,6 +384,14 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 </td>
 <td style="text-align:left;">
 <a href="#軌道站間旅行時間資料"><code>Rail_TravelTime()</code></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+軌道進出站人次
+</td>
+<td style="text-align:left;">
+<a href="軌道運輸資料.html#軌道進出站人次資料"><code>Rail_Patronage()</code></a>
 </td>
 </tr>
 <tr>
@@ -524,7 +534,7 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="4">
+<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="5">
 航空與航運
 </td>
 <td style="text-align:left;">
@@ -549,7 +559,7 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 <td style="text-align:left;">
 航運航線
 </td>
-<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
 文字
 </td>
 <td style="text-align:left;">
@@ -562,6 +572,14 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 </td>
 <td style="text-align:left;">
 <a href="航空與航運資料.html#航線靠港順序資料"><code>Ship_StopOfRoute()</code></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+航空出入境人次
+</td>
+<td style="text-align:left;">
+<a href="航空與航運資料.html#航空出入境人次資料"><code>Air_Patronage()</code></a>
 </td>
 </tr>
 <tr>
@@ -643,17 +661,25 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="7">
+<td style="text-align:left;font-weight: bold;vertical-align: middle !important;" rowspan="9">
 社經與土地
 </td>
 <td style="text-align:left;">
 人口（含各年齡層與性別資料）
 </td>
-<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
+<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
 面
 </td>
 <td style="text-align:left;">
 <a href="#人口資料"><code>Population()</code></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+信令人口（縣市或鄉鎮）
+</td>
+<td style="text-align:left;">
+<a href="#信令人口資料"><code>CellularPopulation()</code></a>
 </td>
 </tr>
 <tr>
@@ -698,7 +724,7 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 <td style="text-align:left;">
 醫院
 </td>
-<td style="text-align:left;vertical-align: middle !important;" rowspan="3">
+<td style="text-align:left;vertical-align: middle !important;" rowspan="2">
 面
 </td>
 <td style="text-align:left;">
@@ -714,11 +740,25 @@ Python 套件更新於 2023-10-17，套件版本為 0.1.52 (註：Python 套件�
 </td>
 </tr>
 <tr>
+<td style="text-align:left;">
+車輛登記數（鄉鎮市區）
+</td>
+<td style="text-align:left;">
+文字
+</td>
+<td style="text-align:left;">
+<a href="#車輛登記數資料"><code>VehicleOwn()</code></a>
+</td>
+</tr>
+<tr>
 <td style="text-align:left;font-weight: bold;">
 行政區
 </td>
 <td style="text-align:left;">
 行政區疆域
+</td>
+<td style="text-align:left;">
+面
 </td>
 <td style="text-align:left;">
 <a href="#行政區資料"><code>District_Shape()</code></a>
